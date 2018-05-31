@@ -1,4 +1,4 @@
-package util;
+package util.string;
 
 /**
  * A simple object that holds onto a pair of object references, first and

@@ -1,4 +1,4 @@
-package util;
+package util.string;
 
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;

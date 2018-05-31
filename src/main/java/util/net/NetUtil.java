@@ -1,8 +1,10 @@
-package util;
+package util.net;
 
 /**
  * Created by songpanfei on 17:53 2018/5/31.
  */
+
+import util.string.StringUtil;
 
 import javax.servlet.ServletRequest;
 
