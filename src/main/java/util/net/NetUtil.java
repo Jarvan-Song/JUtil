@@ -18,7 +18,6 @@ public class NetUtil {
     public static String getStringParameter(ServletRequest request, String name, String defaults, boolean decode) {
         String str = request.getParameter(name);
         if (decode) {
-            //瑙ｇ爜
             str = StringUtil.decodeNetUnicode(str);
         }
         return StringUtil.convertString(str, defaults);
