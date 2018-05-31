@@ -3,6 +3,8 @@ package util.string;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.string.support.MultiStringReplacer;
+import util.string.support.Pair;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;

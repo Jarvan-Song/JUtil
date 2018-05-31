@@ -1,4 +1,4 @@
-package util.string;
+package util.string.support;
 
 
 import java.util.concurrent.ConcurrentHashMap;
