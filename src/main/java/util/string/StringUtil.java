@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 public final class StringUtil {
 	private static final Pattern NET_UNICODE_PATTERN = Pattern.compile("&#(\\d{1,5});");
 	private static final Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9a-f]{1,4})");
-	private static final Logger LOG = LoggerFactory.getLogger("jutil");
+	private static final Logger LOG = LoggerFactory.getLogger("StringUtil.log");
 	private static final int[] CONVERT = new int[127];
 	private static final List<String> InvalidCharList = Lists.newArrayList("%3C", "%3E", "%22", "%27", "&#60;", "&#62;",  "&#39;", "&#34;", "\\x3C", "\\x3E" ,  "\\x22", "\\x27");
 	private static MultiStringReplacer ti = new MultiStringReplacer();
@@ -42,10 +42,8 @@ public final class StringUtil {
 		}
 	}
 
-	// 限制创建实例 ，为了veloctiy使用toolbox修改为public
-	public StringUtil()
-	{
-	}
+	private StringUtil()
+	{}
 
 	/**
 	 * 判断是否是空字符串
@@ -199,6 +197,29 @@ public final class StringUtil {
 			return s;
 		}
 		int pos = s.indexOf(src);
+		if (pos < 0) {
+			return s;
+		}
+		StringBuilder sb = new StringBuilder(s.length() - src.length() + dst.length());
+		sb.append(s, 0, pos);
+		sb.append(dst);
+		sb.append(s, pos + src.length(), s.length());
+		return sb.toString();
+	}
+
+	/**
+	 * 只替换最后一个
+	 *
+	 * @param s   原始字符串
+	 * @param src 要替换字符串
+	 * @param dst 替换目标字符串
+	 * @return 处理后的字符串
+	 */
+	public static String replaceLast(String s, String src, String dst) {
+		if (s == null || src == null || dst == null || src.length() == 0) {
+			return s;
+		}
+		int pos = s.lastIndexOf(src);
 		if (pos < 0) {
 			return s;
 		}
