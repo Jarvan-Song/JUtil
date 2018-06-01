@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public final class CookieUtil {
 
+    private CookieUtil(){}
+
     /**
      * 得到Cookie的值, 不编码
      *

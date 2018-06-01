@@ -8,6 +8,7 @@ import javax.servlet.ServletRequest;
  * ServletRequest 常用方法封装
  */
 public final class NetUtil {
+    private NetUtil(){}
 
     public static String getStringParameter(ServletRequest request, String name, String defaults) {
         return getStringParameter(request, name, defaults, true);

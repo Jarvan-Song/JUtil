@@ -42,8 +42,7 @@ public final class StringUtil {
 		}
 	}
 
-	private StringUtil()
-	{}
+	private StringUtil() {}
 
 	/**
 	 * 判断是否是空字符串
