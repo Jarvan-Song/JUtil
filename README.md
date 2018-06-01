@@ -1,3 +1,2 @@
-# testGit
-
-this is util Class 
+# 说明
+这是一个基础的java工具类集合包，包括字符，网络，html等处理工具。。。。
