@@ -4,7 +4,7 @@ package util.string.support;
  * A simple object that holds onto a pair of object references, first and
  * second.
  */
-final public class Pair<FIRST, SECOND> {
+public final class Pair<FIRST, SECOND> {
 	public final FIRST first;
 	public final SECOND second;
 

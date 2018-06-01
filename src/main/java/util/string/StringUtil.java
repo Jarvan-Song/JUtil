@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 /**
  * 字符串相关工具
  */
-public class StringUtil {
+public final class StringUtil {
 	private static final Pattern NET_UNICODE_PATTERN = Pattern.compile("&#(\\d{1,5});");
 	private static final Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9a-f]{1,4})");
 	private static final Logger LOG = LoggerFactory.getLogger("jutil");
