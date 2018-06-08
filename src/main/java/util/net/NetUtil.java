@@ -5,7 +5,7 @@ import util.string.StringUtil;
 import javax.servlet.ServletRequest;
 
 /**
- * ServletRequest 常用方法封装
+ * Net 工具类
  */
 public final class NetUtil {
     private NetUtil(){}

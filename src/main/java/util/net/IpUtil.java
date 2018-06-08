@@ -13,7 +13,7 @@ import java.util.List;
 
 
 /**
- * IP相关的工具类
+ * IP 工具类
  *
  */
 public final class IpUtil {
