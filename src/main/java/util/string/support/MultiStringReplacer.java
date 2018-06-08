@@ -17,7 +17,6 @@ public final class MultiStringReplacer {
 	/**
 	 * 用于存放查找关键字时的位置信息
 	 *
-	 * @author meteor
 	 */
 	private static class FindResultPosInfo {
 		MultiStringReplacer msr;    // 关键字对应的节点

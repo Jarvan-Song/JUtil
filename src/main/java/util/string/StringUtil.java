@@ -785,7 +785,6 @@ public final class StringUtil {
 	 *
 	 * @param str
 	 * @return 如果字符串中有已经转义的实体字符串，则跳过，否则转义避免amp;amp;这样的情形出现
-	 * @author quickli
 	 */
 	public static String removeInvalidWML(String str) {
 		return removeInvalidWML(str, true);
@@ -811,7 +810,6 @@ public final class StringUtil {
 	 * @param str                  需要进行过滤xml非法字符并进行xml转义的字符串
 	 * @param removePrivateUseArea 是否移除虽然是xml合法字符但却是在unicode里私有保留区里的字符
 	 * @return 如果字符串中有已经转义的实体字符串，则跳过，否则转义避免amp;amp;这样的情形出现
-	 * @author quickli
 	 * @see
 	 */
 	public static String removeInvalidWML(String str, boolean removePrivateUseArea) {
@@ -993,7 +991,6 @@ public final class StringUtil {
 	 *
 	 * @param str 需要反解析xml的字符串
 	 * @return 返回将xml转义字符反解析后的字符串，默认过滤掉xml字符允许但是是unicode私有区域的字符
-	 * @author quickli
 	 */
 	public static String decodeWML(String str) {
 		return decodeWML(str, true);
@@ -1147,7 +1144,6 @@ public final class StringUtil {
 	 * @param str                  需要反解析xml的字符串
 	 * @param removePrivateUseArea 是否去除unicode私有区的字符
 	 * @return 返回反解析后的字符串
-	 * @author quickli
 	 */
 	public static String decodeWML(String str, boolean removePrivateUseArea) {
 		if (str == null || str.isEmpty()) {
