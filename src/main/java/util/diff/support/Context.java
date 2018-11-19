@@ -2,6 +2,9 @@ package util.diff.support;
 
 import java.util.ArrayList;
 
+/**
+ * Created by songpanfei on 2018/11/19.
+ */
 public class Context<T> extends ArrayList<T>{
     private String text;
 

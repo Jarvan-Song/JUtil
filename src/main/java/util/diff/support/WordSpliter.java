@@ -1,22 +1,18 @@
-package util.diff;
+package util.diff.support;
 
 
 
-import difflib.Chunk;
-import difflib.Delta;
-import difflib.DiffUtils;
-import difflib.Patch;
 import util.diff.support.Context;
 import util.diff.support.ITextSpliter;
 import util.html.support.HtmlParser;
 import util.html.support.HtmlParser.*;
-import util.string.StringUtil;
 
 import java.util.*;
 
 
 
 /**
+ * Created by songpanfei on 2018/11/19.
  * 把代表词条的纯 HTML 划分成原子单元：字。
  * 在此基础上进行diff操作。
  */
@@ -75,6 +71,4 @@ public class WordSpliter implements ITextSpliter {
 		if (!(endTag == null || endTag.isEmpty()))
 			context.add(endTag);
 	}
-
-
 }

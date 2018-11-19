@@ -1,8 +1,7 @@
-package util.diff;
+package util.diff.support;
 
 
 
-import util.diff.support.ITextSpliter;
 import util.html.support.HtmlParser;
 import util.html.support.HtmlParser.*;
 import util.html.support.TagParser;
@@ -13,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * Created by songpanfei on 2018/11/19.
  * 将文本分割成段落，即以p标签为分割点
  */
 public class LineSpliter implements ITextSpliter {

@@ -1,17 +1,15 @@
-package util.diff;
+package util.diff.support;
 
 
-import util.diff.support.Context;
-import util.diff.support.ITextSpliter;
 import util.html.support.HtmlParser;
 import util.html.support.HtmlParser.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
 /**
+ * Created by songpanfei on 2018/11/19.
  * 将文本分割成句子，即以逗号和句号进行分割，主要用于中文diff
  */
 public class SentenceSpliter implements ITextSpliter {

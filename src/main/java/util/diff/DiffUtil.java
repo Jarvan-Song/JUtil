@@ -4,9 +4,7 @@ import difflib.Chunk;
 import difflib.Delta;
 import difflib.DiffUtils;
 import difflib.Patch;
-import util.diff.support.Algorithm;
-import util.diff.support.ITextSpliter;
-import util.diff.support.TextDiffResult;
+import util.diff.support.*;
 import util.string.StringUtil;
 
 import java.util.Arrays;
