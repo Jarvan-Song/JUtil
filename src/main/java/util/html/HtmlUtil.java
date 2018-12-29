@@ -1436,50 +1436,5 @@ public class HtmlUtil {
 
 		};
 		return transformElementAttributes(document, transformer);
-
 	}
-
-	public static class Test {
-		public static final void main(String args[]) throws Exception {
-//			Reader reader = new InputStreamReader(new FileInputStream("e:/test.htm"), "GB18030");
-//			StringBuilder sb = new StringBuilder();
-//
-//			char[] buf = new char[4000];
-//			int nchars = 0;
-//			while ((nchars = reader.read(buf, 0, buf.length)) >= 0)
-//				sb.append(buf, 0, nchars);
-//			reader.close();
-//
-//			String input = sb.toString();
-//			System.out.println("Input document: " + input.length());
-//
-//			Writer writer = new OutputStreamWriter(new FileOutputStream("e:/test_result.htm"), "GB18030");
-//			String filtered = filterDocument(input);
-//			writer.write(filtered);
-//			writer.close();
-//
-//			List<String> images = retrieveImageSources(filtered);
-//			if (images != null)
-//				for (String src : images)
-//					System.out.println(src);
-//
-//			System.out.println(toPlainText(filtered));
-
-//			String input = "冰河 	 	 	 		 	 	 	 		回答采纳率:56.5% 	 	2009-07-08 17:09 	 	 	冰河 	 	 	 		 	 	 	 		回答采纳率:56.5% 	 	2009-07-08 17:09 	 	 	";
-//			System.out.print(input);
-//			System.out.println("== End ==");
-//			System.out.println(compactWhitespaces(input));
-//			System.out.println("== End ==");
-
-			String s = "<img src=\"http://wenwen.sogou.com/p.png\" /><script>alert('hello')</script><li////onclick=alert(/xss/)>dbappsecurity</li>" +
-					"<br/>欠妥基 ,本上<div>请</div>王荣<p>强</p>娃\"儿撒女<a href=\"http://wenwen.sogou.com\">佛啊</a>未确认怄气<span>玩儿</span>你发誓,的肌肤.";
-			//String o = HtmlUtil.filterDocument(s);
-			System.out.println("HtmlUtil.filterDocument:" + HtmlUtil.filterDocument(s));
-			System.out.println("HtmlUtil.escapeFromHtml:" + HtmlUtil.escapeFromHtml(s));
-			System.out.println("HtmlUtil.fromPlainText:" + HtmlUtil.fromPlainText(s));
-			System.out.println("HtmlUtil.removeMarkups:" + HtmlUtil.removeMarkups(s));
-			System.out.println("HtmlUtil.toPlainText:" + HtmlUtil.toPlainText(s));
-		}
-	}
-
 }
