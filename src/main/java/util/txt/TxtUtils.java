@@ -7,8 +7,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 /**
- * Created by songpanfei on 2019-05-17.
- * 下载txt，以\t为分隔符，方便粘贴到excel
+ * txt下载工具类，以\t为分隔符，方便粘贴到excel
  * 有点：文件小速度快
  */
 public class TxtUtils {
