@@ -2,9 +2,6 @@ package util.txt;
 
 import java.io.Serializable;
 
-/**
- * Created by songpanfei on 2019-05-17.
- */
 public class Pv implements Serializable {
 
     private long lemmaId;
