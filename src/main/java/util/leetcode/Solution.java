@@ -9,8 +9,10 @@ import java.util.Map;
 public class Solution {
 
     public static void main(String[] args){
-        System.out.println(reverse2(-2147483648));
-        System.out.println(IsPalindrome3(1234));
+//        System.out.println(reverse2(-2147483648));
+//        System.out.println(IsPalindrome3(1234));
+//        System.out.println(searchInsert2(new int[]{1,2,4,5},6));
+        System.out.println(maxSubArray1(new int[]{-2,1,-3,4,-1,2,1,-5,4}));
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -178,5 +180,136 @@ public class Solution {
         }
         result += map.get(chars[i]);
         return result;
+    }
+
+    public static int searchInsert1(int[] nums, int target) {
+        int index = 0;
+        if(target < nums[0]){
+            return 0;
+        }
+        if(target > nums[nums.length-1]){
+            return nums.length;
+        }
+        for(int i=0;i<nums.length;i++){
+            int r = nums[i];
+            if(target <= r){
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    public static int searchInsert2(int[] nums, int target) {
+        int low = 0;
+        int high = nums.length -1;
+        if(target < nums[0]){
+            return 0;
+        }
+        if(target > nums[nums.length-1]){
+            return nums.length;
+        }
+        while (low <= high){
+            int middle = low + (high - low)/2;
+            if(target == nums[middle]){
+                return middle;
+            }else if(target > nums[middle]){
+                low = middle + 1;
+            }else {
+                high = middle -1;
+            }
+        }
+        return low;
+    }
+
+    public static String countAndSay(int n) {
+        String result = new String("1");
+        for(int i=1;i<n;i++){
+            result = temp(result);
+        }
+        return result;
+    }
+
+    public static String temp(String result){
+        StringBuilder stringBuilder = new StringBuilder();
+        int count = 0;
+        char tep = result.charAt(0);
+        for(int j=0;j<result.length();j++){
+            if(result.charAt(j) == tep){
+                count++;
+            }else {
+                stringBuilder.append(count).append(tep);
+                count = 1;
+                tep = result.charAt(j);
+            }
+        }
+        return stringBuilder.append(count).append(tep).toString();
+    }
+
+    /*
+     * Input: [-2,1,-3,4,-1,2,1,-5,4],
+     * Output: 6
+     * Explanation: [4,-1,2,1] has the largest sum = 6.
+     */
+    public static int maxSubArray1(int[] nums) {
+        int res = Integer.MIN_VALUE, curSum = 0;
+        for (int num : nums) {
+            curSum = Math.max(curSum + num, num);
+            res = Math.max(res, curSum);
+        }
+        return res;
+    }
+
+    public static int lengthOfLastWord1(String s) {
+        int result = 0;
+        int count = 0;
+        if(s == null || s.equals("")){return 0;}
+        for(int i=0;i<s.length();i++){
+            char curr = s.charAt(i);
+            if(String.valueOf(curr).equals(" ")){
+                if(count > 0){
+                    result = count;
+                    count = 0;
+                }
+            }else {
+                count++;
+                result = count;
+            }
+        }
+        return result;
+    }
+
+    public static int lengthOfLastWord2(String s) {
+        String use = s.trim();
+        int count = 0;
+        for (int i = use.length() - 1; i >= 0; i--) {
+            if (use.charAt(i) != ' ') count++;
+            else break;
+        }
+        return count;
+    }
+
+    /**
+     Input: [1,2,3]
+     Output: [1,2,4]
+     Explanation: The array represents the integer 123.
+     */
+    public static int[] plusOne(int[] digits) {
+        int carry = 0;
+        int length = digits.length;
+        int[] result = new int[length];
+        for(int i=length-1;i>=0;i--){
+            int num = digits[i]+carry+(i==length-1?1:0);
+            int yu = num % 10;
+            carry = num/10 ;
+            result[i] = yu;
+        }
+        if(carry == 0){
+            return result;
+        }else {
+            int[] result2 = new int[length+1];
+            result2[0] = 1;
+            return result2;
+        }
     }
 }
