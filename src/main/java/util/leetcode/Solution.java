@@ -309,6 +309,9 @@ public class Solution {
         }else {
             int[] result2 = new int[length+1];
             result2[0] = 1;
+            for(int j = 1;j<=length;j++){   //这个地方也可以省略，因为+1进位只有9这种情况，一旦进位则为0
+                result2[j] = result[j-1];
+            }
             return result2;
         }
     }
