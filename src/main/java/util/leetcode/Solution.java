@@ -12,7 +12,9 @@ public class Solution {
 //        System.out.println(reverse2(-2147483648));
 //        System.out.println(IsPalindrome3(1234));
 //        System.out.println(searchInsert2(new int[]{1,2,4,5},6));
-        System.out.println(maxSubArray1(new int[]{-2,1,-3,4,-1,2,1,-5,4}));
+//        System.out.println(maxSubArray1(new int[]{-2,1,-3,4,-1,2,1,-5,4}));
+        String a = "1010", b = "1011";
+        System.out.println(addBinary(a,b));
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -314,5 +316,68 @@ public class Solution {
             }
             return result2;
         }
+    }
+
+    /*
+    Input: a = "1010", b = "1011"
+    Output: "10101"
+     */
+    public static String addBinary(String a, String b) {
+        int s1 = a.length();
+        int s2 = b.length();
+        int max = Math.max(s1,s2);
+        int carry = 0;
+        int v1,v2,res;
+        String j = "";
+        for(int i=0;i<max;i++){
+            if(i<=s1-1){
+                v1 = Integer.parseInt(a.charAt(s1-1-i)+"");
+            }else {
+                v1 =0;
+            }
+            if(i<=s2-1){
+                v2 = Integer.parseInt(b.charAt(s2-1-i)+"");
+            }else {
+                v2 =0;
+            }
+            res = v1 + v2 + carry;
+            int yu = res%2;
+            carry = (res >=2?1:0);
+            j = yu + j;
+        }
+        if(carry > 0){
+            j = 1 + j;
+        }
+        return j;
+    }
+
+    public static String addBinary2(String a, String b) {
+        int s1 = a.length()-1;
+        int s2 = b.length()-1;
+        int carry = 0;
+        int v1,v2,res;
+        String j = "";
+        while (s1>=0 || s2>=0){
+            if(s1>=0) {
+                v1 = a.charAt(s1) - '0';
+                s1--;
+            }else {
+                v1 = 0;
+            }
+            if(s2>=0) {
+                v2 = b.charAt(s2) - '0';
+                s2--;
+            }else {
+                v2 = 0;
+            }
+            res = v1 + v2 + carry;
+            int yu = res%2;
+            carry  = res/2;
+            j = yu + j;
+        }
+        if(carry > 0){
+            j = 1 + j;
+        }
+        return j;
     }
 }
