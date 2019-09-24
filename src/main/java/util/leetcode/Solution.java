@@ -14,7 +14,7 @@ public class Solution {
 //        System.out.println(searchInsert2(new int[]{1,2,4,5},6));
 //        System.out.println(maxSubArray1(new int[]{-2,1,-3,4,-1,2,1,-5,4}));
         String a = "1010", b = "1011";
-        System.out.println(addBinary(a,b));
+        System.out.println(mySqrt(110));
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -149,6 +149,7 @@ public class Solution {
         }
         return true;
     }
+
     public static boolean IsPalindrome3(int x) {
         if(x < 0 || (x % 10 == 0 && x != 0)) {
             return false;
@@ -379,5 +380,23 @@ public class Solution {
             j = 1 + j;
         }
         return j;
+    }
+
+    public static int mySqrt(int x) {
+        if (x == 0) return 0;
+        int left = 1;
+        int right = x;
+        int middle = 0;
+        while (left <= right){
+            middle = left + (right - left)/2;
+            if(middle == x/middle){
+                return middle;
+            }else if(middle > x/middle){
+                right = middle -1;
+            }else {
+                left = middle + 1;
+            }
+        }
+        return right;
     }
 }
