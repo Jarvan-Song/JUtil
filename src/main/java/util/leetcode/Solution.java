@@ -13,8 +13,15 @@ public class Solution {
 //        System.out.println(IsPalindrome3(1234));
 //        System.out.println(searchInsert2(new int[]{1,2,4,5},6));
 //        System.out.println(maxSubArray1(new int[]{-2,1,-3,4,-1,2,1,-5,4}));
-        String a = "1010", b = "1011";
-        System.out.println(mySqrt(110));
+//        System.out.println(mySqrt(110));
+        int[] nums1 = new int[]{1,2,3,0,0,0};
+        int m = 3;
+        int[] nums2 = new int[]{2,5,6};
+        int n = 3;
+        merge2(nums1,m,nums2,n);
+        for(int i=0;i<nums1.length;i++){
+            System.out.println("test "+nums1[i]);
+        }
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -398,5 +405,154 @@ public class Solution {
             }
         }
         return right;
+    }
+
+    public static int climbStairs1(int n) {
+        if(n <= 0) return 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        if(n==1) return 1;
+        if(n==2) return 2;
+        Integer res = map.get(n);
+        if(res != null) {
+            return res;
+        }
+        res = climbStairs1(n-1)+climbStairs1(n-2);
+        map.put(n, res);
+        return res;
+    }
+
+    public static int climbStairs2(int n) {
+        if(n <= 0) return 0;
+        if(n==1) return 1;
+        if(n==2) return 2;
+        int[] dp = new int[n+1];
+        dp[1]=1;
+        dp[2]=2;
+        for(int i=3;i<=n;i++){
+            dp[i] = dp[i-1]+dp[i-2];
+        }
+        return dp[n];
+    }
+
+    public static int climbStairs3(int n) {
+        if(n<=0) return 0;
+        if(n==1) return 1;
+        if(n==2) return 2;
+        int n_2=1;
+        int n_1=2;
+        int n_0=0;
+        for(int i=3;i<n;i++){
+            n_0=n_2+n_1;
+            n_2=n_1;
+            n_1=n_0;
+        }
+        return  n_0;
+    }
+    /**
+     * Definition for singly-linked list.
+     * public class ListNode {
+     *     int val;
+     *     ListNode next;
+     *     ListNode(int x) { val = x; }
+     * }
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        if(head == null){
+            return null;
+        }
+        Map<Integer, Integer> map = new HashMap<>();
+        ListNode curr = head;
+        ListNode next = curr.next;
+        map.put(curr.val, 1);
+        while (next != null){
+            if(map.get(next.val)!= null){
+                curr.next = next.next;
+                next = next.next;
+            }else {
+                map.put(next.val, 1);
+                curr = next;
+                next = next.next;
+            }
+        }
+        return head;
+    }
+
+    public ListNode deleteDuplicates2(ListNode head) {
+        if(head == null){
+            return null;
+        }
+        ListNode curr = head;
+        ListNode next = curr.next;
+        while (next != null){
+            if(next.val == curr.val){
+                curr.next = next.next;
+                next = next.next;
+            }else {
+                curr = next;
+                next = next.next;
+            }
+        }
+        return head;
+    }
+    /*
+        Input:
+        nums1 = [1,2,3,0,0,0], m = 3
+        nums2 = [2,5,6],       n = 3
+        Output: [1,2,2,3,5,6]
+     */
+    public static void merge(int[] nums1, int m, int[] nums2, int n) {
+        int s1 = nums1.length;
+        int s2 = nums2.length;
+        for(int i=0;i<s2;i++){
+            int target = nums2[i];
+            int index = helper(nums1, m, target);
+            for(int j=s1-1;j>index;j--){
+                nums1[j] = nums1[j-1];
+            }
+            nums1[index] = target;
+            m++;
+        }
+    }
+
+    public static int helper(int[] arry, int m, int target){
+        if(m<=0){
+            return 0;
+        }
+        if(target < arry[0]) return 0;
+        if(target > arry[m -1]) return m;
+        int low = 0;
+        int high = m-1;
+        int middle;
+        while (low <= high){
+            middle = low + (high - low)/2;
+            if(arry[middle] == target){
+                return middle + 1;
+            }else if(arry[middle] > target){
+                high = middle -1;
+            }else {
+                low = middle + 1;
+            }
+        }
+        return low;
+    }
+
+    public static void merge2(int[] nums1, int m, int[] nums2, int n) {
+        int s1 = m-1;
+        int s2 = n-1;
+        int s3 = m+n-1;
+        while (s1 >=0 && s2 >=0){
+            if(nums1[s1] > nums2[s2]){
+                nums1[s3] = nums1[s1];
+                s1--;
+            }else {
+                nums1[s3] = nums2[s2];
+                s2--;
+            }
+            s3--;
+        }
+        while (s2 >=0){
+            nums1[s2] = nums2[s2];
+            s2--;
+        }
     }
 }
