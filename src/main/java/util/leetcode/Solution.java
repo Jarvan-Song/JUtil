@@ -1,8 +1,6 @@
 package util.leetcode;
 
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by songpanfei on 2019-09-19.
@@ -572,40 +570,98 @@ public class Solution {
         }
         if(p.val != q.val){
             return false;
-        }else {
-            return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
         }
-    }
-
-    public boolean check(TreeNode p, TreeNode q) {
-        if (p == null && q == null) return true;
-        if (q == null || p == null) return false;
-        if (p.val != q.val) return false;
-        return true;
+        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
     }
 
     public boolean isSameTree2(TreeNode p, TreeNode q) {
-        if (p == null && q == null) return true;
-        if (!check(p, q)) return false;
-        ArrayDeque<TreeNode> deqP = new ArrayDeque<>();
-        ArrayDeque<TreeNode> deqQ = new ArrayDeque<>();
-        deqP.addLast(p);
-        deqQ.addLast(q);
-        while (!deqP.isEmpty()) {
-            p = deqP.removeFirst();
-            q = deqQ.removeFirst();
-            if (!check(p, q)) return false;
-            if (!check(p.left, q.left)) return false;
-            if (p.left != null) {
-                deqP.addLast(p.left);
-                deqQ.addLast(q.left);
-            }
-            if (!check(p.right, q.right)) return false;
-            if (p.right != null) {
-                deqP.addLast(p.right);
-                deqQ.addLast(q.right);
-            }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(p);
+        queue.add(q);
+        while (!queue.isEmpty()) {
+            TreeNode t1 = queue.poll();
+            TreeNode t2 = queue.poll();
+            if (t1 == null && t2 == null) continue;
+            if (t1 == null || t2 == null) return false;
+            if (t1.val != t2.val) return false;
+            queue.add(t1.left);
+            queue.add(t2.left);
+            queue.add(t1.right);
+            queue.add(t2.right);
         }
         return true;
     }
+
+    public static int maxProfit(int[] prices) {
+        if(prices.length < 1) return 0;
+        int max=0;
+        int min=prices[0];
+        for(int i=1;i<prices.length;i++){
+            max=Math.max(prices[i]-min,max);
+            min=Math.min(min,prices[i]);
+        }
+        return max;
+    }
+
+    public boolean isSymmetric(TreeNode root) {
+        if(root == null){
+            return true;
+        }
+        return isSymmetri(root.left, root.right);
+    }
+
+    public boolean isSymmetri(TreeNode p, TreeNode q) {
+        if(p == null && q == null){
+            return true;
+        }
+        if(p == null || q == null){
+            return false;
+        }
+        if(p.val != q.val){
+            return false;
+        }
+        return isSymmetri(p.left, q.right) && isSymmetri(p.right, q.left);
+    }
+
+    public int maxDepth(TreeNode root) {
+        if(root == null){
+            return 0;
+        }
+        return Math.max(maxDepth(root.left)+1, maxDepth(root.right)+1);
+    }
+
+    public int maxDepth2(TreeNode root) {
+        if(root == null){
+            return 0;
+        }
+        LinkedList<TreeNode> queue  = new LinkedList<>();
+        LinkedList<TreeNode> queue2 = new LinkedList<>();
+        LinkedList<TreeNode> tmp;
+        queue.add(root);
+        int h = 0;
+        boolean flag = false;
+        while (!queue.isEmpty()){
+            for(TreeNode node: queue){
+                if(node != null){
+                    flag = true;
+                    break;
+                }
+            }
+            if(flag){
+                h++;
+                for(TreeNode node: queue){
+                    if(node != null){
+                        queue2.add(node.left);
+                        queue2.add(node.right);
+                    }
+                }
+            }
+            tmp = queue;
+            queue = queue2;
+            queue2 = tmp;
+            queue2.clear();
+        }
+        return h-1;
+    }
+
 }
