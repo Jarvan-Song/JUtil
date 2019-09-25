@@ -634,9 +634,9 @@ public class Solution {
         if(root == null){
             return 0;
         }
-        LinkedList<TreeNode> queue  = new LinkedList<>();
-        LinkedList<TreeNode> queue2 = new LinkedList<>();
-        LinkedList<TreeNode> tmp;
+        Queue<TreeNode> queue  = new LinkedList<>();
+        Queue<TreeNode> queue2 = new LinkedList<>();
+        Queue<TreeNode> tmp;
         queue.add(root);
         int h = 0;
         boolean flag = false;
@@ -662,6 +662,97 @@ public class Solution {
             queue2.clear();
         }
         return h-1;
+    }
+
+    public int maxDepth3(TreeNode root) {
+        if(root == null){
+            return 0;
+        }
+        Queue<TreeNode> queue  = new LinkedList<>();
+        queue.add(root);
+        int h = 0;
+        while (!queue.isEmpty()){
+            boolean flag = false;
+            int size = queue.size();
+            for(int i=0; i<size; i++){
+                TreeNode node = queue.poll();
+                if(node != null){
+                    if(!flag){
+                        flag = true;
+                        h++;
+                    }
+                    queue.add(node.left);
+                    queue.add(node.right);
+                }
+            }
+        }
+        return h;
+    }
+
+    public List<List<Integer>> levelOrderBottom(TreeNode root) {
+        if(root == null){
+            return new LinkedList<>();
+        }
+        List<TreeNode> queue1  = new LinkedList<>();
+        List<TreeNode> queue2 = new LinkedList<>();
+        List<List<Integer>> queue3 = new LinkedList<>();
+        Stack<List<Integer>> stack = new Stack<>();
+        List<TreeNode> tmp;
+        queue1.add(root);
+        while (!queue1.isEmpty()){
+            List<Integer> queue4 = new LinkedList<>();
+            for(TreeNode node: queue1){
+                if(node != null){
+                    queue4.add(node.val);
+                }
+            }
+            if(queue4.size() > 0){
+                stack.push(queue4);
+            }
+            for(TreeNode node: queue1){
+                if(node != null){
+                    queue2.add(node.left);
+                    queue2.add(node.right);
+                }
+            }
+            tmp = queue1;
+            queue1 = queue2;
+            queue2 = tmp;
+            queue2.clear();
+        }
+        while (!stack.isEmpty()){
+            queue3.add(stack.pop());
+        }
+        return queue3;
+    }
+
+    public List<List<Integer>> levelOrderBottom2(TreeNode root) {
+        if(root == null){
+            return new LinkedList<>();
+        }
+        Queue<TreeNode> queue  = new LinkedList<>();
+        List<List<Integer>> queue2 = new LinkedList<>();
+        Stack<List<Integer>> stack = new Stack<>();
+        queue.add(root);
+        while (!queue.isEmpty()){
+            int size = queue.size();
+            List<Integer> tem = new LinkedList<>();
+            for(int i=0; i<size; i++){
+                TreeNode node = queue.poll();
+                if(node != null){
+                    tem.add(node.val);
+                    queue.add(node.left);
+                    queue.add(node.right);
+                }
+            }
+            if(tem.size()>0){
+                stack.push(tem);
+            }
+        }
+        while (!stack.isEmpty()){
+            queue2.add(stack.pop());
+        }
+        return queue2;
     }
 
 }
