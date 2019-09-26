@@ -22,8 +22,11 @@ public class Solution {
 //            System.out.println("test "+nums1[i]);
 //        }
 //        int[] nums = new int[]{7,1,5,3,6,4};
-//        maxProfit1(nums);
-        System.out.println(lengthOfLongestSubstring("dvdf"));
+//        maxProfit1(nums);2,2,1
+//        System.out.println(lengthOfLongestSubstring("dvdf"));
+//        System.out.println(lastSubstring("leetcode"));
+                int[] nums = new int[]{4,1,2,1,2};
+        System.out.println(singleNumber(nums));
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -864,6 +867,19 @@ public class Solution {
         }
         return max;
     }
+    /*
+    Example 1:
+
+    Input: "abcabcbb"
+    Output: 3
+    Explanation: The answer is "abc", with the length of 3.
+
+    Example 2:
+
+    Input: "bbbbb"
+    Output: 1
+    Explanation: The answer is "b", with the length of 1.
+     */
 
     public static int lengthOfLongestSubstring(String s) {
         char[] ar = s.toCharArray();
@@ -922,6 +938,17 @@ public class Solution {
         return max;
     }
 
+    /*
+    Given the sorted array: [-10,-3,0,5,9],
+
+    One possible answer is: [0,-3,9,-10,null,5], which represents the following height balanced BST:
+
+          0
+         / \
+       -3   9
+       /   /
+     -10  5
+     */
     public TreeNode sortedArrayToBST(int[] nums) {
         if(nums.length == 0){
             return null;
@@ -957,6 +984,7 @@ public class Solution {
         }
         return Math.max(left, right)+1;
     }
+
     public int minDepth1(TreeNode root) {
         if(root == null){
             return 0;
@@ -991,6 +1019,17 @@ public class Solution {
         return min;
     }
 
+    /*
+     Given the below binary tree and sum = 22,
+          5
+         / \
+        4   8
+       /   / \
+      11  13  4
+     /  \      \
+    7    2      1
+    return true, as there exist a root-to-leaf path 5->4->11->2 which sum is 22.
+     */
     public boolean hasPathSum1(TreeNode root, int sum) {
         if(root == null) return false;
         if(isLeaf(root) && root.val == sum ) return true;
@@ -1031,5 +1070,49 @@ public class Solution {
             }
         }
         return flag ;
+    }
+
+    public static String lastSubstring(String s) {
+        return "";
+    }
+
+    public static int singleNumber(int[] nums) {
+        int single = 0;
+        for(int i=0;i<nums.length;i= i+1){
+            single = nums[i]^single;
+        }
+        return single;
+    }
+
+    /*
+    Example 1:
+
+    Input: [2,2,1]
+    Output: 1
+     */
+    public boolean hasCycle1(ListNode head) {
+        ListNode currF = head;
+        ListNode currS = head;
+        while (currS != null && currS.next != null){
+            currF = currF.next;
+            currS = currS.next.next;
+            if(currF == currS){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasCycle2(ListNode head) {
+        Set<ListNode> nodesSeen = new HashSet<>();
+        while (head != null) {
+            if (nodesSeen.contains(head)) {
+                return true;
+            } else {
+                nodesSeen.add(head);
+            }
+            head = head.next;
+        }
+        return false;
     }
 }
