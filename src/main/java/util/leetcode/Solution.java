@@ -13,14 +13,17 @@ public class Solution {
 //        System.out.println(searchInsert2(new int[]{1,2,4,5},6));
 //        System.out.println(maxSubArray1(new int[]{-2,1,-3,4,-1,2,1,-5,4}));
 //        System.out.println(mySqrt(110));
-        int[] nums1 = new int[]{1,2,3,0,0,0};
-        int m = 3;
-        int[] nums2 = new int[]{2,5,6};
-        int n = 3;
-        merge2(nums1,m,nums2,n);
-        for(int i=0;i<nums1.length;i++){
-            System.out.println("test "+nums1[i]);
-        }
+//        int[] nums1 = new int[]{1,2,3,0,0,0};
+//        int m = 3;
+//        int[] nums2 = new int[]{2,5,6};
+//        int n = 3;
+//        merge2(nums1,m,nums2,n);
+//        for(int i=0;i<nums1.length;i++){
+//            System.out.println("test "+nums1[i]);
+//        }
+//        int[] nums = new int[]{7,1,5,3,6,4};
+//        maxProfit1(nums);
+        System.out.println(lengthOfLongestSubstring("dvdf"));
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -102,6 +105,34 @@ public class Solution {
             cu.next = c;
         }
         return h;
+    }
+
+    public static ListNode addTwoNumbers2(ListNode l1, ListNode l2) {
+        ListNode f = l1;
+        ListNode s = l2;
+        int carray = 0;
+        ListNode head = null;
+        ListNode curr = null;
+        while (f != null || s!= null){
+            int f1 = f!=null?f.val:0;
+            int s1 = s!=null?s.val:0;
+            int total = f1+s1+carray;
+            int yu = total%10;
+            carray = total/10;
+            if(head == null || curr == null){
+                head = new ListNode(yu);
+                curr = head;
+            }else {
+                curr.next =  new ListNode(yu);
+                curr = curr.next;
+            }
+            if(f!=null) f=f.next;
+            if(s!=null) s=s.next;
+        }
+        if(carray>0){
+            curr.next = new ListNode(carray);
+        }
+        return head;
     }
 
     public static int reverse1(int x) {
@@ -627,7 +658,9 @@ public class Solution {
         if(root == null){
             return 0;
         }
-        return Math.max(maxDepth(root.left)+1, maxDepth(root.right)+1);
+        int left  = maxDepth(root.left);
+        int right = maxDepth(root.right);
+        return Math.max(left+1, right+1);
     }
 
     public int maxDepth2(TreeNode root) {
@@ -689,6 +722,16 @@ public class Solution {
         return h;
     }
 
+    /*
+    For example:
+    Given binary tree [3,9,20,null,null,15,7],
+        3
+       / \
+      9  20
+        /  \
+       15   7
+    */
+    // BFS
     public List<List<Integer>> levelOrderBottom(TreeNode root) {
         if(root == null){
             return new LinkedList<>();
@@ -696,63 +739,297 @@ public class Solution {
         List<TreeNode> queue1  = new LinkedList<>();
         List<TreeNode> queue2 = new LinkedList<>();
         List<List<Integer>> queue3 = new LinkedList<>();
-        Stack<List<Integer>> stack = new Stack<>();
         List<TreeNode> tmp;
         queue1.add(root);
         while (!queue1.isEmpty()){
             List<Integer> queue4 = new LinkedList<>();
             for(TreeNode node: queue1){
-                if(node != null){
-                    queue4.add(node.val);
-                }
-            }
-            if(queue4.size() > 0){
-                stack.push(queue4);
+                queue4.add(node.val);
             }
             for(TreeNode node: queue1){
-                if(node != null){
+                if(node.left !=null){
                     queue2.add(node.left);
+                }
+                if(node.right !=null){
                     queue2.add(node.right);
                 }
             }
+            queue3.add(0,queue4);
             tmp = queue1;
             queue1 = queue2;
             queue2 = tmp;
             queue2.clear();
         }
-        while (!stack.isEmpty()){
-            queue3.add(stack.pop());
-        }
         return queue3;
     }
 
-    public List<List<Integer>> levelOrderBottom2(TreeNode root) {
+    // BFS
+    public List<List<Integer>> levelOrderBottom2(TreeNode root) { // BFS
         if(root == null){
             return new LinkedList<>();
         }
         Queue<TreeNode> queue  = new LinkedList<>();
-        List<List<Integer>> queue2 = new LinkedList<>();
-        Stack<List<Integer>> stack = new Stack<>();
+        List<List<Integer>> result = new LinkedList<>();
         queue.add(root);
         while (!queue.isEmpty()){
             int size = queue.size();
             List<Integer> tem = new LinkedList<>();
             for(int i=0; i<size; i++){
                 TreeNode node = queue.poll();
-                if(node != null){
-                    tem.add(node.val);
+                tem.add(node.val);
+                if(node.left !=null){
                     queue.add(node.left);
+                }
+                if(node.right !=null){
                     queue.add(node.right);
                 }
             }
-            if(tem.size()>0){
-                stack.push(tem);
-            }
+            result.add(0, tem);
         }
-        while (!stack.isEmpty()){
-            queue2.add(stack.pop());
-        }
-        return queue2;
+        return result;
     }
 
+    // DFS
+    public List<List<Integer>> levelOrderBottom3(TreeNode root) {
+        List<List<Integer>> wrapList = new LinkedList<>();
+        levelMaker(wrapList, root, 0);
+        return wrapList;
+    }
+
+    public void levelMaker(List<List<Integer>> list, TreeNode root, int level) {
+        if(root == null) return;
+        if(level >= list.size()) {
+            list.add(0, new LinkedList<Integer>());
+        }
+        levelMaker(list, root.left, level+1);
+        levelMaker(list, root.right, level+1);
+        list.get(list.size()-level-1).add(root.val);
+    }
+
+    /*
+    Input: [7,1,5,3,6,4]
+    Output: 7
+    Explanation: Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
+                 Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
+     */
+    public static int maxProfit1(int[] prices) {
+        return calculate(prices, 0);
+    }
+
+    public static int calculate(int prices[], int s) {
+        if (s >= prices.length)
+            return 0;
+        int max = 0;
+        for (int start = s; start < prices.length; start++) {
+            int maxprofit = 0;
+            for (int i = start + 1; i < prices.length; i++) {
+                if (prices[start] < prices[i]) {
+                    int profit = calculate(prices, i + 1) + prices[i] - prices[start];
+                    if (profit > maxprofit)
+                        maxprofit = profit;
+                }
+            }
+            if (maxprofit > max)
+                max = maxprofit;
+        }
+        return max;
+    }
+
+
+    public int maxProfit2(int[] prices) {
+        int max = 0;
+        for(int i= 1;i<prices.length;i++){
+            if(prices[i] - prices[i-1] > 0){
+                max = max + (prices[i] - prices[i-1]);
+            }
+        }
+        return max;
+    }
+
+    public int maxProfit3(int[] prices) {
+        int max = 0;
+        int low;
+        int high;
+        int i=0;
+        while (i<prices.length-1){
+            while (i<prices.length-1 && prices[i] >= prices[i+1]){
+                i++;
+            }
+            low = prices[i];
+            while (i<prices.length-1 && prices[i] <= prices[i+1]){
+                i++;
+            }
+            high = prices[i];
+            max = max + high -low;
+        }
+        return max;
+    }
+
+    public static int lengthOfLongestSubstring(String s) {
+        char[] ar = s.toCharArray();
+        int le = ar.length;
+        HashSet<Character> set = new HashSet<>();
+        int max = 0;
+        for(int i=0;i<le;i++){
+            int m = 0;
+            int tem = 0;
+            for(int j = i;j<le;){
+                boolean ce = set.contains(ar[j]);
+                if(!ce){
+                    set.add(ar[j]);
+                    tem++;
+                    j++;
+                }else {
+                    m = Math.max(m,tem);
+                    tem=0;
+                    set.clear();
+                }
+            }
+            set.clear();
+            m   = Math.max(m,tem);
+            max = Math.max(max, m);
+        }
+        return max;
+    }
+
+    public static int lengthOfLongestSubstring2(String s) {
+        int left = 0;
+        int right = 0;
+        int max = 0;
+        int length = s.length();
+        HashSet<Character> set = new HashSet<>();
+        while (left < length && right < length){
+            if(!set.contains(s.charAt(right))){
+                set.add(s.charAt(right++));
+                max = Math.max(right - left, max);
+            }else {
+                set.remove(s.charAt(left++));
+            }
+        }
+        return max;
+    }
+
+    public static int lengthOfLongestSubstring3(String s) {
+        int max = 0;
+        int length = s.length();
+        HashMap<Character, Integer> map = new HashMap<>();
+        for(int left=0,right=0;right<length;right++){
+            Integer index = map.get(s.charAt(right));
+            left = Math.max(index==null?0:index, left);
+            map.put(s.charAt(right), right+1);
+            max = Math.max(max, right-left+1);
+        }
+        return max;
+    }
+
+    public TreeNode sortedArrayToBST(int[] nums) {
+        if(nums.length == 0){
+            return null;
+        }
+        return helper2(nums,0, nums.length);
+    }
+
+    public TreeNode helper2(int[] nums, int low, int high) {
+        if(low>high){
+            return null;
+        }
+        int middle = low + (high-low)/2;
+        TreeNode node = new TreeNode(nums[middle]);
+        node.left  = helper2(nums, low, middle-1);
+        node.right = helper2(nums, middle+1, high);
+        return node;
+    }
+
+    static boolean flag = true;
+    public boolean isBalanced(TreeNode root) {
+        maxDepth1(root);
+        return flag;
+    }
+
+    public int maxDepth1(TreeNode root) {
+        if(root == null || !flag) {
+            return 0;
+        }
+        int left  = maxDepth1(root.left);
+        int right = maxDepth1(root.right);
+        if(left - right > 1 || right - left > 1){
+            flag = false;
+        }
+        return Math.max(left, right)+1;
+    }
+    public int minDepth1(TreeNode root) {
+        if(root == null){
+            return 0;
+        }
+        if(root.left == null)  return (minDepth1(root.right)+1);
+        if(root.right == null) return (minDepth1(root.left )+1);
+        return Math.min(minDepth1(root.left), minDepth1(root.right))+1;
+    }
+
+    public int minDepth2(TreeNode root) {
+        if(root == null) return 0;
+        TreeNode curr = root;
+        int min = 0;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(curr);
+        while (!queue.isEmpty()){
+            min++;
+            int size = queue.size();
+            for(int i=0;i<size;i++){
+                TreeNode node = queue.poll();
+                if(node.left == null && node.right == null){
+                    return min;
+                }
+                if(node.left != null ){
+                    queue.add(node.left);
+                }
+                if(node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+        }
+        return min;
+    }
+
+    public boolean hasPathSum1(TreeNode root, int sum) {
+        if(root == null) return false;
+        if(isLeaf(root) && root.val == sum ) return true;
+        return hasPathSum1(root.left, sum - root.val) || hasPathSum1(root.right, sum - root.val);
+    }
+
+    public boolean isLeaf(TreeNode node){
+        if(node.left == null && node.right == null){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasPathSum2(TreeNode root, int sum) {
+        if(root == null) return false;
+        boolean flag = false;
+        TreeNode curr = root;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(curr);
+        while (!queue.isEmpty()){
+            int size = queue.size();
+            for(int i=0;i<size;i++){
+                if(flag){
+                    return true;
+                }
+                TreeNode node = queue.poll();
+                if(node.left == null && node.right == null){
+                    flag = (node.val == sum);
+                }
+                if(node.left != null){
+                    node.left.val = node.val+node.left.val;
+                    queue.add(node.left);
+                }
+                if(node.right != null) {
+                    node.right.val = node.val+node.right.val;
+                    queue.add(node.right);
+                }
+            }
+        }
+        return flag ;
+    }
 }
