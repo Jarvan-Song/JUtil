@@ -26,7 +26,9 @@ public class Solution {
 //        System.out.println(lengthOfLongestSubstring("dvdf"));
 //        System.out.println(lastSubstring("leetcode"));
                 int[] nums = new int[]{4,1,2,1,2};
-        System.out.println(singleNumber(nums));
+//        System.out.println(singleNumber(nums));
+        System.out.println(isPalindrome("0p"));
+        System.out.println(getSum(997,24));
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -1115,4 +1117,331 @@ public class Solution {
         }
         return false;
     }
+
+    /*
+    Example:
+
+    Input:
+    [
+      1->4->5,
+      1->3->4,
+      2->6
+    ]
+    Output: 1->1->2->3->4->4->5->6
+     */
+    public ListNode mergeKLists1(ListNode[] lists) {
+        ListNode res = new ListNode(0);
+        ListNode curr = res;
+        Map<ListNode, Integer> map = minNode(lists);
+        while (map != null && map.size() > 0){
+            ListNode min = null;
+            Set<ListNode> set = map.keySet();
+            for(ListNode node: set){
+                min = node;
+            }
+            curr.next = min;
+            curr = curr.next;
+            lists[map.get(min)] = min.next;
+            map = minNode(lists);
+        }
+        return res.next;
+    }
+
+    public Map<ListNode, Integer> minNode(ListNode[] lists){
+        if(lists.length == 0){
+            return null;
+        }
+        Map<ListNode, Integer> map = null;
+        ListNode min = null;
+        for(int i=0;i<lists.length;i++){
+            ListNode curr = lists[i];
+            if(min == null && curr != null){
+                if(map == null){
+                    map = new HashMap<>();
+                }
+                map.clear();
+                min = curr;
+                map.put(min, i);
+            }else if(min != null && curr != null){
+                if(map == null){
+                    map = new HashMap<>();
+                }
+                if(min.val > curr.val){
+                    map.clear();
+                    min = curr;
+                    map.put(min, i);
+                }
+            }
+        }
+        return map;
+    }
+
+    public ListNode mergeKLists2(ListNode[] lists) {
+        if(lists.length == 0){
+            return null;
+        }
+        ListNode res = new ListNode(0);
+        ListNode curr = res;
+        Queue<ListNode> queue = new PriorityQueue(lists.length, new Comparator<ListNode>() {
+            @Override
+            public int compare(ListNode o1, ListNode o2) {
+                if(o1.val > o2.val){
+                    return 1;
+                }else if(o1.val < o2.val){
+                    return -1;
+                }
+                return 0;
+            }
+        });
+        for(int i=0;i<lists.length;i++){
+            ListNode node = lists[i];
+            if(node != null){
+                queue.add(node);
+            }
+        }
+        ListNode poll = queue.poll();
+        while (poll != null){
+            curr.next = poll;
+            curr = curr.next;
+            if(poll.next != null){
+                queue.add(poll.next);
+            }
+            poll = queue.poll();
+        }
+        return res.next;
+    }
+
+    /*
+    Example:
+
+    Input: 5
+    Output:
+    [
+         [1],
+        [1,1],
+       [1,2,1],
+      [1,3,3,1],
+     [1,4,6,4,1]
+    ]
+     */
+    public List<List<Integer>> generate(int numRows) {
+        List<List<Integer>> res = new ArrayList<>();
+        if(numRows <= 0 ) return res;
+        List<Integer> prev = new ArrayList<>();
+        prev.add(1);
+        res.add(prev);
+        if(numRows == 1) return res;
+        for(int i=2;i<=numRows;i++){
+            List<Integer> curr = new ArrayList<>(i);
+            curr.add(1);
+            for(int j=0;j<prev.size()-1;j++){
+                curr.add(prev.get(j)+prev.get(j+1));
+            }
+            curr.add(1);
+            res.add(curr);
+            prev = curr;
+        }
+        return res;
+    }
+
+    public List<List<Integer>> generate2(int numRows) {
+        List<List<Integer>> res = new ArrayList<>();
+        return helper(numRows, res);
+    }
+
+    public List<List<Integer>> helper(int numRows, List<List<Integer>> res) {
+        if(numRows<=0) return res;
+        if(numRows == 1){
+            List<Integer> list = new ArrayList<>();
+            list.add(1);
+            res.add(list);
+            return res;
+        }
+        List<List<Integer>> lastRes = helper(numRows-1, res);
+        List<Integer> newList = new ArrayList<>();
+        newList.add(1);
+        List<Integer> lastList = lastRes.get(lastRes.size()-1);
+        for(int i=0; i<lastList.size() - 1; i++){
+            newList.add(lastList.get(i) + lastList.get(i+1));
+        }
+        newList.add(1);
+        res.add(newList);
+        return res;
+    }
+
+    public static boolean isPalindrome(String s) {
+        if(s == null || s.length() == 0) return true;
+        int left = 0;
+        int right = s.length()-1;
+        while (left <= right){
+            char l = s.charAt(left);
+            while (!isChar(l)){
+                left++;
+                if(left > right) break;
+                l = s.charAt(left);
+            }
+            char r = s.charAt(right);
+            while (!isChar(r) && left <= right){
+                right--;
+                if(left > right) break;
+                r = s.charAt(right);
+            }
+            if(!isSame(l,r)){
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+    }
+
+    public static boolean isSame(char l, char r){
+        if(((l+"").toLowerCase()).equals((r+"").toLowerCase())) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isChar(char r){
+        if( (r>=65 && r<= 90) || (r>=97 && r<= 122) || (r>=48 && r<=57)) return true;
+        return false;
+    }
+    /*
+        Calculate the sum of two integers a and b, but you are not allowed to use the operator + and -.
+        Example 1:
+        Input: a = 1, b = 2
+        Output: 3
+     */
+    public static int getSum(int a, int b) {
+        while (b>0){
+            int c = a^b;
+            b = (a&b)<<1;
+            a = c;
+        }
+        return a;
+    }
+
+    static class MinStack1 {
+        Stack<Integer> stack;
+        int min = Integer.MAX_VALUE;
+        public MinStack1() {
+            stack = new Stack<>();
+        }
+
+        public void push(int x) {
+            if(x <= min){
+                stack.push(min);
+                min = x;
+            }
+            stack.push(x);
+        }
+
+        public void pop() {
+            if(stack.pop() == min) {
+                min = stack.pop();
+            }
+        }
+
+        public int top() {
+            return stack.peek();
+        }
+
+        public int getMin() {
+            return min;
+        }
+    }
+
+    class MinStack2 {
+        private Node head;
+
+        public void push(int x) {
+            if(head == null)
+                head = new Node(x, x);
+            else
+                head = new Node(x, Math.min(x, head.min), head);
+        }
+
+        public void pop() {
+            head = head.next;
+        }
+
+        public int top() {
+            return head.val;
+        }
+
+        public int getMin() {
+            return head.min;
+        }
+
+        private class Node {
+            int val;
+            int min;
+            Node next;
+
+            private Node(int val, int min) {
+                this(val, min, null);
+            }
+
+            private Node(int val, int min, Node next) {
+                this.val = val;
+                this.min = min;
+                this.next = next;
+            }
+        }
+    }
+
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        HashSet<ListNode> set = new HashSet<>();
+        ListNode a = headA;
+        ListNode b = headB;
+        while (a != null){
+            set.add(a);
+            a = a.next;
+        }
+        while (b != null){
+            if(set.contains(b)){
+                return b;
+            }
+            b = b.next;
+        }
+        return null;
+    }
+
+    public ListNode getIntersectionNode2(ListNode headA, ListNode headB) {
+        ListNode a = headA;
+        ListNode b = headB;
+        int n1 = 0;
+        int n2 = 0;
+        while (a != null){
+            n1++;
+            a = a.next;
+        }
+        while (b != null){
+            n2++;
+            b = b.next;
+        }
+        int cha = Math.abs(n1 - n2);
+        if(n1 > n2){
+            while (cha>0){
+                headA = headA.next;
+                cha--;
+            }
+        }
+        if(n2 > n1){
+            while (cha>0){
+                headB = headB.next;
+                cha--;
+            }
+        }
+        while (headA != null && headB != null){
+            if(headA.hashCode() == headB.hashCode()){
+                return headA;
+            } else {
+                headA = headA.next;
+                headB = headB.next;
+            }
+        }
+        return null;
+    }
+
 }
