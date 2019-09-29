@@ -25,10 +25,12 @@ public class Solution {
 //        maxProfit1(nums);2,2,1
 //        System.out.println(lengthOfLongestSubstring("dvdf"));
 //        System.out.println(lastSubstring("leetcode"));
-                int[] nums = new int[]{4,1,2,1,2};
+//                int[] nums = new int[]{4,1,2,1,2};
 //        System.out.println(singleNumber(nums));
-        System.out.println(isPalindrome("0p"));
-        System.out.println(getSum(997,24));
+//        System.out.println(isPalindrome("0p"));
+//        System.out.println(getSum(997,24));
+//        System.out.println(minDistance("horse","ros"));
+//        System.out.println(countPrimes2(10));
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -1444,4 +1446,176 @@ public class Solution {
         return null;
     }
 
+    /*
+        Input: word1 = "horse", word2 = "ros"
+        Output: 3
+        Explanation:
+        horse -> rorse (replace 'h' with 'r')
+        rorse -> rose (remove 'r')
+        rose -> ros (remove 'e')
+     */
+
+    public static int minDistance(String word1, String word2) {
+        if(word1 == null && word2 == null){
+            return 0;
+        }
+        if(word1 == null){
+            return word2.length();
+        }
+        if(word2 == null){
+            return word1.length();
+        }
+        int[][] dp = new int[word1.length()+1][word2.length()+1];
+        for(int i=0;i<word1.length()+1;i++){
+            dp[i][0] = i;
+        }
+
+        for(int i=0;i<word2.length()+1;i++){
+            dp[0][i] = i;
+        }
+
+        for(int i=1;i<word1.length()+1;i++){
+            for(int j=1;j<word2.length()+1;j++){
+                if(word1.charAt(i-1) == word2.charAt(j-1)){
+                    dp[i][j] = dp[i-1][j-1];
+                }else {
+                    int add = dp[i][j-1]+1;
+                    int delete = dp[i-1][j]+1;
+                    int replace = dp[i-1][j-1]+1;
+                    int min = Math.min(add, delete);
+                    min = Math.min(min, replace);
+                    dp[i][j] = min;
+                }
+            }
+        }
+        return dp[word1.length()][word2.length()];
+    }
+
+    public void reverseString(char[] s) {
+        char temp;
+        for(int i=0;i<s.length/2;i++){
+            temp = s[i];
+            s[i] = s[s.length-1-i];
+            s[s.length-1-i] = temp;
+        }
+    }
+
+    /*
+    Example:
+    Input: 10
+    Output: 4
+    Explanation: There are 4 prime numbers less than 10, they are 2, 3, 5, 7.
+     */
+    public static int countPrimes1(int n) {
+        if(n <= 1) return 0;
+        int count = 0;
+        for(int i=2;i<n;i++){
+            boolean flag = false;
+            for(int j=2;j<= Math.sqrt(i);j++){
+                if(i%j==0){
+                    flag = true;
+                    break;
+                }
+            }
+            if(!flag) count++;
+        }
+        return count;
+    }
+
+    public static int countPrimes2(int n) {
+        if(n <= 1) return 0;
+        int count = 0;
+        boolean[] ar = new boolean[n+1];
+        for(int i=2;i<n;i++){
+            if(ar[i] == false){
+                count++;
+                for(int j = 2;i*j<n;j++){
+                    ar[i*j] = true;
+                }
+            }
+        }
+        return count;
+    }
+
+    /*
+        Input: [1,2,3,4,5,6,7] and k = 3
+        Output: [5,6,7,1,2,3,4]
+        Explanation:
+        rotate 1 steps to the right: [7,1,2,3,4,5,6]
+        rotate 2 steps to the right: [6,7,1,2,3,4,5]
+        rotate 3 steps to the right: [5,6,7,1,2,3,4]
+     */
+    public void rotate(int[] nums, int k) {
+        k %= nums.length;
+        reverse(nums, 0, nums.length - 1);
+        reverse(nums, 0, k - 1);
+        reverse(nums, k, nums.length - 1);
+    }
+
+    public void reverse(int[] nums, int start, int end) {
+        while (start < end) {
+            int temp = nums[start];
+            nums[start] = nums[end];
+            nums[end] = temp;
+            start++;
+            end--;
+        }
+    }
+
+    public void rotate2(int[] nums, int k) {
+        int[] a = new int[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            a[(i + k) % nums.length] = nums[i];
+        }
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = a[i];
+        }
+    }
+
+    public ListNode reverseList(ListNode head) {
+        ListNode curr = head;
+        ListNode prev = null;
+        while (curr !=null){
+            ListNode next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+
+    public void deleteNode(ListNode node) {
+        node.val = node.next.val;
+        node.next = node.next.next;
+    }
+
+    public static void moveZeroes1(int[] nums) {
+        int[] tem = new int[nums.length];
+        int count = 0;
+        for(int i=0;i<nums.length;i++){
+            if(nums[i]!=0){
+                tem[count]=nums[i];
+                count++;
+            }
+        }
+        for(int i=0;i<tem.length;i++){
+            if(tem[i]!=0){
+                nums[i] = tem[i];
+            }else {
+                nums[i]=0;
+            }
+        }
+    }
+
+    public static void moveZeroes2(int[] nums) {
+       for(int i=0,k=0;i<nums.length;i++){
+           if(nums[i]!=0){
+               nums[k]=nums[i];
+               if(i!=k){
+                   nums[i]=0;
+               }
+               k++;
+           }
+       }
+    }
 }
