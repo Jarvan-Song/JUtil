@@ -33,8 +33,9 @@ public class Solution {
 //        System.out.println(getSum(997,24));
 //        System.out.println(minDistance("horse","ros"));
 //        System.out.println(countPrimes2(10));
-        int[] nums = new int[]{-1, 0, 1, 2, -1, -4};
-        System.out.println(threeSum2(nums));
+        int[] nums = new int[]{2,2,1,1,1,2,2};
+//        System.out.println(threeSum2(nums));
+        System.out.println(majorityElement(nums));
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -1934,5 +1935,26 @@ public class Solution {
             }
         }
         return true;
+    }
+
+    public static int majorityElement(int[] nums) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for(Integer x: nums){
+            if(!map.containsKey(x)){
+                map.put(x, 1);
+            } else {
+                int w = map.get(x);
+                map.put(x, w+1);
+            }
+            if(map.get(x) > (nums.length/2)){
+                return x;
+            }
+        }
+        return -1;
+    }
+
+    public int majorityElement2(int[] nums) {
+        Arrays.sort(nums);
+        return nums[nums.length/2];
     }
 }
