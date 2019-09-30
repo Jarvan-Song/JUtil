@@ -1,5 +1,7 @@
 package util.leetcode;
 
+import com.sun.org.apache.regexp.internal.RE;
+
 import java.util.*;
 
 /**
@@ -31,6 +33,8 @@ public class Solution {
 //        System.out.println(getSum(997,24));
 //        System.out.println(minDistance("horse","ros"));
 //        System.out.println(countPrimes2(10));
+        int[] nums = new int[]{-1, 0, 1, 2, -1, -4};
+        System.out.println(threeSum2(nums));
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -1589,6 +1593,11 @@ public class Solution {
         node.next = node.next.next;
     }
 
+    /*
+    Example:
+    Input: [0,1,0,3,12]
+    Output: [1,3,12,0,0]
+     */
     public static void moveZeroes1(int[] nums) {
         int[] tem = new int[nums.length];
         int count = 0;
@@ -1617,5 +1626,313 @@ public class Solution {
                k++;
            }
        }
+    }
+
+    /*
+        Example 1:
+        Input: [3,0,1]
+        Output: 2
+     */
+    public int missingNumber1(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for(int i=0;i<nums.length;i++){
+            set.add(nums[i]);
+        }
+        for(int i=0;i<nums.length+1;i++){
+            if(!set.contains(i)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int missingNumber2(int[] nums) {
+        int miss = 0;
+        for(int i=0;i<nums.length;i++){
+            miss = miss^nums[i];
+        }
+        for(int i=0;i<nums.length+1;i++){
+            miss = miss^i;
+        }
+        return miss;
+    }
+
+    /*
+        Example:
+        Given array nums = [-1, 0, 1, 2, -1, -4],
+        A solution set is:
+        [
+          [-1, 0, 1],
+          [-1, -1, 2]
+        ]
+     */
+    public static List<List<Integer>> threeSum1(int[] nums) {
+        List<List<Integer>> res = new LinkedList<>();
+        for(int i=0;i<nums.length;i++){
+            for(int j=i;j<nums.length;j++){
+                for(int k=j;k<nums.length;k++){
+                    if(i != j && j != k){
+                        if(nums[i]+nums[j]+nums[k]==0){
+                            List<Integer> temp = new LinkedList<>();
+                            temp.add(nums[i]);
+                            temp.add(nums[j]);
+                            temp.add(nums[k]);
+                            boolean add = true;
+                            for(List<Integer> list: res){
+                                if(isSam(list, temp)){
+                                    add = false;
+                                    break;
+                                }
+                            }
+                            if(add){
+                                res.add(temp);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    public static boolean isSam(List<Integer> left, List<Integer> right){
+        for(Integer a: left){
+            if(!right.contains(a)){
+                return false;
+            }
+        }
+        for(Integer a: right){
+            if(!left.contains(a)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static List<List<Integer>> threeSum2(int[] nums) {
+        List<List<Integer>> res = new LinkedList<>();
+        Arrays.sort(nums);
+        for(int i=0;i<nums.length - 2;i++){
+            int fix = nums[i];
+            if(fix>0) continue;
+            if(i>0 && nums[i] == nums[i-1]) continue;
+            int left = i+1;
+            int right = nums.length-1;
+            int target = 0 - fix;
+            while (left < right){
+                int sum = nums[left] + nums[right];
+                if(sum == target){
+                    List<Integer> temp = new LinkedList<>();
+                    temp.add(fix);
+                    temp.add(nums[left]);
+                    temp.add(nums[right]);
+                    res.add(temp);
+                    while (left<right && nums[left]==nums[left+1]){
+                        left++;
+                    }
+                    while (left<right && nums[right]==nums[right-1]){
+                        right--;
+                    }
+                    left++;
+                    right--;
+                }else if(sum > target){
+                    right--;
+                }else {
+                    left++;
+                }
+            }
+        }
+        return res;
+    }
+
+    /*
+        Example 1:
+        Input: 00000010100101000001111010011100
+        Output: 00111001011110000010100101000000
+        Explanation: The input binary string 00000010100101000001111010011100 represents the unsigned integer 43261596, so return 964176192 which its binary representation is 00111001011110000010100101000000.
+     */
+    public int reverseBits(int n) {
+        int result = 0;
+        for(int i=0;i<32;i++){
+            result = result << 1;
+            result = result + (n&1);
+            n = n >> 1;
+        }
+        return result;
+    }
+
+    /*
+        Examples:
+        s = "leetcode"
+        return 0.
+
+        s = "loveleetcode",
+        return 2.
+     */
+    public int firstUniqChar1(String s) {
+        Set<Character> set = new HashSet<>();
+        char[] ar = s.toCharArray();
+        for(int i=0;i<ar.length;i++){
+            boolean flag = false;
+            char target = ar[i];
+            if(!set.contains(target)){
+                for(int j=i+1;j<ar.length;j++){
+                    if(set.contains(target) || target == ar[j]){
+                        flag = true;
+                        break;
+                    }
+                }
+            }else {
+                flag = true;
+            }
+            set.add(target);
+            if(!flag) return i;
+        }
+        return -1;
+    }
+
+    public int firstUniqChar2(String s) {
+        List<Character> list = new ArrayList<>(s.length());
+        for(int i=0;i<s.length();i++) {
+            list.add(i,s.charAt(i));
+        }
+        for(int i=0;i<s.length();i++) {
+            list.remove(i);
+            char target = s.charAt(i);
+            if(!list.contains(target)){
+                return i;
+            }
+            list.add(i,target);
+        }
+        return -1;
+    }
+
+    public int firstUniqChar3(String s) {
+        HashMap<Character, Integer> count = new HashMap<>();
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            Integer x = count.get(c);
+            count.put(c, x==null?1:(x + 1));
+        }
+        for (int i = 0; i < n; i++) {
+            if (count.get(s.charAt(i)) == 1)
+                return i;
+        }
+        return -1;
+    }
+
+    /*
+        Example 1:
+        Input: [1,2,3,1]
+        Output: true
+     */
+    public boolean containsDuplicate1(int[] nums) {
+        HashMap<Integer, Integer> list = new HashMap<>();
+        for(Integer i: nums){
+            if(list.containsKey(i)){
+                return true;
+            }else {
+                list.put(i, 1);
+            }
+        }
+        return false;
+    }
+
+    /*
+        Example 2:
+        Input: 1->2->2->1
+        Output: true
+     */
+
+    public boolean isPalindrome(ListNode head) {
+        int count = 0;
+        ListNode curr = head;
+        ListNode first = head;
+        ListNode second = head;
+        while (curr != null){
+            count++;
+            curr = curr.next;
+        }
+        int middle = 0;
+        if(count%2==0) {
+            middle=count/2;
+        }else {
+            middle = (count+1)/2;
+        }
+        int middle2 = middle;
+        second = head;
+        while (middle != 0){
+            second = second.next;
+            middle--;
+        }
+        second = helper4(second);
+        ListNode curr_s = second;
+        boolean flag = true;
+        while (first != null && second != null){
+            if(first.val != second.val){
+                flag = false;
+                break;
+            }
+            first = first.next;
+            second = second.next;
+        }
+        second = helper4(curr_s);
+        ListNode x = head;
+        while (--middle2 != 0){
+            x = x.next;
+        }
+        x.next = second;
+        return flag;
+    }
+
+    public ListNode helper4(ListNode head){
+        ListNode curr = head;
+        ListNode prev = null;
+        while (curr != null){
+            ListNode next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+
+    /*
+        Example 1:
+        Input: s = "anagram", t = "nagaram"
+        Output: true
+        Example 2:
+
+        Input: s = "rat", t = "car"
+        Output: false
+     */
+
+    public boolean isAnagram1(String s, String t) {
+        if (s.length() != t.length()) {
+            return false;
+        }
+        char[] str1 = s.toCharArray();
+        char[] str2 = t.toCharArray();
+        Arrays.sort(str1);
+        Arrays.sort(str2);
+        return Arrays.equals(str1, str2);
+    }
+
+    public boolean isAnagram2(String s, String t) {
+        if (s.length() != t.length()) {
+            return false;
+        }
+        int[] counter = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            counter[s.charAt(i) - 'a']++;
+            counter[t.charAt(i) - 'a']--;
+        }
+        for (int count : counter) {
+            if (count != 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }
