@@ -1958,6 +1958,23 @@ public class Solution {
         return nums[nums.length/2];
     }
 
+    /*
+    Example:
+    Input:
+
+         4
+       /   \
+      2     7
+     / \   / \
+    1   3 6   9
+    Output:
+
+         4
+       /   \
+      7     2
+     / \   / \
+    9   6 3   1
+     */
     public TreeNode invertTree1(TreeNode root) {
         TreeNode curr = root;
         if(curr == null){
@@ -1989,5 +2006,50 @@ public class Solution {
             }
         }
         return root;
+    }
+
+    /*
+    Input: [1,2,3,1]
+    Output: 4
+    Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
+                 Total amount you can rob = 1 + 3 = 4.
+     */
+    public int rob(int[] nums) {
+        if(nums.length == 0) return 0;
+        if(nums.length == 1) return nums[0];
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        dp[1] = Math.max(nums[0], nums[1]);
+        if(nums.length == 2) return dp[1];
+        for(int i=2;i<nums.length;i++){
+            dp[i] = Math.max(dp[i-2]+nums[i], dp[i-1]);
+        }
+        return dp[nums.length -1 ];
+    }
+
+    public int pathSum(TreeNode root, int sum) {
+        int count = 0;
+        if(root == null) return count;
+        TreeNode curr = root;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(curr);
+        while (!queue.isEmpty()){
+            int size = queue.size();
+            for(int i=0;i<size;i++){
+                TreeNode node = queue.poll();
+                if(node.left == null && node.right == null && node.val == sum){
+                    count ++;
+                }
+                if(node.left != null){
+                    node.left.val = node.val+node.left.val;
+                    queue.add(node.left);
+                }
+                if(node.right != null) {
+                    node.right.val = node.val+node.right.val;
+                    queue.add(node.right);
+                }
+            }
+        }
+        return count ;
     }
 }
