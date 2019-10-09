@@ -1957,4 +1957,37 @@ public class Solution {
         Arrays.sort(nums);
         return nums[nums.length/2];
     }
+
+    public TreeNode invertTree1(TreeNode root) {
+        TreeNode curr = root;
+        if(curr == null){
+            return root;
+        }
+        TreeNode left  = curr.left;
+        TreeNode right = curr.right;
+        curr.left  = right;
+        curr.right = left;
+        invertTree1(curr.left);
+        invertTree1(curr.right);
+        return root;
+    }
+
+    public TreeNode invertTree2(TreeNode root) {
+        TreeNode curr;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        if(root == null) return root;
+        while (!queue.isEmpty()){
+            int size = queue.size();
+            for(int i=0;i<size;i++){
+                curr = queue.poll();
+                TreeNode temp = curr.left;
+                curr.left = curr.right;
+                curr.right = temp;
+                if(curr.left != null) queue.add(curr.left);
+                if(curr.right != null) queue.add(curr.right);
+            }
+        }
+        return root;
+    }
 }
