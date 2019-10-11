@@ -40,7 +40,7 @@ public class Solution {
         System.out.println(Math.log(45) / Math.log(3));
         System.out.println(Math.log(  99999.999999999999999999999)/Math.log(99999.9999999999));
         System.out.println(Math.log10(99999.999999999999999999999)/Math.log10(99999.9999999999));
-        System.out.println(Math.pow(3, 19));
+        System.out.println(isHappy(19));
 
     }
 
@@ -2075,6 +2075,9 @@ public class Solution {
         return list;
     }
 
+    /*
+     判断是否是3的倍数
+     */
     public static boolean isPowerOfThree(int n) {
         if(n==0) return false;
         while (n%3==0){
@@ -2109,4 +2112,107 @@ public class Solution {
         return array;
     }
 
+    /*
+    Example:
+
+    Input: 19
+    Output: true
+    Explanation:
+    12 + 92 = 82
+    82 + 22 = 68
+    62 + 82 = 100
+    12 + 02 + 02 = 1
+     */
+    public static boolean isHappy(int n) {
+        Set<Integer> set = new HashSet<>();
+        set.add(n);
+        int sum;
+        while (true){
+            sum = 0;
+            while (n > 0){
+                int yu = n % 10;
+                sum = sum + yu * yu;
+                n = n / 10;
+            }
+            if(sum == 1){
+                return true;
+            }
+            if(set.contains(sum)){
+                break;
+            }
+            set.add(sum);
+            n = sum;
+        }
+        return false;
+    }
+
+    boolean isHappy2(int n) {
+        int slow, fast;
+        slow = fast = n;
+        do {
+            slow = digitSquareSum(slow);
+            fast = digitSquareSum(fast);
+            if (fast == 1) return true;
+            fast = digitSquareSum(fast);
+            if (fast == 1) return true;
+        } while (slow != fast);
+        return false;
+    }
+
+    int digitSquareSum(int n) {
+        int sum = 0, tmp;
+        while (n != 0) {
+            tmp = n % 10;
+            sum += tmp * tmp;
+            n /= 10;
+        }
+        return sum;
+    }
+
+    /*
+        计算二进制1个数
+     */
+    // you need to treat n as an unsigned value
+    public int hammingWeight(int n) {
+        int count = 0;
+        for(int i=0;i<32;i++){
+            int flag  =  n & 1;
+            n = n >> 1;
+            count = count + flag;
+        }
+        return count;
+    }
+
+    /*
+    Example 1:
+
+    Input: 3
+    Output: 0
+    Explanation: 3! = 6, no trailing zero.
+    Example 2:
+
+    Input: 5
+    Output: 1
+    Explanation: 5! = 120, one trailing zero.
+     */
+    public int trailingZeroes(int n) {
+        int count = 0;
+        while (n != 0) {
+            int tmp = n / 5;
+            count += tmp;
+            n = tmp;
+        }
+        return count;
+    }
+
+    public int titleToNumber(String s) {
+        double sum = 0;
+        double j = 0;
+        double x = 26;
+        for(int i= s.length()-1;i>=0;i--){
+            sum = sum + (s.charAt(i)- 'A' + 1) * Math.pow(x, j);
+            j++;
+        }
+        return (int)sum;
+    }
 }
