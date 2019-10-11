@@ -36,6 +36,12 @@ public class Solution {
         int[] nums = new int[]{2,2,1,1,1,2,2};
 //        System.out.println(threeSum2(nums));
         System.out.println(majorityElement(nums));
+        System.out.println(isPowerOfThree(45));
+        System.out.println(Math.log(45) / Math.log(3));
+        System.out.println(Math.log(  99999.999999999999999999999)/Math.log(99999.9999999999));
+        System.out.println(Math.log10(99999.999999999999999999999)/Math.log10(99999.9999999999));
+        System.out.println(Math.pow(3, 19));
+
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -2052,4 +2058,55 @@ public class Solution {
         }
         return count ;
     }
+
+    public List<String> fizzBuzz(int n) {
+        List<String> list = new LinkedList<>();
+        for(int i=1;i<=n;i++){
+            if(i%15==0){
+                list.add("FizzBuzz");
+            }else if(i%5==0){
+                list.add("Buzz");
+            }else if(i%3==0){
+                list.add("Fizz");
+            }else {
+                list.add(i+"");
+            }
+        }
+        return list;
+    }
+
+    public static boolean isPowerOfThree(int n) {
+        if(n==0) return false;
+        while (n%3==0){
+            n = n/3;
+        }
+        return n == 1;
+    }
+
+    public int[] intersect(int[] nums1, int[] nums2) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        List<Integer> list = new LinkedList();
+        for(int i=0;i<nums1.length;i++){
+            Integer value = map.get(nums1[i]);
+            if(value == null){
+                map.put(nums1[i], 1);
+            }else {
+                map.put(nums1[i], value+1);
+            }
+        }
+        for(int i=0;i<nums2.length;i++){
+            Integer value = map.get(nums2[i]);
+            if(value != null && value > 0){
+                list.add(nums2[i]);
+                map.put(nums2[i], value-1);
+            }
+        }
+        int[] array = new int[list.size()];
+        int j=0;
+        for(Integer integer: list){
+            array[j++] = integer;
+        }
+        return array;
+    }
+
 }
