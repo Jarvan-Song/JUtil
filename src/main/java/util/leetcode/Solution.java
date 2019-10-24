@@ -2,6 +2,7 @@ package util.leetcode;
 
 import com.sun.org.apache.regexp.internal.RE;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -33,15 +34,18 @@ public class Solution {
 //        System.out.println(getSum(997,24));
 //        System.out.println(minDistance("horse","ros"));
 //        System.out.println(countPrimes2(10));
-        int[] nums = new int[]{2,2,1,1,1,2,2};
+        int[] nums = new int[]{1,2,2};
 //        System.out.println(threeSum2(nums));
-        System.out.println(majorityElement(nums));
-        System.out.println(isPowerOfThree(45));
-        System.out.println(Math.log(45) / Math.log(3));
-        System.out.println(Math.log(  99999.999999999999999999999)/Math.log(99999.9999999999));
-        System.out.println(Math.log10(99999.999999999999999999999)/Math.log10(99999.9999999999));
-        System.out.println(isHappy(19));
-
+//        System.out.println(majorityElement(nums));
+//        System.out.println(isPowerOfThree(45));
+//        System.out.println(Math.log(45) / Math.log(3));
+//        System.out.println(Math.log(  99999.999999999999999999999)/Math.log(99999.9999999999));
+//        System.out.println(Math.log10(99999.999999999999999999999)/Math.log10(99999.9999999999));
+//        System.out.println(isHappy(19));
+//        System.out.println(findUnsortedSubarray(nums));
+//        System.out.println(topKFrequent(nums, 2));
+//        System.out.println(subsets(nums));
+        System.out.println(findDuplicate(nums));
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -2015,10 +2019,10 @@ public class Solution {
     }
 
     /*
-    Input: [1,2,3,1]
-    Output: 4
-    Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
-                 Total amount you can rob = 1 + 3 = 4.
+        Input: [1,2,3,1]
+        Output: 4
+        Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3).
+                     Total amount you can rob = 1 + 3 = 4.
      */
     public int rob(int[] nums) {
         if(nums.length == 0) return 0;
@@ -2034,29 +2038,13 @@ public class Solution {
     }
 
     public int pathSum(TreeNode root, int sum) {
-        int count = 0;
-        if(root == null) return count;
-        TreeNode curr = root;
-        Queue<TreeNode> queue = new LinkedList<>();
-        queue.add(curr);
-        while (!queue.isEmpty()){
-            int size = queue.size();
-            for(int i=0;i<size;i++){
-                TreeNode node = queue.poll();
-                if(node.left == null && node.right == null && node.val == sum){
-                    count ++;
-                }
-                if(node.left != null){
-                    node.left.val = node.val+node.left.val;
-                    queue.add(node.left);
-                }
-                if(node.right != null) {
-                    node.right.val = node.val+node.right.val;
-                    queue.add(node.right);
-                }
-            }
-        }
-        return count ;
+        if(root == null) return 0;
+        return pathSumHelper(root, sum) +  pathSum(root.left, sum)+pathSum(root.right, sum);
+    }
+
+    public int pathSumHelper(TreeNode node, int sum) {
+        if(node == null) return 0;
+        return (node.val == sum ? 1:0) + pathSumHelper(node.left, sum - node.val) + pathSumHelper(node.right, sum - node.val);
     }
 
     public List<String> fizzBuzz(int n) {
@@ -2184,16 +2172,16 @@ public class Solution {
     }
 
     /*
-    Example 1:
+        Example 1:
 
-    Input: 3
-    Output: 0
-    Explanation: 3! = 6, no trailing zero.
-    Example 2:
+        Input: 3
+        Output: 0
+        Explanation: 3! = 6, no trailing zero.
+        Example 2:
 
-    Input: 5
-    Output: 1
-    Explanation: 5! = 120, one trailing zero.
+        Input: 5
+        Output: 1
+        Explanation: 5! = 120, one trailing zero.
      */
     public int trailingZeroes(int n) {
         int count = 0;
@@ -2214,5 +2202,611 @@ public class Solution {
             j++;
         }
         return (int)sum;
+    }
+
+    /*
+    Example:
+
+    Input:
+    [4,3,2,7,8,2,3,1]
+
+    Output:
+    [5,6]
+     */
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        for (int i = 0; i < nums.length; i++) {
+            int newIndex = Math.abs(nums[i]) - 1;
+
+            if (nums[newIndex] > 0) {
+                nums[newIndex] *= -1;
+            }
+        }
+        List<Integer> result = new LinkedList<Integer>();
+        for (int i = 1; i <= nums.length; i++) {
+
+            if (nums[i - 1] > 0) {
+                result.add(i);
+            }
+        }
+        return result;
+    }
+
+    /*
+    Example:
+    Given a binary tree
+          1
+         / \
+        2   3
+       / \
+      4   5
+      Return 3, which is the length of the path [4,2,1,3] or [5,2,1,3].
+     */
+    HashMap<TreeNode, Integer> hashMap1 = new HashMap<>();
+    public int diameterOfBinaryTree1(TreeNode root) {
+        if(root == null) return 0;
+        TreeNode curr = root;
+        HashMap<TreeNode, Integer> hashMap = new HashMap<>();
+        Queue<TreeNode> queue = new LinkedList();
+        queue.add(curr);
+        int max = 0;
+        while (!queue.isEmpty()){
+            int size = queue.size();
+            TreeNode node;
+            for(int i=0;i<size;i++){
+                node = queue.poll();
+                Integer dist = hashMap.get(node);
+                if(dist == null){
+                    dist = helper(node.left) + helper(node.right);
+                    hashMap.put(node, dist);
+                }
+                max = Math.max(max, dist);
+                if(node.left != null) queue.add(node.left);
+                if(node.right != null) queue.add(node.right);
+            }
+        }
+        return max;
+    }
+
+    public int diameterOfBinaryTree2(TreeNode root) {
+        if(root == null) return 0;
+        int left  = helper(root.left);
+        int right = helper(root.right);
+        int curr = left + right;
+        return Math.max(curr, Math.max(diameterOfBinaryTree2(root.left), diameterOfBinaryTree2(root.right)));
+    }
+
+    int max = 0;
+    public int diameterOfBinaryTree3(TreeNode root) {
+        helper2(root);
+        return max;
+    }
+
+    public int helper(TreeNode root) {
+        if(root == null) return 0;
+        Integer left  = hashMap1.get(root.left);
+        Integer right = hashMap1.get(root.right);
+        if(left == null){
+            left = helper(root.left);
+            hashMap1.put(root.left, left);
+        }
+        if(right == null){
+            right = helper(root.right);
+            hashMap1.put(root.right, right);
+        }
+        return 1 + Math.max(left, right);
+    }
+
+    public int helper2(TreeNode root) {
+        if(root == null) return 0;
+        Integer left  = hashMap1.get(root.left);
+        Integer right = hashMap1.get(root.right);
+        if(left == null){
+            left = helper2(root.left);
+            hashMap1.put(root.left, left);
+        }
+        if(right == null){
+            right = helper2(root.right);
+            hashMap1.put(root.right, right);
+        }
+        max = Math.max(max, left+right);
+        return 1 + Math.max(left, right);
+    }
+
+    /*
+    Example 1:
+
+    Input:
+        Tree 1                     Tree 2
+              1                         2
+             / \                       / \
+            3   2                     1   3
+           /                           \   \
+          5                             4   7
+    Output:
+    Merged tree:
+             3
+            / \
+           4   5
+          / \   \
+         5   4   7
+     */
+    public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+        if(t1 == null) return t2;
+        if(t2 == null) return t1;
+        t1.val = t1.val+ t2.val;
+        t1.left  = mergeTrees(t1.left, t2.left);
+        t2.right = mergeTrees(t1.right, t2.right);
+        return t1;
+    }
+
+    /*
+    Example 1:
+    Input: [2, 6, 4, 8, 10, 9, 15]
+    Output: 5
+    Explanation: You need to sort [6, 4, 8, 10, 9] in ascending order to make the whole array sorted in ascending order.
+    Note:
+    Then length of the input array is in range [1, 10,000].
+    The input array may contain duplicates, so ascending order here means <=.
+     */
+    public static int findUnsortedSubarray(int[] nums) {
+        int length = nums.length;
+        int[] copy = new int[length];
+        for(int i=0;i<length;i++){
+            copy[i]=nums[i];
+        }
+        Arrays.sort(nums);
+        int i = 0;
+        int j = length-1;
+        int start = -1;
+        int end  = -1;
+        while (i<length&&j<length&&i<j){
+            if(end !=-1 && start !=-1){
+                return end - start+1;
+            }
+            if(nums[i] != copy[i] && start == -1){
+                start=i;
+            }
+            if(nums[j] != copy[j] && end == -1){
+                end=j;
+            }
+            if(start == -1){
+                i++;
+            }
+            if(end == -1){
+                j--;
+            }
+        }
+        return 0;
+    }
+
+    public int findUnsortedSubarray2(int[] A) {
+        int n = A.length, beg = -1, end = -2, min = A[n-1], max = A[0];
+        for (int i=1;i<n;i++) {
+            max = Math.max(max, A[i]);
+            min = Math.min(min, A[n-1-i]);
+            if (A[i] < max) end = i;
+            if (A[n-1-i] > min) beg = n-1-i;
+        }
+        return end - beg + 1;
+    }
+
+    /*
+    Example 1:
+
+    Input: "babad"
+    Output: "bab"
+    Note: "aba" is also a valid answer.
+    Example 2:
+
+    Input: "cbbd"
+    Output: "bb"
+     */
+    int start =0;
+    int len = 0;
+    public String longestPalindrome(String s) {
+        if(s.length()<2) return s;
+        for(int i=0;i<s.length()-1;i++){
+            helper(s, i,i); //奇数
+            helper(s, i,i+1);//偶数
+        }
+        return s.substring(start, len+start+1);
+    }
+
+    public void helper(String s, int left, int right){
+        while (right<s.length()&&left>=0&&s.charAt(left) == s.charAt(right)){
+            left--;
+            right++;
+        }
+        right--;
+        left++;
+        if(right-left+1 > len){
+            start = left;
+            len = right-left;
+        }
+    }
+
+    /*
+    Example:
+
+    Input: [1,null,2,3]
+       1
+        \
+         2
+        /
+       3
+
+    Output: [1,3,2]
+     */
+    List<Integer> list_result = new LinkedList<>();
+    public List<Integer> inorderTraversal1(TreeNode root) {
+        if(root == null){
+            return list_result;
+        }
+        inorderTraversal1(root.left);
+        list_result.add(root.val);
+        inorderTraversal1(root.right);
+        return list_result;
+    }
+
+    public List<Integer> inorderTraversal2(TreeNode root) {
+        TreeNode node = root;
+        List<Integer> list = new LinkedList<>();
+        if(root == null) return list;
+        Stack<TreeNode> stack = new Stack<>();
+        while (!stack.isEmpty() || node != null){
+            if(node != null){
+                stack.push(node);
+                node = node.left;
+            }else {
+                TreeNode a = stack.pop();
+                list.add(a.val);
+                node = a.right;
+            }
+        }
+        return list;
+    }
+
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> list = new LinkedList<>();
+        if(root == null) return list;
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()){
+            TreeNode curr = stack.pop();
+            list.add(curr.val);
+            if(curr.right != null){
+                stack.push(curr.right);
+            }
+            if(curr.left != null){
+                stack.push(curr.left);
+            }
+        }
+        return list;
+    }
+
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> list = new LinkedList<>();
+        if(root == null) return list;
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+
+        return list;
+    }
+
+    /*
+        example:
+        Input: [1,2,3]
+        Output:
+        [
+          [1,2,3],
+          [1,3,2],
+          [2,1,3],
+          [2,3,1],
+          [3,1,2],
+          [3,2,1]
+        ]
+     */
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> lists = new LinkedList<>();
+        helper(nums, 0,  lists);
+        return lists;
+    }
+
+    public void helper(int[] a, int start,  List<List<Integer>> list){
+        if(start == a.length-1){
+            ArrayList<Integer> temp = new ArrayList<>();
+            for(int num: a){
+                temp.add(num);
+            }
+            list.add(temp);
+            return;
+        }
+        for(int i = start;i<a.length;i++){
+            swap(a, start, i);
+            helper(a,   start+1, list);
+            swap(a, start, i);
+        }
+    }
+
+    public void swap(int[] a, int i, int j){
+        int temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
+    public List<List<Integer>> permute2(int[] nums) {
+        List<List<Integer>> list = new ArrayList<>();
+        Arrays.sort(nums);
+        backtrackPermute2(list, new ArrayList<Integer>(), nums, 0);
+        return list;
+    }
+
+    private void backtrackPermute2(List<List<Integer>> list , List<Integer> tempList, int [] nums, int start){
+        if(tempList.size() == nums.length){
+            list.add(new ArrayList<>(tempList));
+        }else {
+            for(int i = 0; i < nums.length; i++){
+                if(tempList.contains(nums[i])) continue; // element already exists, skip
+                tempList.add(nums[i]);
+                backtrackPermute2(list, tempList, nums, i + 1);
+                tempList.remove(tempList.size() - 1);
+            }
+        }
+    }
+
+    public List<String> generateParenthesis(int n) {
+        List<String> list = new LinkedList<>();
+        helper(list, "", 0, 0, n);
+        return list;
+    }
+
+    public void helper(List<String> list, String str, int open, int close, int n){
+        if(str.length() == 2*n){
+            list.add(str);
+            return;
+        }
+        if(open < n){
+            helper(list, str+"(", open+1, close, n);
+        }
+        if(close < open){
+            helper(list, str+")", open, close+1, n);
+        }
+    }
+
+    public static List<Integer> topKFrequent(int[] nums, int k) {
+        HashMap<Integer,Integer> map1 = new HashMap();
+        for(int i=0;i<nums.length;i++){
+            Integer va = map1.get(nums[i]);
+            if(va!=null){
+                map1.put(nums[i], va+1);
+            }else {
+                map1.put(nums[i], 1);
+            }
+        }
+        List<Integer> list = new LinkedList<>();
+        for(int i=0;i<k;i++){
+            int[] max = new int[2];
+            for(Integer j: map1.keySet()){
+                if(map1.get(j) > max[0]){
+                    max[0] = map1.get(j);
+                    max[1] = j;
+                }
+            }
+            list.add(max[1]);
+            map1.remove(max[1]);
+        }
+        return list;
+    }
+
+    public int[] productExceptSelf(int[] nums) {
+        int[] array = new int[nums.length];
+        array[0]=1;
+        for(int i=1;i<array.length;i++){
+            array[i]=nums[i-1]*array[i-1];
+        }
+        int temp =1;
+        for(int i=array.length-1;i>=0;i--){
+            array[i]=array[i]*temp;
+            temp = temp*nums[i];
+        }
+        return array;
+    }
+    /*
+        Input: nums = [1,2,3]
+    Output:
+    [
+      [3],
+      [1],
+      [2],
+      [1,2,3],
+      [1,3],
+      [2,3],
+      [1,2],
+      []
+    ]
+     */
+
+    public static List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> list = new ArrayList<>();
+        Arrays.sort(nums);
+        backtrack(list, new ArrayList<Integer>(), nums, 0);
+        return list;
+    }
+
+    private static void backtrack(List<List<Integer>> list , List<Integer> tempList, int [] nums, int start){
+        list.add(new ArrayList<>(tempList));
+        for(int i = start; i < nums.length; i++){
+            tempList.add(nums[i]);
+            backtrack(list, tempList, nums, i + 1);
+            tempList.remove(tempList.size() - 1);
+        }
+    }
+
+    /*
+    Example 1:
+
+    Input: root = [3,1,4,null,2], k = 1
+       3
+      / \
+     1   4
+      \
+       2
+    Output: 1
+    Example 2:
+
+    Input: root = [5,3,6,2,4,null,null,1], k = 3
+           5
+          / \
+         3   6
+        / \
+       2   4
+      /
+     1
+    Output: 3
+     */
+    public int kthSmallest(TreeNode root, int k) {
+        if(root == null) return 0;
+        ArrayList<Integer> nums =  new ArrayList<>();
+        TreeNode curr = root;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(curr);
+        while (!queue.isEmpty()){
+            int size = queue.size();
+            for(int i =0;i<size;i++){
+                curr = queue.poll();
+                nums.add(curr.val);
+                if(curr.left != null){
+                    queue.add(curr.left);
+                }
+                if(curr.right != null){
+                    queue.add(curr.right);
+                }
+            }
+        }
+        Object[] a = nums.toArray();
+        Arrays.sort(a);
+        return (Integer)a[k-1];
+    }
+
+    public int kthSmallest2(TreeNode root, int k) {
+        if(root == null) return 0;
+        TreeNode curr = root;
+        Stack<TreeNode> stack = new Stack<>();
+        ArrayList<Integer> nums =  new ArrayList<>();
+        while (curr != null || !stack.isEmpty()){
+            if(curr != null){
+                stack.push(curr);
+                curr = curr.left;
+            }else {
+                curr = stack.pop();
+                nums.add(curr.val);
+                curr = curr.right;
+            }
+        }
+        return nums.get(k-1);
+    }
+
+    public int kthSmallest3(TreeNode root, int k) {
+        ArrayList<Integer> nums =  new ArrayList<>();
+        helper3(root, nums);
+        return nums.get(k-1);
+    }
+
+    private void helper3(TreeNode root, List<Integer> list){
+        if(root == null) return;
+        helper3(root.left, list);
+        list.add(root.val);
+        helper3(root.right, list);
+    }
+
+    /*
+        Example:
+
+    Input:
+    A = [ 1, 2]
+    B = [-2,-1]
+    C = [-1, 2]
+    D = [ 0, 2]
+
+    Output:
+    2
+
+    Explanation:
+    The two tuples are:
+    1. (0, 0, 0, 1) -> A[0] + B[0] + C[0] + D[1] = 1 + (-2) + (-1) + 2 = 0
+    2. (1, 1, 0, 0) -> A[1] + B[1] + C[0] + D[0] = 2 + (-1) + (-1) + 0 = 0
+     */
+    public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for(Integer a: A){
+            for(Integer b: B){
+                Integer w = map.get(a+b);
+                map.put(a+b, w==null?1:w+1);
+            }
+        }
+        int j=0;
+        for(Integer c: C){
+            for(Integer d: D){
+                Integer w = map.get(0-(c+d));
+                if(w !=null){
+                    j = j+w;
+                }
+            }
+        }
+        return j;
+    }
+
+
+    /*
+        Example 1:
+
+        Input: [1,3,4,2,2]
+        Output: 2
+        Example 2:
+
+        Input: [3,1,3,4,2]
+        Output: 3
+     */
+    public static int findDuplicate(int[] nums) {
+        int left = 1, right = nums.length-1;
+        while (left <= right){
+            int mid = left + (right-left)/2;
+            int num=0;
+            for(Integer a: nums){
+                if(a<=mid)num++;
+            }
+            if(num<=mid){
+                left = mid+1;
+            }else {
+                right = mid-1;
+            }
+        }
+        return left;
+    }
+
+    /*
+    Example 1:
+
+    Input: 2
+    Output: [0,1,1]
+    Example 2:
+
+    Input: 5
+    Output: [0,1,1,2,1,2]
+     */
+    public int[] countBits(int num) {
+        int[] f = new int[num + 1];
+        for (int i=1; i<=num; i++) f[i] = f[i >> 1] + (i%2);
+        return f;
+    }
+
+    public int[][] reconstructQueue(int[][] people) {
+        Arrays.sort(people, (p1, p2) -> {
+            return p1[0] == p2[0] ? p1[1] - p2[1] : p2[0] - p1[0];
+        });
+        LinkedList<int[]> list = new LinkedList<>();
+        for (int i = 0; i < people.length; i++)
+            list.add(people[i][1], people[i]);
+        return list.toArray(people);
     }
 }
