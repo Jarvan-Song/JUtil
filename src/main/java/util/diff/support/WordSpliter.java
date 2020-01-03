@@ -2,10 +2,9 @@ package util.diff.support;
 
 
 
-import util.diff.support.Context;
-import util.diff.support.ITextSpliter;
 import util.html.support.HtmlParser;
 import util.html.support.HtmlParser.*;
+import util.string.StringUtil;
 
 import java.util.*;
 
@@ -37,6 +36,7 @@ public class WordSpliter implements ITextSpliter {
 		if (iter == null) return;
 		while (iter.hasNext()){
 			Node node = iter.next();
+			System.out.println(node.getClass());
 			if (node instanceof Element){
 				accept(context, (Element)node);
 			}else{
@@ -45,6 +45,7 @@ public class WordSpliter implements ITextSpliter {
 		}
 	}
 
+	//文档
 	private void accept(Context context, Node node){
 		String plainText = null;
 		try{
@@ -52,23 +53,33 @@ public class WordSpliter implements ITextSpliter {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		System.out.println(plainText);
 		if(plainText == null) return;
 		char[] results = plainText.toCharArray();
-		for(int i = 0; i < results.length; i++)
+		for(int i = 0; i < results.length; i++){
 			context.add(String.valueOf(results[i]));
+		}
+
 	}
 
 	private void accept(Context context , Element e){
+		//获取左开标签
 		String beginTag = context.getText().substring(e.beginTagBeginIndex, e.beginTagEndIndex);
-		context.add(beginTag);
-		
+		if (StringUtil.isNotEmpty(beginTag)){
+			context.add(beginTag);
+		}
+
+		//处理标签内部的子标签
 		Collection<Node> children = e.getChildren();
 		if (children != null){
 			Iterator<Node> iter = children.iterator();
 			accept(context, iter);
 		}
+		//获取右闭标签
 		String endTag = context.getText().substring(e.contentEndIndex, e.endIndex);
-		if (!(endTag == null || endTag.isEmpty()))
+		if (StringUtil.isNotEmpty(beginTag)){
 			context.add(endTag);
+		}
+		System.out.println(beginTag+ "_" +endTag);
 	}
 }

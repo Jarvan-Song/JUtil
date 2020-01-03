@@ -87,18 +87,17 @@ public class HtmlParser {
 		}
 	}
 
-
 	public static Element parse(String doc) {
-		if (doc == null)
+		if (doc == null){
 			return null;
-
-		Stack<Element> hierarchy = new Stack<Element>();
+		}
+		Stack<Element> hierarchy = new Stack<>();
 		Element document = new Element(0, doc.length());
 		document.contentBeginIndex = 0;
 		document.contentEndIndex = doc.length();
 		hierarchy.push(document);
 
-		TagParser.Tag tag = null;
+		TagParser.Tag tag;
 		int pos = 0;
 		while ((tag = TagParser.nextTag(doc, pos)) != null) {
 			Element node = hierarchy.peek();

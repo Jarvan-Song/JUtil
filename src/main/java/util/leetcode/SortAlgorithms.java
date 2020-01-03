@@ -6,8 +6,8 @@ package util.leetcode;
  */
 public class SortAlgorithms {
     public static void main(String[] args){
-        int[] a = new int[]{1,11,3,9,5,6};
-        heapSort(a);
+        int[] a = new int[]{1,11,3,9,5,6,13,4};
+        heap1231(a);
         for(int i=0;i<a.length;i++){
             System.out.println(a[i]);
         }
@@ -702,6 +702,132 @@ public class SortAlgorithms {
 
 
 
+
+
+    public static void maopao1231(int[] array){
+        for(int i = array.length-1;i>0;i--){
+            boolean flag = false;
+            for(int j = 0;j<i;j++){
+                if(array[j]>array[j+1]){
+                    flag = true;
+                    int tmp = array[j];
+                    array[j] = array[j+1];
+                    array[j+1] = tmp;
+                }
+            }
+            if(!flag) break;
+        }
+    }
+
+    public static void xuanze1231(int[] array){
+        for(int i = 0;i<array.length-1;i++){
+            int min = i;
+            for(int j=i+1;j<array.length;j++){
+                if(array[min]>array[j]){
+                    min = j;
+                }
+            }
+            if(min != i){
+                int tmp = array[min];
+                array[min] = array[i];
+                array[i] = tmp;
+            }
+        }
+    }
+
+    public static void charu1231(int[] array){
+        for(int i=1;i<array.length;i++){
+            int key = i;
+            int value = array[key];
+            while (key>0&&array[key-1]>value){
+                array[key] = array[key-1];
+                key--;
+            }
+            array[key] = value;
+        }
+    }
+
+    public static void kuaisu1231(int[] array){
+        kuaisuhelper1231(array, 0, array.length-1);
+    }
+
+    public static void kuaisuhelper1231(int[] array, int low, int high){
+        if(low >= high) return;
+        int aow = kuaisuhelper21231(array, low, high);
+        kuaisuhelper1231(array, low, aow);
+        kuaisuhelper1231(array, aow+1, high);
+    }
+    public static int kuaisuhelper21231(int[] array, int low, int high){
+        int aow = array[low];
+        while (low<high){
+            while (low<high&&array[high]>=aow) high--;
+            array[low] = array[high];
+            while (low<high&&array[low]<=aow) low++;
+            array[high] = array[low];
+        }
+        array[low] = aow;
+        return low;
+    }
+
+
+    public static void guibing1231(int[] array){
+        int[] tmp = new int[array.length];
+        guibinghelper1231(array, tmp, 0, array.length-1);
+    }
+
+    public static void guibinghelper1231(int[] array, int[] tmp, int low, int high){
+        if(low >= high) return;
+        int middle = low + (high-low)/2;
+        guibinghelper1231(array, tmp, low, middle);
+        guibinghelper1231(array, tmp,  middle+1, high);
+        guibinghelper21231(array, tmp, low, middle, high);
+    }
+
+    public static void guibinghelper21231(int[] array, int[] tmp, int low, int middle, int high){
+        int i = low;
+        int j = middle+1;
+        int k = 0;
+        while (i<=middle&&j<=high){
+            tmp[k++] = array[i]>array[j]? array[j++]:array[i++];
+        }
+        while (i<=middle){
+            tmp[k++] = array[i++];
+        }
+        while (j<=high){
+            tmp[k++] = array[j++];
+        }
+        for(int w = 0;w<k;w++){
+            array[low+w] = tmp[w];
+        }
+    }
+
+    public static void heap1231(int[] array){
+        for(int i= array.length/2-1;i>=0;i--){
+            heaphelper1231(array, i, array.length);
+        }
+        for(int j = array.length-1;j>0;j--){
+            int tmp = array[0];
+            array[0] = array[j];
+            array[j] = tmp;
+            heaphelper1231(array, 0, j);
+        }
+    }
+
+    public static void heaphelper1231(int[] array, int i, int n){
+        int tmp = array[i];
+        for(int k = 2*i+1;k<n;k=2*k+1){
+            if(k+1<n && array[k]<array[k+1]){
+                k++;
+            }
+            if(array[k]> tmp){
+                array[i] = array[k];
+                i = k;
+            }else {
+                break;
+            }
+        }
+        array[i] = tmp;
+    }
 
 
 
