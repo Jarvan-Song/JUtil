@@ -5,7 +5,7 @@ package util.design.guanchazhe;
  */
 public class Main {
     public static void main(String[] args){
-        Subject subject= new Subject();
+        Subject subject = new SubjectImp();
         Observer observer1= new ObserverImp1();
         Observer observer2= new ObserverImp2();
         subject.addObserver(observer1);
@@ -15,6 +15,5 @@ public class Main {
         subject.notifyObserver();
         subject.remObserver(observer2);
         subject.notifyObserver();
-
     }
 }
