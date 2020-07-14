@@ -15,7 +15,7 @@ public class Solution {
 //        System.out.println(IsPalindrome3(1234));
 //        System.out.println(searchInsert2(new int[]{1,2,4,5},6));
 //        System.out.println(maxSubArray1(new int[]{-2,1,-3,4,-1,2,1,-5,4}));
-//        System.out.println(mySqrt(110));
+//        System.out.println(mySqrt(110));；
 //        int[] nums1 = new int[]{1,2,3,0,0,0};
 //        int m = 3;
 //        int[] nums2 = new int[]{2,5,6};
@@ -32,9 +32,21 @@ public class Solution {
 //        System.out.println(singleNumber(nums));
 //        System.out.println(isPalindrome("0p"));
 //        System.out.println(getSum(997,24));
-//        System.out.println(minDistance("horse","ros"));
-//        System.out.println(countPrimes2(10));
-        int[] nums = new int[]{1,2,2};
+        System.out.println(minDistance("张恒中国内地女演员","胡可中国内地女演员"));
+        float distance = (float)minDistance("张恒中国内地女演员", "胡可中国内地女演员");
+        System.out.println(distance);
+        System.out.println(distance/"张恒中国内地女演员".length());
+        System.out.println(distance/"胡可中国内地女演员".length());
+        if(distance/"张恒中国内地女演员".length() < 0.2 || distance/"胡可中国内地女演员".length() < 0.2){
+            System.out.println("111111111111");
+        }
+        String title ="测试(13123)";
+        int inx = title.indexOf("(");
+        if(inx > -1){
+            title = title.substring(0, inx);
+        }
+        System.out.println(title);
+//        int[] nums = new int[]{1,2,2};
 //        System.out.println(threeSum2(nums));
 //        System.out.println(majorityElement(nums));
 //        System.out.println(isPowerOfThree(45));
@@ -45,7 +57,7 @@ public class Solution {
 //        System.out.println(findUnsortedSubarray(nums));
 //        System.out.println(topKFrequent(nums, 2));
 //        System.out.println(subsets(nums));
-        System.out.println(findDuplicate(nums));
+//        System.out.println(findDuplicate(nums));
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -1497,8 +1509,7 @@ public class Solution {
                     int add = dp[i][j-1]+1;
                     int delete = dp[i-1][j]+1;
                     int replace = dp[i-1][j-1]+1;
-                    int min = Math.min(add, delete);
-                    min = Math.min(min, replace);
+                    int min = Math.min(Math.min(add, delete), replace);
                     dp[i][j] = min;
                 }
             }
@@ -2825,5 +2836,27 @@ public class Solution {
         }
 
         return null;
+    }
+
+
+    /**
+     Example:
+     Input: [1,8,6,2,5,4,8,3,7]
+     Output: 49
+     */
+    public int maxArea(int[] height) {
+        int i = 0;
+        int j = height.length-1;
+        int max = 0;
+        while (i != j){
+            if(height[i]>height[j]){
+                max = Math.max(max, (j-i)*height[j]);
+                j--;
+            }else {
+                max = Math.max(max, (j-i)*height[i]);
+                i++;
+            }
+        }
+        return max;
     }
 }
