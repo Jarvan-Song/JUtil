@@ -1,28 +1,26 @@
-package util.diff.support;
+package util.diff.support.spliter;
 
 
-
+import util.diff.support.Context;
 import util.html.support.HtmlParser;
 import util.html.support.HtmlParser.*;
-import util.string.StringUtil;
 
-import java.util.*;
-
-
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 
 /**
  * Created by songpanfei on 2018/11/19.
- * 把代表词条的纯 HTML 划分成原子单元：字。
- * 在此基础上进行diff操作。
+ * 将文本分割成句子，即以逗号和句号进行分割，主要用于中文diff
  */
-public class WordSpliter implements ITextSpliter {
+public class SentenceSpliter implements ITextSpliter {
 
 	private static final String[] EMPTY = new String[]{""};
 	
 	@Override
 	public String[] split(String text) {
 		if (text == null) return EMPTY;
-		HtmlParser.Element document = HtmlParser.parse(text);
+		Element document = HtmlParser.parse(text);
 		if (document == null) return EMPTY;
 		Collection<Node> children = document.getChildren();
 		if (children == null) return EMPTY;
@@ -32,11 +30,11 @@ public class WordSpliter implements ITextSpliter {
 		return context.toArray(new String[]{});
 	}
 
-	private void accept(Context<String> context, Iterator<Node> iter){
-		if (iter == null) return;
+	private void accept(Context context, Iterator<Node> iter){
+		if (iter == null)
+			return;
 		while (iter.hasNext()){
 			Node node = iter.next();
-			System.out.println(node.getClass());
 			if (node instanceof Element){
 				accept(context, (Element)node);
 			}else{
@@ -45,7 +43,6 @@ public class WordSpliter implements ITextSpliter {
 		}
 	}
 
-	//文档
 	private void accept(Context context, Node node){
 		String plainText = null;
 		try{
@@ -53,33 +50,42 @@ public class WordSpliter implements ITextSpliter {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		System.out.println(plainText);
-		if(plainText == null) return;
-		char[] results = plainText.toCharArray();
-		for(int i = 0; i < results.length; i++){
-			context.add(String.valueOf(results[i]));
+		if(plainText == null) 
+			return;
+		
+		StringTokenizer st = new StringTokenizer(plainText, "。，", true);
+		while (st.hasMoreTokens()){
+			String tk = st.nextToken().trim();
+			if (tk != null && !tk.isEmpty())
+				context.add(tk);
 		}
-
+		
 	}
 
 	private void accept(Context context , Element e){
-		//获取左开标签
 		String beginTag = context.getText().substring(e.beginTagBeginIndex, e.beginTagEndIndex);
-		if (StringUtil.isNotEmpty(beginTag)){
-			context.add(beginTag);
-		}
-
-		//处理标签内部的子标签
+		context.add(beginTag);
+		
 		Collection<Node> children = e.getChildren();
 		if (children != null){
 			Iterator<Node> iter = children.iterator();
 			accept(context, iter);
 		}
-		//获取右闭标签
 		String endTag = context.getText().substring(e.contentEndIndex, e.endIndex);
-		if (StringUtil.isNotEmpty(beginTag)){
+		if (!(endTag == null || endTag.isEmpty()))
 			context.add(endTag);
-		}
-		System.out.println(beginTag+ "_" +endTag);
 	}
+
+	public static void main(String[] args){
+		String[] argOld = new SentenceSpliter().split("<p>123fffffffffffff</p><a></a>");
+		String[] argNew = new SentenceSpliter().split("<p><a>123sdfsfsfdsdfsdfs。sfsfs</a></p>weirwjfkdsfjk。sdfasdf<a>sfds</a>");
+		for(String str: argOld){
+			System.out.println(str);
+		}
+		for(String str: argNew){
+
+			System.out.println(str);
+		}
+	}
+	
 }

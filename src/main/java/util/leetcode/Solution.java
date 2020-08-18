@@ -4,6 +4,7 @@ import com.sun.org.apache.regexp.internal.RE;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by songpanfei on 2019-09-19.
@@ -32,20 +33,20 @@ public class Solution {
 //        System.out.println(singleNumber(nums));
 //        System.out.println(isPalindrome("0p"));
 //        System.out.println(getSum(997,24));
-        System.out.println(minDistance("张恒中国内地女演员","胡可中国内地女演员"));
-        float distance = (float)minDistance("张恒中国内地女演员", "胡可中国内地女演员");
-        System.out.println(distance);
-        System.out.println(distance/"张恒中国内地女演员".length());
-        System.out.println(distance/"胡可中国内地女演员".length());
-        if(distance/"张恒中国内地女演员".length() < 0.2 || distance/"胡可中国内地女演员".length() < 0.2){
-            System.out.println("111111111111");
-        }
-        String title ="测试(13123)";
-        int inx = title.indexOf("(");
-        if(inx > -1){
-            title = title.substring(0, inx);
-        }
-        System.out.println(title);
+//        System.out.println(minDistance("张恒中国内地女演员","胡可中国内地女演员"));
+//        float distance = (float)minDistance("张恒中国内地女演员", "胡可中国内地女演员");
+//        System.out.println(distance);
+//        System.out.println(distance/"张恒中国内地女演员".length());
+//        System.out.println(distance/"胡可中国内地女演员".length());
+//        if(distance/"张恒中国内地女演员".length() < 0.2 || distance/"胡可中国内地女演员".length() < 0.2){
+//            System.out.println("111111111111");
+//        }
+//        String title ="测试(13123)";
+//        int inx = title.indexOf("(");
+//        if(inx > -1){
+//            title = title.substring(0, inx);
+//        }
+//        System.out.println(title);
 //        int[] nums = new int[]{1,2,2};
 //        System.out.println(threeSum2(nums));
 //        System.out.println(majorityElement(nums));
@@ -58,6 +59,22 @@ public class Solution {
 //        System.out.println(topKFrequent(nums, 2));
 //        System.out.println(subsets(nums));
 //        System.out.println(findDuplicate(nums));
+//        ListNode a = new ListNode(1);
+//        ListNode b = new ListNode(2);
+//        ListNode c = new ListNode(3);
+//        ListNode d = new ListNode(4);
+//        ListNode e = new ListNode(5);
+//        a.next = b;
+//        b.next = c;
+//        c.next = d;
+//        d.next = e;
+//        a = oddEvenList2(a);
+//        while (a != null){
+//            System.out.println(a.val);
+//            a = a.next;
+//        }
+        String s = "3[a]2[bc]";
+        System.out.println(decodeString2(s));
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -87,7 +104,7 @@ public class Solution {
         int val;
         ListNode next;
         ListNode(int x) { val = x; }
-
+        ListNode(int val, ListNode next) { this.val = val; this.next = next; }
         @Override
         public String toString() {
             return  val + " ";
@@ -657,17 +674,6 @@ public class Solution {
         return true;
     }
 
-    public static int maxProfit(int[] prices) {
-        if(prices.length < 1) return 0;
-        int max=0;
-        int min=prices[0];
-        for(int i=1;i<prices.length;i++){
-            max=Math.max(prices[i]-min,max);
-            min=Math.min(min,prices[i]);
-        }
-        return max;
-    }
-
     public boolean isSymmetric(TreeNode root) {
         if(root == null){
             return true;
@@ -846,6 +852,18 @@ public class Solution {
     Explanation: Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
                  Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
      */
+
+    public static int maxProfit(int[] prices) {
+        if(prices.length < 1) return 0;
+        int max=0;
+        int min=prices[0];
+        for(int i=1;i<prices.length;i++){
+            max=Math.max(prices[i]-min,max);
+            min=Math.min(min,prices[i]);
+        }
+        return max;
+    }
+
     public static int maxProfit1(int[] prices) {
         return calculate(prices, 0);
     }
@@ -865,17 +883,6 @@ public class Solution {
             }
             if (maxprofit > max)
                 max = maxprofit;
-        }
-        return max;
-    }
-
-
-    public int maxProfit2(int[] prices) {
-        int max = 0;
-        for(int i= 1;i<prices.length;i++){
-            if(prices[i] - prices[i-1] > 0){
-                max = max + (prices[i] - prices[i-1]);
-            }
         }
         return max;
     }
@@ -1147,6 +1154,35 @@ public class Solution {
         return false;
     }
 
+
+    /*
+     Example 1:
+
+     Input: head = [3,2,0,-4], pos = 1
+     Output: tail connects to node index 1
+     Explanation: There is a cycle in the linked list, where tail connects to the second node.
+      */
+    public ListNode detectCycle(ListNode head) {
+        ListNode first = head;
+        ListNode second = head;
+        boolean hasCycle =false;
+        while (first != null && second != null&& second.next !=null){
+            first = first.next;
+            second = second.next.next;
+            if(first == second){
+                hasCycle= true;
+                break;
+            }
+        }
+        if(!hasCycle) return null;
+        second = head;
+        while (first!=second){
+            first = first.next;
+            second = second.next;
+        }
+        return first;
+    }
+
     /*
     Example:
 
@@ -1159,50 +1195,40 @@ public class Solution {
     Output: 1->1->2->3->4->4->5->6
      */
     public ListNode mergeKLists1(ListNode[] lists) {
+        if(lists.length == 0){
+            return null;
+        }
         ListNode res = new ListNode(0);
         ListNode curr = res;
-        Map<ListNode, Integer> map = minNode(lists);
-        while (map != null && map.size() > 0){
-            ListNode min = null;
-            Set<ListNode> set = map.keySet();
-            for(ListNode node: set){
-                min = node;
-            }
-            curr.next = min;
+        ListNode a = min(lists);
+        while (a != null){
+            curr.next = a;
             curr = curr.next;
-            lists[map.get(min)] = min.next;
-            map = minNode(lists);
+            a = min(lists);
         }
         return res.next;
     }
 
-    public Map<ListNode, Integer> minNode(ListNode[] lists){
-        if(lists.length == 0){
-            return null;
-        }
-        Map<ListNode, Integer> map = null;
+    public ListNode min(ListNode[] lists){
         ListNode min = null;
+        int j = 0;
         for(int i=0;i<lists.length;i++){
-            ListNode curr = lists[i];
-            if(min == null && curr != null){
-                if(map == null){
-                    map = new HashMap<>();
-                }
-                map.clear();
-                min = curr;
-                map.put(min, i);
-            }else if(min != null && curr != null){
-                if(map == null){
-                    map = new HashMap<>();
-                }
-                if(min.val > curr.val){
-                    map.clear();
-                    min = curr;
-                    map.put(min, i);
+            ListNode listNode = lists[i];
+            if(min == null && listNode != null){
+                j = i;
+                min = listNode;
+            }
+            if(min != null && listNode != null){
+                if(min.val > listNode.val){
+                    j = i;
+                    min = listNode;
                 }
             }
         }
-        return map;
+        if(min !=null) {
+            lists[j] = min.next;
+        }
+        return min;
     }
 
     public ListNode mergeKLists2(ListNode[] lists) {
@@ -1239,6 +1265,8 @@ public class Solution {
         }
         return res.next;
     }
+
+
 
     /*
     Example:
@@ -2050,7 +2078,7 @@ public class Solution {
 
     public int pathSum(TreeNode root, int sum) {
         if(root == null) return 0;
-        return pathSumHelper(root, sum) +  pathSum(root.left, sum)+pathSum(root.right, sum);
+        return pathSumHelper(root, sum) +  pathSum(root.left, sum) + pathSum(root.right, sum);
     }
 
     public int pathSumHelper(TreeNode node, int sum) {
@@ -2565,6 +2593,32 @@ public class Solution {
         }
     }
 
+    public List<List<Integer>> permute3(int[] nums) {
+        List<List<Integer>> res = new LinkedList<>();
+        if(nums==null) return res;
+        List<Integer> list = new LinkedList<>();
+        list.add(nums[0]);
+        res.add(list);
+        for(int i = 1;i<nums.length;i++){
+            List<List<Integer>> res_new = new LinkedList<>();
+            for(List<Integer> a: res){
+                List<Integer> w1 = new LinkedList<>(a);
+                w1.add(0, nums[i]);
+                res_new.add(new LinkedList<>(w1));
+                for(int w=1;w<a.size();w++){
+                    List<Integer> w3 = new LinkedList<>(a);
+                    w3.add(w, nums[i]);
+                    res_new.add(w3);
+                }
+                List<Integer> w2 = new LinkedList<>(a);
+                w2.add(nums[i]);
+                res_new.add(new LinkedList<>(w2));
+            }
+            res = res_new;
+        }
+        return res;
+    }
+
     public List<String> generateParenthesis(int n) {
         List<String> list = new LinkedList<>();
         helper(list, "", 0, 0, n);
@@ -2810,15 +2864,24 @@ public class Solution {
         for (int i=1; i<=num; i++) f[i] = f[i >> 1] + (i%2);
         return f;
     }
+    /*
+        Note:
+        The number of people is less than 1,100.
 
+
+        Example
+
+        Input:
+        [[7,0], [4,4], [7,1], [5,0], [6,1], [5,2]]
+
+        Output:
+        [[5,0], [7,0], [5,2], [6,1], [4,4], [7,1]]
+     */
     public int[][] reconstructQueue(int[][] people) {
-        Arrays.sort(people, (p1, p2) -> {
-            return p1[0] == p2[0] ? p1[1] - p2[1] : p2[0] - p1[0];
-        });
+        Arrays.sort(people, (p1, p2) -> (p1[0] == p2[0] ? p1[1] - p2[1] : p2[0] - p1[0]));  //按身高降序排序，身高相同按第二个数据升序
         LinkedList<int[]> list = new LinkedList<>();
-        for (int i = 0; i < people.length; i++)
-            list.add(people[i][1], people[i]);
-        return list.toArray(people);
+        for (int[] p : people) list.add(p[1], p);
+        return list.toArray(new int[0][0]);
     }
 
     /*
@@ -2830,14 +2893,51 @@ public class Solution {
      */
 
     public int[] dailyTemperatures(int[] T) {
-        Map<Integer, Integer> map = new HashMap<>();
+        int[] res = new int[T.length];
+        Arrays.fill(res, 0);
         for(int i=0;i<T.length;i++){
-            map.put(T[i], i);
+            for(int j=i+1;j<T.length;j++){
+                if(T[j]>T[i]){
+                    res[i]=j-i;
+                    break;
+                }
+            }
         }
-
-        return null;
+        return res;
     }
 
+    public int[] dailyTemperatures2(int[] T) {
+        int[] res = new int[T.length];
+        Arrays.fill(res, 0);
+        Stack<Integer> stack = new Stack<>();
+        for(int i=T.length-1;i>=0;i--){
+            while (!stack.isEmpty()&&T[stack.peek()]<=T[i]){
+                stack.pop();
+            }
+            if(!stack.isEmpty()){
+                res[i]=stack.peek()-i;
+            }
+            stack.push(i);
+        }
+        return res;
+    }
+
+    public int[] dailyTemperatures3(int[] T) {  //利用next数组下标充当温度，T索引为数据来进行计算
+        int[] ans = new int[T.length];
+        int[] next = new int[101];
+        Arrays.fill(next, Integer.MAX_VALUE);
+        for (int i = T.length - 1; i >= 0; --i) {
+            int warmer_index = Integer.MAX_VALUE;
+            for (int t = T[i] + 1; t <= 100; ++t) {
+                if (next[t] < warmer_index)
+                    warmer_index = next[t];
+            }
+            if (warmer_index < Integer.MAX_VALUE)
+                ans[i] = warmer_index - i;
+            next[T[i]] = i;
+        }
+        return ans;
+    }
 
     /**
      Example:
@@ -2859,4 +2959,1164 @@ public class Solution {
         }
         return max;
     }
+
+    /*
+    Example:
+    Input: ["eat", "tea", "tan", "ate", "nat", "bat"],
+    Output:
+    [
+      ["ate","eat","tea"],
+      ["nat","tan"],
+      ["bat"]
+    ]*/
+
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> re = new HashMap<>();
+        for(String string: strs){
+            char[] a = string.toCharArray();
+            Arrays.sort(a);
+            String key = String.valueOf(a);
+            if(re.containsKey(key)){
+                re.get(key).add(string);
+            }else {
+                List<String> list = new ArrayList<>();
+                list.add(string);
+                re.put(key, list);
+            }
+        }
+        return new ArrayList<>(re.values());
+    }
+
+    /*
+    Example 1:
+
+Given input matrix =
+[
+  [1,2,3],
+  [4,5,6],
+  [7,8,9]
+],
+
+rotate the input matrix in-place such that it becomes:
+[
+  [7,4,1],
+  [8,5,2],
+  [9,6,3]
+]
+     */
+    //顺时旋转90度：先转置，后列交换
+    public void rotate(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        for(int i=0;i<m;i++){
+            for(int j=i;j<n;j++){
+                int tmp = matrix[i][j];
+                matrix[i][j]=matrix[j][i];
+                matrix[j][i]=tmp;
+            }
+        }
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n/2;j++){
+                int tmp = matrix[i][j];
+                matrix[i][j]=matrix[i][n-1-j];
+                matrix[i][n-1-j]=tmp;
+            }
+        }
+    }
+    //逆时旋转90度：先转置，后行交换
+    public void rotate2(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        for(int i=0;i<m;i++){
+            for(int j=i;j<n;j++){
+                int tmp = matrix[i][j];
+                matrix[i][j]=matrix[j][i];
+                matrix[j][i]=tmp;
+            }
+        }
+        for(int i=0;i<m/2;i++){
+            for(int j=0;j<n;j++){
+                int tmp = matrix[i][j];
+                matrix[i][j]=matrix[m-1-i][j];
+                matrix[m-1-i][j]=tmp;
+            }
+        }
+    }
+
+    /*
+    Example 1:
+
+    Input: 1->2->3->4->5->NULL
+    Output: 1->3->5->2->4->NULL
+    Example 2:
+
+    Input: 2->1->3->5->6->4->7->NULL
+    Output: 2->3->6->7->1->5->4->NULL
+    两条链表最后连接在一起
+     */
+    public static ListNode oddEvenList(ListNode head) {
+        if(head == null) return null;
+        ListNode odd_head = null;
+        ListNode odd_curr = null;
+        ListNode even_head = null;
+        ListNode even_curr = null;
+        ListNode curr = head;
+        int i=1;
+        while (curr != null){
+            if(i%2!=0){
+                if(odd_head == null){
+                    odd_head = curr;
+                    odd_curr = curr;
+                }else {
+                    odd_curr.next = curr;
+                    odd_curr = curr;
+                }
+            }else {
+                if(even_head == null){
+                    even_head = curr;
+                    even_curr = curr;
+                }else {
+                    even_curr.next = curr;
+                    even_curr = curr;
+                }
+            }
+            curr = curr.next;
+            i++;
+        }
+        if(even_curr != null){
+            even_curr.next=null;
+        }
+        odd_curr.next = even_head;
+        return odd_head;
+    }
+
+    public static ListNode oddEvenList2(ListNode head) {
+        if(head == null) return null;
+        ListNode even_head = null;
+        ListNode even_curr = null;
+        ListNode curr = head;
+        ListNode prev = null;
+        ListNode prev_odd = null;
+        int i=1;
+        while (curr != null){
+            if(i%2 ==0){
+                if(even_head == null){
+                    even_head = curr;
+                    even_curr = curr;
+                }else {
+                    even_curr.next = curr;
+                    even_curr = curr;
+                }
+                prev.next = curr.next;
+            }else {
+                prev_odd = curr;
+            }
+            prev = curr;
+            curr = curr.next;
+            i++;
+        }
+        if(even_head!=null){
+            even_curr.next=null;
+            prev_odd.next = even_head;
+        }
+        return head;
+    }
+
+    //选择排序，排序前k个元素
+    public int findKthLargest(int[] nums, int k) {
+        for(int i=0;i<k;i++){
+            int max = i;
+            for(int j=i+1;j<nums.length;j++){
+                if(nums[max]<nums[j]){
+                    max = j;
+                }
+            }
+            if(max!=i){
+                int tmp = nums[max];
+                nums[max] = nums[i];
+                nums[i]=tmp;
+            }
+        }
+        return nums[k-1];
+    }
+
+    //快速排序法
+    public int findKthLargest2(int[] nums, int k) {
+        kuaiSort(nums, 0, nums.length-1, k);
+        return nums[k-1];
+    }
+    public void kuaiSort(int[] array,int low, int high, int k){
+        if(low>=high) return;
+        int aow = kuaiSortHelper(array, low, high);
+        kuaiSort(array, low, aow, k);
+        kuaiSort(array, aow+1, high, k);
+    }
+    public int kuaiSortHelper(int[] array,int low, int high){
+        int aow = array[low];
+        while (low<high){
+            while (low<high&&array[high]<=aow) high--;
+            array[low]=array[high];
+            while (low<high&&array[low]>=aow) low++;
+            array[high]=array[low];
+        }
+        array[low]=aow;
+        return low;
+    }
+
+    //快速选择法
+    public int findKthLargest3(int[] nums, int k) {
+        return kuaiSort3(nums, 0, nums.length-1, k);
+    }
+    public int kuaiSort3(int[] array,int low, int high, int k){
+        int aow = kuaiSortHelper3(array, low, high);
+        if(aow==k-1){
+            return array[aow];
+        }else if(aow>k-1){
+            return kuaiSort3(array, low, aow, k);
+        }else {
+            return kuaiSort3(array, aow+1, high, k);
+        }
+    }
+    public int kuaiSortHelper3(int[] array,int low, int high){
+        int aow = array[low];
+        while (low<high){
+            while (low<high&&array[high]<=aow) high--;
+            array[low]=array[high];
+            while (low<high&&array[low]>=aow) low++;
+            array[high]=array[low];
+        }
+        array[low]=aow;
+        return low;
+    }
+
+
+    /*
+    For example:
+    Given binary tree [3,9,20,null,null,15,7],
+        3
+       / \
+      9  20
+        /  \
+       15   7
+     */
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> res = new LinkedList<>();
+        if(root==null) return res;
+        Queue<TreeNode> queue1 = new LinkedBlockingQueue<>();
+        queue1.offer(root);
+        Queue<TreeNode> queue2 = new LinkedBlockingQueue<>();
+        while (!queue1.isEmpty()||!queue2.isEmpty()){
+            List<Integer> a =null;
+            List<Integer> b =null;
+            if(!queue1.isEmpty()){
+                a = new LinkedList<>();
+                while (!queue1.isEmpty()){
+                    TreeNode node = queue1.poll();
+                    a.add(node.val);
+                    if(node.left!=null){
+                        queue2.offer(node.left);
+                    }
+                    if(node.right!=null){
+                        queue2.offer(node.right);
+                    }
+                }
+            }
+            if(a!=null) res.add(a);
+            if(!queue2.isEmpty()){
+                b = new LinkedList<>();
+                while (!queue2.isEmpty()){
+                    TreeNode node = queue2.poll();
+                    b.add(node.val);
+                    if(node.left!=null){
+                        queue1.offer(node.left);
+                    }
+                    if(node.right!=null){
+                        queue1.offer(node.right);
+                    }
+                }
+            }
+            if(b!=null) res.add(b);
+        }
+        return res;
+    }
+
+    public List<List<Integer>> levelOrder2(TreeNode root) {
+        List<List<Integer>> res = new LinkedList<>();
+        if(root==null) return res;
+        Queue<TreeNode> queue = new LinkedBlockingQueue<>();
+        queue.offer(root);
+        while (!queue.isEmpty()){
+            List<Integer> sub = new LinkedList<>();
+            int size = queue.size();
+            for(int i=0;i<size;i++){
+                TreeNode node = queue.poll();
+                sub.add(node.val);
+                if(node.left!=null){
+                    queue.offer(node.left);
+                }
+                if(node.right!=null){
+                    queue.offer(node.right);
+                }
+            }
+            res.add(sub);
+        }
+        return res;
+    }
+
+
+    /*
+    Example:
+    matrix = [
+       [ 1,  5,  9],
+       [10, 11, 13],
+       [12, 13, 15]
+    ],
+    k = 8,
+
+    return 13.
+     */
+    class Node{
+        int row;
+        int col;
+        int value;
+        Node(int row, int col, int value){
+            this.row = row;
+            this.col = col;
+            this.value = value;
+        }
+    }
+    public int kthSmallest(int[][] matrix, int k) {
+        PriorityQueue<Node> queue = new PriorityQueue<>(new Comparator<Node>() {
+            @Override
+            public int compare(Node o1, Node o2) {
+                return o1.value - o2.value;
+            }
+        });
+        int m = matrix.length;
+        int n = matrix[0].length;
+        for(int i=0;i<n;i++){
+            queue.add(new Node(0, i, matrix[0][i]));
+        }
+        Node node = null;
+        for(int i=0;i<k;i++){
+            node = queue.poll();
+            int row = node.row;
+            int col = node.col;
+            if(row+1<m){
+                queue.add(new Node(row+1, col, matrix[row+1][col]));
+            }
+        }
+        return node !=null?node.value:0;
+    }
+
+    /*
+    Example 1:
+
+    Input: m = 3, n = 2
+    Output: 3
+    Explanation:
+    From the top-left corner, there are a total of 3 ways to reach the bottom-right corner:
+    1. Right -> Right -> Down
+    2. Right -> Down -> Right
+    3. Down -> Right -> Right
+    Example 2:
+
+    Input: m = 7, n = 3
+    Output: 28
+     */
+    public int uniquePaths1(int m, int n) {
+        int[][] dp = new int[n][m];
+        for(int i=0;i<n;i++){
+            dp[i][0] = 1;
+        }
+        for(int j=0;j<m;j++){
+            dp[0][j] = 1;
+        }
+        for(int i=1;i<n;i++){
+            for(int j=1;j<m;j++){
+                dp[i][j] = dp[i][j-1] + dp[i-1][j];
+            }
+        }
+        return dp[n-1][m-1];
+    }
+
+    public int uniquePaths2(int m, int n) {
+        int[][] dp = new int[n][m];
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(i==0 || j==0){
+                    dp[i][j]=1;
+                }else {
+                    dp[i][j] = dp[i][j-1] + dp[i-1][j];
+                }
+            }
+        }
+        return dp[n-1][m-1];
+    }
+
+    //山间蓄水问题
+    public int trap(int[] height) {
+        int res = 0;
+        for(int i=0;i<height.length;i++){
+            int left = 0;
+            int right = 0;
+            for(int j=0;j<i;j++){
+                if(left<height[j]){
+                    left=height[j];
+                }
+            }
+            for(int j=i+1;j<height.length;j++){
+                if(right<height[j]){
+                    right=height[j];
+                }
+            }
+            res = res + (Math.min(left, right) > height[i]?(Math.min(left, right) - height[i]):0);
+        }
+        return res;
+    }
+
+    public int trap2(int[] height) {
+        if(height==null||height.length==0) return 0;
+        int res = 0;
+        int[] left = new int[height.length];
+        int[] right = new int[height.length];
+        left[0]=height[0];
+        right[height.length-1]=height[height.length-1];
+        for(int i=1;i<height.length;i++){
+            left[i] = Math.max(left[i-1], height[i]);
+        }
+        for(int i=height.length-2;i>=0;i--){
+            right[i] = Math.max(right[i+1], height[i]);
+        }
+        for(int i=0;i<height.length;i++){
+            res = res + Math.min(left[i], right[i])-height[i];
+        }
+        return res;
+    }
+
+    public int trap3(int[] height) {
+        if(height==null||height.length==0) return 0;
+        int res = 0;
+        int left=0;
+        int right=0;
+        int i=0;
+        int j=height.length-1;
+        while (i<j){
+            if(height[i]<=height[j]){
+                left = Math.max(left, height[i]);
+                res = res+ left-height[i];
+                i++;
+            }else {
+                right = Math.max(right, height[i]);
+                res = res+ right-height[j];
+                j--;
+            }
+        }
+        return res;
+    }
+
+    /*
+    Example:
+
+    Input:
+
+       1
+     /   \
+    2     3
+     \
+      5
+
+    Output: ["1->2->5", "1->3"]
+
+    Explanation: All root-to-leaf paths are: 1->2->5, 1->3
+     */
+    //dfs
+    public List<String> binaryTreePaths(TreeNode root) {
+        List<String> res = new LinkedList<>();
+        if(root == null) return res;
+        Stack<TreeNode> stackT = new Stack<>();
+        Stack<String> stackS = new Stack<>();
+        stackS.add("");
+        stackT.add(root);
+        while (!stackT.isEmpty()){
+            String   a  = stackS.pop();
+            TreeNode b  = stackT.pop();
+            if(b.left == null && b.right==null){
+                res.add(a + b.val);
+            }
+            if(b.right != null){
+                stackT.add(b.right);
+                stackS.add(a +  b.val + "->");
+            }
+            if(b.left != null){
+                stackT.add(b.left);
+                stackS.add(a +  b.val + "->");
+            }
+        }
+        return res;
+    }
+
+    //bfs
+    public List<String> binaryTreePaths2(TreeNode root) {
+        List<String> list = new ArrayList<String>();
+        Queue<TreeNode> qNode = new LinkedList<TreeNode>();
+        Queue<String> qStr = new LinkedList<String>();
+        if (root == null) return list;
+        qNode.add(root);
+        qStr.add("");
+        while (!qNode.isEmpty()) {
+            TreeNode curNode = qNode.remove();
+            String curStr = qStr.remove();
+
+            if (curNode.left == null && curNode.right == null) list.add(curStr + curNode.val);
+            if (curNode.left != null) {
+                qNode.add(curNode.left);
+                qStr.add(curStr + curNode.val + "->");
+            }
+            if (curNode.right != null) {
+                qNode.add(curNode.right);
+                qStr.add(curStr + curNode.val + "->");
+            }
+        }
+        return list;
+    }
+
+    public List<List<Integer>> pathSumII(TreeNode root, int sum) {
+        List<List<Integer>> res = new LinkedList<>();
+        if(root == null) return res;
+        Stack<TreeNode> TreeNodeStack = new Stack<>();
+        Stack<List<Integer>> listStack = new Stack<>();
+        TreeNodeStack.push(root);
+        listStack.push(new LinkedList<>());
+        while (!TreeNodeStack.isEmpty()){
+            TreeNode node = TreeNodeStack.pop();
+            List<Integer> list = listStack.pop();
+            if(node.left == null&&node.right==null){
+                list.add(node.val);
+                if(total(list)==sum){
+                    res.add(list);
+                }
+            }
+            if(node.right!=null){
+                List<Integer> a= new LinkedList<>();
+                a.addAll(list);
+                a.add(node.val);
+                listStack.push(a);
+                TreeNodeStack.push(node.right);
+            }
+            if(node.left!=null){
+                List<Integer> a= new LinkedList<>();
+                a.addAll(list);
+                a.add(node.val);
+                TreeNodeStack.push(node.left);
+                listStack.push(a);
+            }
+        }
+        return res;
+    }
+
+    public int total( List<Integer> list){
+        int sum = 0;
+        for(Integer a: list){
+            sum = sum+a;
+        }
+        return sum;
+    }
+
+    public List<List<Integer>> pathSumII2(TreeNode root, int sum) {
+        List<List<Integer>> res = new LinkedList<>();
+        if(root == null) return res;
+        pathSumII2Helper(root, sum, new LinkedList<>(), res);
+        return res;
+    }
+
+    public void pathSumII2Helper(TreeNode curr, int sum, List<Integer> tmp, List<List<Integer>> res){
+        if(curr==null) return;
+        tmp.add(curr.val);
+        if(curr.left==null&&curr.right==null&&curr.val==sum){
+            res.add(new LinkedList<>(tmp));
+        }else {
+            if(curr.left!=null) pathSumII2Helper(curr.left, sum-curr.val, tmp, res);
+            if(curr.right!=null) pathSumII2Helper(curr.right, sum-curr.val, tmp, res);
+        }
+        tmp.remove(tmp.size()-1);
+    }
+
+
+    public static List<String> getPermutation0(String A){
+        if(A == null || A.length() ==0) return null;
+        return getPermutation0Helper(A, A.length()-1);
+    }
+
+    public static List<String> getPermutation0Helper(String A, int n){
+        if(n ==0){
+            List<String> a = new LinkedList<>();
+            a.add(A.charAt(0)+"");
+            return a;
+        }
+        List<String> pre = getPermutation0Helper(A, n-1);
+        List<String> list_new = new LinkedList<>();
+        for(String s: pre){
+            String before = A.charAt(n)+s;
+            list_new.add(before);
+            for(int i=1;i<s.toCharArray().length;i++){
+                list_new.add(s.substring(0,i)+A.charAt(n)+s.substring(i));
+            }
+            String after = s+A.charAt(n);
+            list_new.add(after);
+        }
+        return list_new;
+    }
+
+
+    public static List<String> getPermutation1(String A){
+        if(A == null || A.length() ==0) return null;
+        if(A.length()==1){
+            List<String> a = new LinkedList<>();
+            a.add(A);
+            return a;
+        }
+        List<String> res = new LinkedList<>();
+        res.add(A.charAt(0)+"");
+        for(int i=1;i<A.length();i++){
+            List<String> res_new = new LinkedList<>();
+            for(String s: res){
+                String before = A.charAt(i)+s;
+                res_new.add(before);
+                for(int j=1;j<s.toCharArray().length;j++){
+                    res_new.add(s.substring(0,j)+A.charAt(i)+s.substring(j));
+                }
+                String after = s+A.charAt(i);
+                res_new.add(after);
+            }
+            res = res_new;
+        }
+//        Collections.sort(res);
+        return res;
+    }
+
+    static  List<String> res = new LinkedList<>();
+    public static List<String> getPermutation3(String A) {
+        return getPermutation3Helper(A.toCharArray(), 0);
+    }
+    public static List<String> getPermutation3Helper(char[] a, int k) {
+        if(k==a.length-1){
+            res.add(new String(a));
+        }
+        for(int i=k;i<a.length;i++){
+            swap(a, i, k);
+            getPermutation3Helper(a, k+1);
+            swap(a, i, k);
+        }
+        return res;
+    }
+    public static void swap(char[] a, int i, int k){
+        char w = a[i];
+        a[i]=a[k];
+        a[k]=w;
+    }
+
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        if(nums==null) return null;
+        int[] res = new int[nums.length-k+1];
+        int i = 0;
+        int j = k-1;
+        while (i<=j&&j<nums.length){
+            int max = nums[i];
+            for(int w = i;w<=j;w++){
+                if(max<nums[w]){
+                    max = nums[w];
+                }
+            }
+            res[i] = max;
+            i++;
+            j++;
+        }
+        return res;
+    }
+
+
+    public int[] maxSlidingWindow2(int[] nums, int k) {
+        int[] res = new int[nums.length-k+1];
+        Deque <Integer> deque = new ArrayDeque<>();
+        int j=0;
+        for(int i=0;i<nums.length;i++){
+            while (!deque.isEmpty()&&deque.peek()<i-k+1){  //去除过期的下标
+                deque.poll();
+            }
+            while (!deque.isEmpty()&&nums[deque.peekLast()]<nums[i]){ //如果下一个数比前一个数大，则删除前一个无用的下标数据
+                deque.pollLast();
+            }
+            deque.offer(i);
+            if(i>=k-1){ //满足滑动窗口长度即可开始赋值
+                res[j++] = nums[deque.peek()];
+            }
+        }
+        return res;
+    }
+
+    /*
+    Sort a linked list in O(n log n) time using constant space complexity.
+
+    Example 1:
+
+    Input: 4->2->1->3
+    Output: 1->2->3->4
+     */
+
+    public ListNode sortList(ListNode head) {
+        Queue<Integer> queue = new PriorityQueue<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1-o2;
+            }
+        });
+        ListNode curr = head;
+        while (curr!=null){
+            queue.add(curr.val);
+            curr = curr.next;
+        }
+        curr = head;
+        while (!queue.isEmpty()){
+            curr.val = queue.poll();
+            curr = curr.next;
+        }
+        return head;
+    }
+
+    public ListNode sortList2(ListNode head) {
+        if (head == null || head.next == null)
+            return head;
+        // step 1. cut the list to two halves
+        ListNode prev = null, slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            prev = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        prev.next = null;
+        // step 2. sort each half
+        ListNode l1 = sortList2(head);
+        ListNode l2 = sortList2(slow);
+        // step 3. merge l1 and l2
+        return merge(l1, l2);
+    }
+
+    ListNode merge(ListNode l1, ListNode l2) {
+        ListNode l = new ListNode(0), p = l;
+        while (l1 != null && l2 != null) {
+            if (l1.val < l2.val) {
+                p.next = l1;
+                l1 = l1.next;
+            } else {
+                p.next = l2;
+                l2 = l2.next;
+            }
+            p = p.next;
+        }
+        p.next = l1!=null?l1:l2;
+        return l.next;
+    }
+
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> recombinationSums_res = new LinkedList<>();
+        combinationSumHelper(candidates, target, 0, new LinkedList<>(), recombinationSums_res);
+        return recombinationSums_res;
+    }
+
+    public void combinationSumHelper(int[] candidates, int target, int index, List<Integer> res, List<List<Integer>> recombinationSums_res) {
+        if(target == 0){
+            recombinationSums_res.add(new LinkedList<>(res));
+        }
+        if(target>0){
+            for(int i=index;i<candidates.length;i++){
+                res.add(candidates[i]);
+                combinationSumHelper(candidates, target-candidates[i], i, res, recombinationSums_res);
+                res.remove(res.size()-1);
+            }
+        }
+    }
+
+    /*
+        Given n, how many structurally unique BST's (binary search trees) that store values 1 ... n?
+
+    Example:
+
+    Input: 3
+    Output: 5
+    Explanation:
+    Given n = 3, there are a total of 5 unique BST's:
+
+       1         3     3      2      1
+        \       /     /      / \      \
+         3     2     1      1   3      2
+        /     /       \                 \
+       2     1         2                 3
+     */
+    public int numTrees(int n) {
+        int[] dp = new int[n+1];
+        dp[0]=1;
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=i;j++){
+                dp[i] = dp[i] + dp[j-1]*dp[i-j];
+            }
+        }
+        return dp[n];
+    }
+
+    /*
+    Example 1:
+
+    Input: "abc"
+    Output: 3
+    Explanation: Three palindromic strings: "a", "b", "c".
+     */
+
+    public static int countSubstrings(String s) {
+        int res = 0;
+        for(int i=0;i<s.length();i++){
+            for(int j = i;j<s.length();j++){
+                if(checkcountSubstrings(s, i, j)){
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+    public static boolean checkcountSubstrings(String a, int low, int high){
+        while (low<=high){
+            if(a.toCharArray()[low] != a.toCharArray()[high]){
+                return false;
+            }
+            low++;
+            high--;
+        }
+        return true;
+    }
+
+
+    public static int k = 0;
+    public static int countSubstrings2(String s) {
+        for(int i=0;i<s.length();i++){
+            checkcountSubstrings2(s, i, i);
+            checkcountSubstrings2(s, i, i+1);
+        }
+        return k;
+    }
+
+    public static  void checkcountSubstrings2(String a, int low, int high){
+        while (low>=0&&high<=a.length()-1&&a.charAt(low)==a.charAt(high)){
+            k++;
+            low--;
+            high++;
+        }
+    }
+
+
+    /*
+    Example 1:
+
+    Input: [3,2,3,null,3,null,1]
+
+         3
+        / \
+       2   3
+        \   \
+         3   1
+
+    Output: 7
+    Explanation: Maximum amount of money the thief can rob = 3 + 3 + 1 = 7.
+     */
+
+    public int rob(TreeNode root) {
+        if(root==null) return 0;
+        int val = root.val;
+        if(root.left!=null){
+            val=val+rob(root.left.left)+rob(root.left.right);
+        }
+        if(root.right!=null){
+            val=val+rob(root.right.left)+rob(root.right.right);
+        }
+        val = Math.max(val, rob(root.left)+rob(root.right));
+        return Math.max(val, rob(root.left)+rob(root.right));
+    }
+
+    HashMap<TreeNode, Integer> rob2Map = new HashMap<>();
+    public int rob2(TreeNode root) {
+        if(root==null) return 0;
+        if(rob2Map.get(root) != null){
+            return rob2Map.get(root);
+        }
+        int val = root.val;
+        if(root.left!=null){
+            val=val+rob2(root.left.left)+rob2(root.left.right);
+        }
+        if(root.right!=null){
+            val=val+rob2(root.right.left)+rob2(root.right.right);
+        }
+        val = Math.max(val, rob2(root.left)+rob2(root.right));
+        rob2Map.put(root, val);
+        return Math.max(val, rob(root.left)+rob(root.right));
+    }
+
+    public int rob3(TreeNode root) {
+        if(root==null) return 0;
+        int[] res = rob3Helper(root);
+        return Math.max(res[0], res[1]);
+    }
+    public int[] rob3Helper(TreeNode root) {
+        if(root==null) return new int[]{0,0};
+        int[] left = rob3Helper(root.left);
+        int[] right = rob3Helper(root.right);
+        int[] res = new int[2];  //0不抢劫 1抢劫
+        res[0] = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+        res[1] = left[0] + right[0] + root.val;
+        return res;
+    }
+
+    /*
+    Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right which minimizes the sum of all numbers along its path.
+
+    Note: You can only move either down or right at any point in time.
+
+    Example:
+
+    Input:
+    [
+      [1,3,1],
+      [1,5,1],
+      [4,2,1]
+    ]
+    Output: 7
+    Explanation: Because the path 1→3→1→1→1 minimizes the sum.
+     */
+    public int minPathSum(int[][] grid) {
+        int[][] dp = new int[grid.length][grid[0].length];
+        for(int i = 0;i<grid.length;i++){
+            for(int j = 0;j<grid[0].length;j++){
+                if(i==0&&j==0){
+                    dp[0][0] = grid[0][0];
+                } else if(i==0){
+                    dp[i][j] = dp[i][j-1] + grid[i][j];
+                }else if(j==0){
+                    dp[i][j] = dp[i-1][j] + grid[i][j];
+                }else {
+                    dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1]) + grid[i][j];
+                }
+            }
+        }
+        return dp[grid.length-1][grid[0].length-1];
+    }
+    /*
+    Example 1:
+
+    Input: s = "3[a]2[bc]"
+    Output: "aaabcbc"
+    Example 2:
+
+    Input: s = "3[a2[c]]"
+    Output: "accaccacc"
+     */
+
+    public static String decodeString(String s) {
+        char[] c = s.toCharArray();
+        String res = new String();
+        Stack<Character> stack = new Stack<>();
+        for(int i=0;i<c.length;i++){
+            char a = c[i];
+            if(a != ']'){
+                stack.push(a);
+            }else{
+                String str = new String();
+                String num = new String();
+                while (!stack.isEmpty()){
+                    char m = stack.peek();
+                    if(m != '[' && ((m >= 'a' && m<= 'z') || (m >= 'A' && m<= 'Z'))){
+                        m = stack.pop();
+                        str = m + str;
+                    }else if(m != '[' && m >= '0' && m<= '9'){
+                        while (!stack.isEmpty()){
+                            m = stack.pop();
+                            if(m >= '0' && m<= '9'){
+                                num = m + num;
+                            }else {
+                                stack.push(m);
+                                break;
+                            }
+                        }
+                        String tmp2 = new String();
+                        for(int j=0;j<Integer.parseInt(num);j++){
+                            tmp2 = tmp2 + str;
+                        }
+                        char[] x = tmp2.toCharArray();
+                        for(char x1: x){
+                            stack.push(x1);
+                        }
+                        break;
+                    }else {
+                        stack.pop();
+                    }
+                }
+            }
+        }
+        while (!stack.isEmpty()){
+            res = stack.pop() + res;
+        }
+        return res.toString();
+    }
+
+    public static String decodeString2(String s) {
+        Stack<String> resStack = new Stack<>();
+        Stack<Integer> numStack = new Stack<>();
+        String res = new String();
+        int idx = 0;
+        while (idx<s.length()){
+            char c = s.charAt(idx);
+            if(Character.isDigit(c)){
+                int num = 0;
+                while (Character.isDigit(s.charAt(idx))){
+                    num = num*10 + (c-'0');
+                    idx++;
+                }
+                numStack.push(num);
+            }else if(c == '['){
+                resStack.push(res);
+                res = "";
+                idx++;
+            }else if(c == ']'){
+                StringBuilder tmp  = new StringBuilder(resStack.pop());
+                int count = numStack.pop();
+                for(int i=0;i<count;i++){
+                   tmp.append(res);
+                }
+                res = tmp.toString();
+                idx++;
+            }else {
+                res+= c;
+                idx++;
+            }
+        }
+        return res;
+    }
+
+
+    /*
+    Example:
+
+    Input: 1->2->4, 1->3->4
+    Output: 1->1->2->3->4->4
+     */
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode head = new ListNode(0);
+        ListNode curr = head;
+        while (l1 !=null&&l2 !=null){
+            if(l1.val<l2.val){
+                curr.next = l1;
+                l1 = l1.next;
+            }else {
+                curr.next = l2;
+                l2 = l2.next;
+            }
+            curr = curr.next;
+        }
+        curr.next = l1==null?l2:l1;
+        return head.next;
+    }
+
+    /*
+    Given a binary tree, flatten it to a linked list in-place.
+    For example, given the following tree:
+
+        1
+       / \
+      2   5
+     / \   \
+    3   4   6
+    The flattened tree should look like:
+
+    1
+     \
+      2
+       \
+        3
+         \
+          4
+           \
+            5
+             \
+              6
+     */
+
+    public void flatten(TreeNode root) {
+        if(root == null || (root.left == null && root.right==null)) return;
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode curr = root;
+        stack.push(curr);
+        while (!stack.isEmpty()){
+            TreeNode node = stack.pop();
+            if(node.right!=null) stack.push(node.right);
+            if(node.left!=null) stack.push(node.left);
+            node.left = null;
+            curr.right = node;
+            curr = node;
+        }
+    }
+
+    /*
+    Given preorder and inorder traversal of a tree, construct the binary tree.
+
+    Note:
+    You may assume that duplicates do not exist in the tree.
+
+    For example, given
+
+    preorder = [3,9,20,15,7]
+    inorder = [9,3,15,20,7]
+    Return the following binary tree:
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+     */
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        return buildTreeHelper(preorder, 0, preorder.length-1, inorder, 0, inorder.length-1);
+    }
+
+    public TreeNode buildTreeHelper(int[] preorder, int preStart, int preEnd, int[] inorder, int inStart, int inEnd) {
+        if(preStart>preEnd || inStart>inEnd) return null;
+        TreeNode root = new TreeNode(preorder[preStart]);
+        int rootIdx = 0;
+        for(int i=inStart;i<=inEnd;i++){
+            if(root.val == inorder[i]){
+                rootIdx = i;
+                break;
+            }
+        }
+        int leftNum = rootIdx-inStart;
+        root.left = buildTreeHelper(preorder, preStart+1, preStart+leftNum, inorder, inStart, rootIdx-1);
+        root.right = buildTreeHelper(preorder, preStart+leftNum+1, preEnd, inorder, rootIdx+1, inEnd);
+        return root;
+    }
+
+    Map<Integer, Integer> buildMap = new HashMap<>();
+    public TreeNode buildTree2(int[] preorder, int[] inorder) {
+        for(int i=0;i<inorder.length;i++){
+            buildMap.put(inorder[i], i);
+        }
+        return buildTreeHelper2(preorder, 0, preorder.length-1, inorder, 0, inorder.length-1);
+    }
+
+    public TreeNode buildTreeHelper2(int[] preorder, int preStart, int preEnd, int[] inorder, int inStart, int inEnd) {
+        if(preStart>preEnd || inStart>inEnd) return null;
+        TreeNode root = new TreeNode(preorder[preStart]);
+        int rootIdx = buildMap.get(root.val);
+        int leftNum = rootIdx-inStart;
+        root.left = buildTreeHelper2(preorder, preStart+1, preStart+leftNum, inorder, inStart, rootIdx-1);
+        root.right = buildTreeHelper2(preorder, preStart+leftNum+1, preEnd, inorder, rootIdx+1, inEnd);
+        return root;
+    }
 }
+

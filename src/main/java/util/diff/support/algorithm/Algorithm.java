@@ -1,4 +1,4 @@
-package util.diff.support;
+package util.diff.support.algorithm;
 
 /**
  * Created by songpanfei on 2018/11/19.

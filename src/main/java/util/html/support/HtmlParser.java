@@ -230,7 +230,7 @@ public class HtmlParser {
 	}
 
 /*
-	public static final class Test {
+	public static final class ThreadOrder {
 
 		public static final void dumpElement(String input, Element root,
 				String indent, int level, Writer writer) throws IOException

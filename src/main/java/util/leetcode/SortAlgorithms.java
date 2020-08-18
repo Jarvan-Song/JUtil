@@ -8,7 +8,7 @@ import com.google.common.collect.Lists;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Created by songpanfei on 2019-09-23.
@@ -16,7 +16,7 @@ import java.util.Stack;
 public class SortAlgorithms {
     public static void main(String[] args){
         int[] a = new int[]{1,11,3,9,5,6,13,4};
-        heap20200803(a);
+        heap20200817(a);
         for(int i=0;i<a.length;i++){
             System.out.println(a[i]);
         }
@@ -182,323 +182,6 @@ public class SortAlgorithms {
             }
         }
         array[i] = tmp;
-    }
-
-    public static void maopao20200709(int[] array){
-        for(int i= array.length-1;i>0;i--){
-            boolean flag = false;
-            for(int j=0;j<i;j++){
-                if(array[j] > array[j+1]){
-                    flag = true;
-                    int tmp = array[j];
-                    array[j] = array[j+1];
-                    array[j+1] = tmp;
-                }
-            }
-            if(!flag)break;
-        }
-    }
-
-    public static void xuanze20200709(int[] array){
-        for(int i=0;i<array.length-1;i++){
-            int min = i;
-            for(int j=i+1;j<array.length;j++){
-                if(array[j]<array[min]){
-                    min=j;
-                }
-            }
-            if(min!=i){
-                int tmp = array[min];
-                array[min] = array[i];
-                array[i] = tmp;
-            }
-        }
-    }
-
-    public static void charu20200709(int[] array){
-        for(int i=1;i<array.length;i++){
-            int key = i;
-            int val = array[i];
-            while (key>0&&array[key-1]>val){
-                array[key] = array[key-1];
-                key--;
-            }
-            array[key] = val;
-        }
-    }
-
-    public static void kuaisu20200709(int[] array){
-        kuaisu20200709helper(array, 0, array.length-1);
-    }
-
-    public static void kuaisu20200709helper(int[] array, int low, int high){
-        if(low>=high) return;
-        int aow = kuaisu20200709helper2(array, low, high);
-        kuaisu20200709helper(array, low, aow);
-        kuaisu20200709helper(array, aow+1, high);
-    }
-
-    public static int kuaisu20200709helper2(int[] array, int low, int high){
-        int aow = array[low];
-        while (low<high){
-            while (low<high&&array[high]>=aow) high--;
-            array[low]=array[high];
-            while (low<high&&array[low]<=aow) low++;
-            array[high]=array[low];
-        }
-        array[low]=aow;
-        return low;
-    }
-
-    public static void kuaisu20200709feidigui(int[] array){
-        kuaisu20200709feidiguihelper(array, 0, array.length-1);
-    }
-
-    public static void kuaisu20200709feidiguihelper(int[] array, int low, int high){
-        if(low>=high) return;
-        Stack<Integer> stack = new Stack<>();
-        stack.push(low);
-        stack.push(high);
-        while (!stack.isEmpty()){
-            int r = stack.pop();
-            int l = stack.pop();
-            if(l>=r)continue;
-            int aow = kuaisu20200709feidiguihelper2(array, l, r);
-            stack.push(l);
-            stack.push(aow);
-            stack.push(aow+1);
-            stack.push(high);
-        }
-    }
-
-    public static int kuaisu20200709feidiguihelper2(int[] array, int low, int high){
-        int aow = array[low];
-        while (low<high){
-            while (low<high&&array[high]>=aow) high--;
-            array[low]=array[high];
-            while (low<high&&array[low]<=aow) low++;
-            array[high]=array[low];
-        }
-        array[low]=aow;
-        return low;
-    }
-
-
-    public static void guibing20200709(int[] array){
-        int[] temp = new int[array.length];
-        guibing20200709helper(array, temp, 0, array.length-1);
-    }
-
-    public static void guibing20200709helper(int[] array, int[] temp, int low, int high){
-        if(low>=high) return;
-        int mid = low+(high-low)/2;
-        guibing20200709helper(array, temp, low, mid);
-        guibing20200709helper(array, temp, mid+1, high);
-        guibing20200709helper2(array, temp, low, mid, high);
-    }
-
-    public static void guibing20200709helper2(int[] array, int[] temp, int low, int mid, int high){
-        int i = low;
-        int j = mid+1;
-        int k = 0;
-        while (i<=mid&&j<=high){
-            temp[k++] = array[i]>array[j]?array[j++]:array[i++];
-        }
-        while (i<=mid){
-            temp[k++]=array[i++];
-        }
-        while (j<=high){
-            temp[k++]=array[j++];
-        }
-        for(int w =0;w<k;w++){
-            array[low+w]=temp[w];
-        }
-    }
-
-    public static void heap20200709(int[] array){
-        for(int i=array.length-1;i>=0;i--){
-            heap20200709heper(array, i, array.length);
-        }
-        for(int i=array.length-1;i>0;i--){
-            int tmp = array[0];
-            array[0]=array[i];
-            array[i]=tmp;
-            heap20200709heper(array, 0, i);
-        }
-    }
-
-    public static void heap20200709heper(int[] array, int i, int n){
-        int tmp = array[i];
-        for(int k=2*i+1;k<n;k=2*i+1){
-            if(k+1<n&&array[k+1]>array[k]){
-                k++;
-            }
-            if(array[k]>tmp){
-                array[i]=array[k];
-                i=k;
-            }else {
-                break;
-            }
-        }
-        array[i]=tmp;
-    }
-
-
-    public static void maopao20200714(int[] array){
-        for(int i=array.length-1;i>0;i--){
-            boolean flag = false;
-            for(int j=0;j<i;j++){
-                if(array[j]>array[j+1]){
-                    flag = true;
-                    int tmp = array[j];
-                    array[j] = array[j+1];
-                    array[j+1] = tmp;
-                }
-            }
-            if(!flag) break;
-        }
-    }
-
-    public static void xuanze20200714(int[] array){
-        for(int i=0;i<array.length-1;i++){
-            int min = i;
-            for(int j=i+1;j<array.length;j++){
-                if(array[min]>array[j]){
-                    min=j;
-                }
-            }
-            if(min != i){
-                int tmp = array[min];
-                array[min] = array[i];
-                array[i] = tmp;
-            }
-        }
-    }
-
-    public static void charu20200714(int[] array){
-        for(int i=1;i<array.length;i++){
-            int key = i;
-            int val = array[key];
-            while (key>0&&array[key-1]>val){
-                array[key] = array[key-1];
-                key--;
-            }
-            array[key]=val;
-        }
-    }
-
-    public static void kuaisu20200714(int[] array){
-        kuaisu20200714helper(array, 0, array.length-1);
-    }
-
-    public static void kuaisu20200714helper(int[] array, int low, int high){
-        if(low>=high) return;
-        int aow = kuaisu20200714helper2(array, low, high);
-        kuaisu20200714helper(array, low, aow);
-        kuaisu20200714helper(array, aow+1, high);
-    }
-
-    public static int kuaisu20200714helper2(int[] array, int low, int high){
-        int aow = array[low];
-        while (low<high){
-            while (low<high&&array[high]>=aow) high--;
-            array[low]=array[high];
-            while (low<high&&array[low]<=aow) low++;
-            array[high]=array[low];
-        }
-        array[low]=aow;
-        return low;
-    }
-
-    public static void kuaisu20200714feidigui(int[] array){
-        kuaisu20200714helperfeidigui(array, 0, array.length-1);
-    }
-
-    public static void kuaisu20200714helperfeidigui(int[] array, int low, int high){
-        Stack<Integer> stack = new Stack<>();
-        stack.push(low);
-        stack.push(high);
-        while (!stack.isEmpty()){
-            int r = stack.pop();
-            int l = stack.pop();
-            if(l>=r) continue;
-            int aow = kuaisu20200714helper2feidigui(array, l, r);
-            stack.push(l);
-            stack.push(aow);
-            stack.push(aow+1);
-            stack.push(high);
-        }
-    }
-
-    public static int kuaisu20200714helper2feidigui(int[] array, int low, int high){
-        int aow = array[low];
-        while (low<high){
-            while (low<high&&array[high]>=aow) high--;
-            array[low]=array[high];
-            while (low<high&&array[low]<=aow) low++;
-            array[high]=array[low];
-        }
-        array[low]=aow;
-        return low;
-    }
-
-    public static void guibing20200714(int[] array){
-        int[] tmp = new int[array.length];
-        guibing20200714helper(array, tmp, 0, array.length-1);
-    }
-
-    public static void guibing20200714helper(int[] array, int[] tmp, int low, int high){
-        if(low>=high) return;
-        int mid=low+(high-low)/2;
-        guibing20200714helper(array, tmp, low, mid);
-        guibing20200714helper(array, tmp, mid+1, high);
-        guibing20200714helper2(array, tmp, low, mid, high);
-    }
-
-    public static void guibing20200714helper2(int[] array, int[] tmp, int low, int mid, int high){
-        int i = low;
-        int j = mid+1;
-        int k = 0;
-        while (i<=mid&&j<=high){
-            tmp[k++]=array[i]>array[j]?array[j++]:array[i++];
-        }
-        while (i<=mid){
-            tmp[k++]=array[i++];
-        }
-        while (j<=high){
-            tmp[k++]=array[j++];
-        }
-        for(int w =0;w<k;w++){
-            array[low+w]=tmp[w];
-        }
-    }
-
-    public static void heap20200714(int[] array){
-        for(int i=array.length-1;i>=0;i--){
-            heap20200714helper(array, i, array.length);
-        }
-        for(int i=array.length-1;i>0;i--){
-            int tmp = array[0];
-            array[0] = array[i];
-            array[i]=tmp;
-            heap20200714helper(array, 0, i);
-        }
-    }
-
-    public static void heap20200714helper(int[] array, int i, int n){
-        int tmp = array[i];
-        for(int k=2*i+1;k<n;k=2*i+1){
-            if(k+1<n&&array[k+1]>array[k]){
-                k++;
-            }
-            if(array[k]>tmp){
-                array[i]=array[k];
-                i=k;
-            }else {
-                break;
-            }
-        }
-        array[i]=tmp;
     }
 
     public static void maopao20200721(int[] array){
@@ -948,26 +631,290 @@ public class SortAlgorithms {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public static void maopao20200810(int[] array){
+        for(int i=array.length-1;i>0;i--){
+            boolean flag = false;
+            for(int j=0;j<i;j++){
+                if(array[j]>array[j+1]){
+                    int tmp = array[j];
+                    array[j] = array[j+1];
+                    array[j+1] = tmp;
+                    flag = true;
+                }
+            }
+            if(!flag) break;
+        }
     }
+    public static void xuanze20200810(int[] array){
+        for(int i=0;i<array.length-1;i++){
+            int min = i;
+            for(int j = i+1;j<array.length;j++){
+                if(array[min]>array[j]){
+                    min = j;
+                }
+            }
+            if(min!=i){
+                int tmp = array[min];
+                array[min] = array[i];
+                array[i] = tmp;
+            }
+        }
+    }
+    public static void charu20200810(int[] array){
+        for(int i= 1;i<array.length;i++){
+            int key = i;
+            int val = array[i];
+            while (key>0&&array[key-1]>val){
+                array[key] = array[key-1];
+                key--;
+            }
+            array[key]=val;
+        }
+    }
+    public static void kuaisu20200810(int[] array){
+        kuaisu20200810Helper(array, 0, array.length-1);
+    }
+    public static void kuaisu20200810Helper(int[] array, int low, int high){
+        if(low>=high) return;
+        int aow = kuaisu20200810Helper2(array, low, high);
+        kuaisu20200810Helper(array, low, aow);
+        kuaisu20200810Helper(array, aow+1, high);
+    }
+    public static int kuaisu20200810Helper2(int[] array, int low, int high){
+        int aow = array[low];
+        while (low<high){
+            while (low<high&&array[high]>=aow) high--;
+            array[low]=array[high];
+            while (low<high&&array[low]<=aow) low++;
+            array[high]=array[low];
+        }
+        array[low]=aow;
+        return low;
+    }
+    public static void kuaisu20200810Fei(int[] array){
+        kuaisu20200810FeiHelper(array, 0, array.length-1);
+    }
+    public static void kuaisu20200810FeiHelper(int[] array, int low, int high){
+        Stack<Integer> stack = new Stack<>();
+        stack.push(low);
+        stack.push(high);
+        while (!stack.isEmpty()){
+            int r = stack.pop();
+            int l = stack.pop();
+            if(l>=r) continue;
+            int aow = kuaisu20200810Helper2(array, l, r);
+            stack.push(l);
+            stack.push(aow);
+            stack.push(aow+1);
+            stack.push(r);
+        }
+    }
+    public static void guibing20200810(int[] array){
+        int[] tmp = new int[array.length];
+        guibing20200810Helper(array, tmp, 0, array.length-1);
+    }
+    public static void guibing20200810Helper(int[] array, int[] tmp, int low, int high){
+        if(low>=high) return;
+        int mid = low + (high-low)/2;
+        guibing20200810Helper(array,tmp, low, mid);
+        guibing20200810Helper(array,tmp, mid+1, high);
+        guibing20200810Helper2(array,tmp, low, mid, high);
+    }
+    public static void guibing20200810Helper2(int[] array, int[] tmp, int low, int mid, int high){
+        int i = low;
+        int j = mid+1;
+        int k = 0;
+        while (i<=mid&&j<=high){
+            tmp[k++]=array[i]>array[j]?array[j++]:array[i++];
+        }
+        while (i<=mid){
+            tmp[k++]=array[i++];
+        }
+        while (j<=high){
+            tmp[k++]=array[j++];
+        }
+        for(int w=0;w<k;w++){
+            array[low+w]=tmp[w];
+        }
+    }
+    public static void heap20200810(int[] array){
+        for(int i=array.length/2;i>=0;i--){
+            heap20200810Helper(array, i, array.length);
+        }
+        for(int i = array.length-1;i>0;i--){
+            int tmp = array[i];
+            array[i]=array[0];
+            array[0]=tmp;
+            heap20200810Helper(array, 0, i);
+        }
+    }
+    public static void heap20200810Helper(int[] array, int i, int n){
+        int tmp = array[i];
+        for(int k=2*i+1;k<n;k=2*i+1){
+            if(k+1<n&&array[k+1]>array[k]){
+                k++;
+            }
+            if(array[k]>tmp){
+                array[i]=array[k];
+                i=k;
+            }else {
+                break;
+            }
+        }
+        array[i]=tmp;
+    }
+
+    public static void maopao20200817(int[] array){
+        for(int i= array.length-1;i>0;i--){
+            boolean flag = false;
+            for(int j=0;j<i;j++){
+                if(array[j]>array[j+1]){
+                    int tmp = array[j];
+                    array[j]=array[j+1];
+                    array[j+1]=tmp;
+                    flag = true;
+                }
+            }
+            if(!flag)break;
+        }
+    }
+
+
+    public static void xuanze20200817(int[] array){
+        for(int i=0;i<array.length-1;i++){
+            int min = i;
+            for(int j=i+1;j<array.length;j++){
+                if(array[min]>array[j]){
+                    min=j;
+                }
+            }
+            if(min!=i){
+                int tmp = array[min];
+                array[min]=array[i];
+                array[i]=tmp;
+            }
+        }
+    }
+
+    public static void charu20200817(int[] array){
+        for(int i=1;i<array.length;i++){
+            int key = i;
+            int val = array[i];
+            while (key>0&&array[key-1]>=val){
+                array[key]=array[key-1];
+                key--;
+            }
+            array[key]=val;
+        }
+    }
+
+    public static void kuaisu20200817(int[] array){
+        kuaisu20200817Helper(array, 0, array.length-1);
+    }
+
+    public static void kuaisu20200817Helper(int[] array, int low, int high){
+        if(low>=high) return;
+        int aow = kuaisu20200817Helper2(array, low, high);
+        kuaisu20200817Helper(array, low, aow);
+        kuaisu20200817Helper(array, low+1, high);
+    }
+    public static int kuaisu20200817Helper2(int[] array, int low, int high){
+        int aow = array[low];
+        while (low<high){
+            while (low<high&&array[high]>=aow) high--;
+            array[low]=array[high];
+            while (low<high&&array[low]<=aow) low++;
+            array[high]=array[low];
+        }
+        array[low]=aow;
+        return low;
+    }
+
+    public static void kuaisu20200817Fei(int[] array){
+        kuaisu20200817FeiHelper(array, 0, array.length-1);
+    }
+
+    public static void kuaisu20200817FeiHelper(int[] array, int low, int high){
+        Stack<Integer> stack = new Stack<>();
+        stack.push(low);
+        stack.push(high);
+        while (!stack.isEmpty()){
+            int r = stack.pop();
+            int l = stack.pop();
+            if(l>=r) continue;
+            int aow = kuaisu20200817FeiHelper2(array, l, r);
+            stack.push(l);
+            stack.push(aow);
+            stack.push(aow+1);
+            stack.push(r);
+        }
+    }
+    public static int kuaisu20200817FeiHelper2(int[] array, int low, int high){
+        int aow = array[low];
+        while (low<high){
+            while (low<high&&array[high]>=aow) high--;
+            array[low]=array[high];
+            while (low<high&&array[low]<=aow) low++;
+            array[high]=array[low];
+        }
+        array[low]=aow;
+        return low;
+    }
+
+    public static void guibing20200817(int[] array){
+        int[] tmp = new int[array.length];
+        guibing20200817Helper(array, tmp, 0, array.length-1);
+    }
+    public static void guibing20200817Helper(int[] array, int[] tmp, int low, int high){
+        if(low>=high)return;
+        int mid = low+(high-low)/2;
+        guibing20200817Helper(array, tmp, low, mid);
+        guibing20200817Helper(array, tmp, mid+1, high);
+        guibing20200817Helper2(array, tmp, low, mid, high);
+    }
+    public static void guibing20200817Helper2(int[] array, int[] tmp, int low, int mid, int high){
+        int i=low;
+        int j = mid+1;
+        int k=0;
+        while (i<=mid&&j<=high){
+            tmp[k++]=array[i]>array[j]?array[j++]:array[i++];
+        }
+        while (i<=mid){
+            tmp[k++]=array[i++];
+        }
+        while (j<=high){
+            tmp[k++]=array[j++];
+        }
+        for(int w=0;w<k;w++){
+            array[low+w]=tmp[w];
+        }
+    }
+
+    public static void heap20200817(int[] array){
+        for(int i =array.length/2;i>=0;i--){
+            heap20200817Helper(array, i, array.length);
+        }
+        for(int i=array.length-1;i>0;i--){
+            int tmp = array[0];
+            array[0]=array[i];
+            array[i]=tmp;
+            heap20200817Helper(array, 0, i);
+        }
+    }
+
+    public static void heap20200817Helper(int[] array, int i, int n){
+        int tmp = array[i];
+        for(int k = 2*i+1;k<n;k=2*i+1){
+            if(k+1<n&&array[k+1]>array[k]){
+                k++;
+            }
+            if(array[k]>=tmp){
+                array[i]=array[k];
+                i=k;
+            }else {
+                break;
+            }
+        }
+        array[i]=tmp;
+    }
+}

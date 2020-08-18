@@ -11,12 +11,12 @@ public class Test {
 //        ReentrantLock reentrantLock = new ReentrantLock();
 //        reentrantLock.lock();
 //        reentrantLock.newCondition();
-//        Thread thread = new MyThread();
+//        ThreadOrder thread = new MyThread();
 //        thread.start();
-//        Thread.sleep(500);
+//        ThreadOrder.sleep(500);
 //        System.out.println(thread.getState());
 //        thread.interrupt();
-//        Thread.sleep(1000);
+//        ThreadOrder.sleep(1000);
 //        System.out.println(thread.isInterrupted());
 //        String url = "https://pic.baike.soso.com/ugc/baikepic2/0/20200717163941-1430022197_jpeg_500_500_43868.jpg/800";
 //        String url2 = "https://pic.baike.soso.com/ugc/baikepic2/0/ori-20190909104631-854506882_jpg_738_501_52730.jpg/800";
@@ -49,10 +49,7 @@ public class Test {
 //        a.put(17+"",1+"");
 //        HashMap<String ,String> b = new HashMap<>();
 
-        ThreadLocal<String> a = new ThreadLocal<>();
-        a.get();
-        a.set("1");
-        a.set("2");
+
     }
 
     static class MyThread extends Thread{
@@ -66,5 +63,26 @@ public class Test {
                 }
             }
         }
+    }
+
+
+    public static int test(int[][] array){
+        int m = array.length;
+        int n = array[0].length;
+        int[][] dp = new int[m][n];
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(i==0&&j==0){
+                    dp[0][0]=0;
+                }else if(i==0){
+                    dp[i][j]=dp[i][j-1]+array[i][j];
+                }else if(j==0){
+                    dp[i][j]=dp[j-1][i]+array[i][j];
+                }else {
+                    dp[i][j]=Math.min(dp[i-1][j], dp[i][j-1])+dp[i][j];
+                }
+            }
+        }
+        return dp[m-1][n-1];
     }
 }

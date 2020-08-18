@@ -1,5 +1,6 @@
 package util.leetcode;
 
+import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -101,6 +102,57 @@ public class BSTree<T extends Comparable<T>> {
             p = p.left;
         }
         return p;
+    }
+
+
+    //前序遍历
+    public void qian(Node root){
+        if(root == null) return;
+        Node curr = root;
+        Stack<Node> stack = new Stack<>();
+        stack.push(curr);
+        while (!stack.isEmpty()){
+            curr = stack.pop();
+            System.out.println(curr.data);
+            if(curr.right!=null) stack.push(curr.right);
+            if(curr.left!=null) stack.push(curr.left);
+        }
+    }
+
+    //中序遍历
+    public void zhong(Node root){
+        if(root == null) return;
+        Node curr = root;
+        Stack<Node> stack = new Stack<>();
+        while (!stack.isEmpty() || curr != null){
+            while (curr!=null){
+                stack.push(curr);
+                curr=curr.left;
+            }
+            curr=stack.pop();
+            System.out.println(curr.data);
+            if(curr.right!=null){
+                curr=curr.right;
+            }
+        }
+    }
+
+    //后序遍历  左右中 == 中右左入栈然后出栈
+    public void hou(Node root){
+        if(root == null) return;
+        Stack<Node> stack1 = new Stack<>();
+        Stack<Node> stack2 = new Stack<>();
+        Node curr = root;
+        stack1.push(curr);
+        while (!stack1.isEmpty()){
+            curr = stack1.pop();
+            stack2.push(curr);
+            if(curr.left!=null) stack1.push(curr.left);
+            if(curr.right!=null) stack1.push(curr.right);
+        }
+        while (!stack2.isEmpty()){
+            System.out.println(stack2.pop().data);
+        }
     }
 
     class Node<T extends Comparable<T>>{

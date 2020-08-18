@@ -343,7 +343,7 @@ public class AttributeParser {
 	}
 
 /*	
-	public static final class Test {
+	public static final class ThreadOrder {
 		public static final void main(String args[]) throws Exception {
 			
 			Reader reader = new InputStreamReader(new FileInputStream(

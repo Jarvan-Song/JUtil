@@ -1,4 +1,4 @@
-package util.diff.support;
+package util.diff.support.spliter;
 
 
 
