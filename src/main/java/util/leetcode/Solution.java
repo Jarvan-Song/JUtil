@@ -1,17 +1,20 @@
 package util.leetcode;
 
 import com.sun.org.apache.regexp.internal.RE;
+import org.omg.CORBA.MARSHAL;
+import util.net.NetUtil;
 
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by songpanfei on 2019-09-19.
  */
 public class Solution {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
 //        System.out.println(reverse2(-2147483648));
 //        System.out.println(IsPalindrome3(1234));
 //        System.out.println(searchInsert2(new int[]{1,2,4,5},6));
@@ -73,8 +76,16 @@ public class Solution {
 //            System.out.println(a.val);
 //            a = a.next;
 //        }
-        String s = "3[a]2[bc]";
-        System.out.println(decodeString2(s));
+//        String s = "3[a]2[bc]";
+//        System.out.println(decodeString2(s));
+//        char[][] a = new char[][]{
+//                {'1','1','1','1','0'},
+//                {'1','1','0','1','0'},
+//                {'1','1','0','0','0'},
+//                {'0','0','0','0','0'}};
+//        char[][] w = {{'1'}};
+        int[] a = {2,1,5,6,2,3};
+        System.out.println(largestRectangleArea3(a));
     }
 
     public boolean wordPattern(String pattern, String str) {
@@ -4118,5 +4129,1878 @@ rotate the input matrix in-place such that it becomes:
         root.right = buildTreeHelper2(preorder, preStart+leftNum+1, preEnd, inorder, rootIdx+1, inEnd);
         return root;
     }
+
+
+    public static int numSquares(int n) {
+        int[] dp = new int[n+1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0]=0;
+        for(int i=1;i<=n;i++){
+            for(int j=1;j*j<=i;j++){
+                dp[i]=Math.min(dp[i], dp[i-j*j]+1);
+            }
+        }
+        return dp[n];
+    }
+
+
+
+    /*
+    Note: You are not suppose to use the library's sort function for this problem.
+
+    Example:
+
+    Input: [2,0,2,1,1,0]
+    Output: [0,0,1,1,2,2]
+     */
+    public void sortColors(int[] nums) {
+        int[] array = new int[3];
+        Arrays.fill(array, 0);
+        for(int i=0;i<nums.length;i++){
+            array[nums[i]]++;
+        }
+        int idx = 0;
+        for(int i=0;i<array.length;i++){
+            for(int j=0;j<array[i];j++){
+                nums[idx++]=i;
+            }
+        }
+    }
+
+    public void sortColors2(int[] nums) {
+        int red = 0;int blue = nums.length-1;
+        for(int i=0;i<=blue;i++){
+            if(nums[i]==0){
+                int tmp = nums[i];
+                nums[i]=nums[red];
+                nums[red]=tmp;
+                red++;
+                i++;
+            }else if(nums[i]==2){
+                int tmp = nums[i];
+                nums[i]=nums[blue];
+                nums[blue]=tmp;
+                blue--;
+            }else {
+                i++;
+            }
+        }
+    }
+
+    /*
+    Example:
+
+    Input: "23"
+    Output: ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+     */
+    public List<String> letterCombinations(String digits) {
+        List<String> list = new LinkedList<>();
+        if(digits == null || digits.length() == 0) return list;
+        char[][] map = {{},{},{'a','b','c'},{'d','e','f'},{'g','h','i'},{'j','k','l'},{'m','n','o'},{'p','q','r','s'},{'t','u','v'},{'w','x','y','z'}};
+        letterCombinationsHelper(digits, 0, map, "", list);
+        return list;
+    }
+
+    public void letterCombinationsHelper(String digits, int idx, char[][] map, String sb,  List<String> res) {
+        if(idx == digits.length()){
+            res.add(sb);
+        }else {
+            char[] a = map[digits.charAt(idx)-'0'];
+            for(int i=0;i<a.length;i++){
+                sb = sb+a[i];
+                letterCombinationsHelper(digits, idx+1, map, sb, res);
+                sb = sb.substring(0,sb.length()-1);
+            }
+        }
+    }
+
+    //abc
+    public static List<String> test(String input){
+        List<String> res = new LinkedList<>();
+        if(input==null||input.length()==0) return res;
+        char[] ch = input.toCharArray();
+        return testHelper(ch, ch.length-1);
+    }
+    public static List<String> testHelper(char[] ch, int idx){
+        if(idx == 0){
+            List<String> res = new LinkedList<>();
+            res.add(ch[idx]+"");
+            return res;
+        }
+        List<String> res = testHelper(ch, idx-1);
+        List<String> res_new = new LinkedList<>();
+        for(String str: res){
+            res_new.add(ch[idx]+str);
+            for(int i=1;i<str.length();i++){
+                res_new.add(str.substring(0, i) + ch[idx] + str.substring(i));
+            }
+            res_new.add(str+ch[idx]);
+        }
+        return res_new;
+    }
+
+    /*
+    Example 1:
+
+    Input: grid = [
+      ["1","1","1","1","0"],
+      ["1","1","0","1","0"],
+      ["1","1","0","0","0"],
+      ["0","0","0","0","0"]
+    ]
+    Output: 1
+     */
+
+    //dfs
+    public int numIslands(char[][] grid) {
+        if(grid==null||grid.length==0) return 0;
+        int res = 0;
+        boolean[][] visit = new boolean[grid.length][grid[0].length];
+        for(int i=0;i<grid.length;i++){
+            for(int j=0;j<grid[0].length;j++){
+                if(grid[i][j] == '1' && !visit[i][j]){
+                    numIslandsDfs(grid, visit, i, j);
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
+    public void numIslandsDfs(char[][] grid, boolean[][] visit, int x, int y){
+        if(x<0||x>grid.length-1||y<0||y>grid[0].length-1||grid[x][y]=='0'||visit[x][y]){
+            return;
+        }
+        visit[x][y]=true;
+        numIslandsDfs(grid, visit, x-1, y);
+        numIslandsDfs(grid, visit, x+1, y);
+        numIslandsDfs(grid, visit, x, y-1);
+        numIslandsDfs(grid, visit, x, y+1);
+    }
+
+    //bfs
+    public static int numIslands2(char[][] grid) {
+        int res = 0;
+        if(grid==null||grid.length==0) return res;
+        int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        for(int i=0;i<grid.length;i++){
+            for(int j=0;j<grid[0].length;j++){
+                if(grid[i][j] == '1'){
+                    Queue<int[]> queue = new LinkedList<>();
+                    queue.add(new int[]{i,j});
+                    while (!queue.isEmpty()){
+                        int[] cur = queue.poll();
+                        for (int[] dir : dirs) {
+                            int x = cur[0] + dir[0];
+                            int y = cur[1] + dir[1];
+                            if(x >= 0 && x < grid.length && y >= 0 && y < grid[0].length && grid[x][y] == '1') {
+                                grid[x][y] = '0';
+                                queue.add(new int[]{x, y});
+                            }
+                        }
+                    }
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
+    //bfs
+    public static int numIslands3(char[][] grid) {
+        int res = 0;
+        if(grid==null||grid.length==0) return res;
+        boolean[][] visit = new boolean[grid.length][grid[0].length];
+        int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        for(int i=0;i<grid.length;i++){
+            for(int j=0;j<grid[0].length;j++){
+                if(grid[i][j] == '1' && !visit[i][j]){
+                    Queue<int[]> queue = new LinkedList<>();
+                    queue.add(new int[]{i,j});
+                    while (!queue.isEmpty()){
+                        int[] cur = queue.poll();
+                        for (int[] dir : dirs) {
+                            int x = cur[0] + dir[0];
+                            int y = cur[1] + dir[1];
+                            if(x >= 0 && x < grid.length && y >= 0 && y < grid[0].length && grid[x][y] == '1'&&!visit[x][y]) {
+                                visit[x][y] = true;
+                                queue.add(new int[]{x, y});
+                            }
+                        }
+                    }
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
+    /*
+
+        Given a non-empty 2D array grid of 0's and 1's, an island is a group of 1's (representing land) connected 4-directionally (horizontal or vertical.) You may assume all four edges of the grid are surrounded by water.
+
+    Find the maximum area of an island in the given 2D array. (If there is no island, the maximum area is 0.)
+
+    Example 1:
+
+    [[0,0,1,0,0,0,0,1,0,0,0,0,0],
+     [0,0,0,0,0,0,0,1,1,1,0,0,0],
+     [0,1,1,0,1,0,0,0,0,0,0,0,0],
+     [0,1,0,0,1,1,0,0,1,0,1,0,0],
+     [0,1,0,0,1,1,0,0,1,1,1,0,0],
+     [0,0,0,0,0,0,0,0,0,0,1,0,0],
+     [0,0,0,0,0,0,0,1,1,1,0,0,0],
+     [0,0,0,0,0,0,0,1,1,0,0,0,0]]
+    Given the above grid, return 6. Note the answer is not 11, because the island must be connected 4-directionally.
+     */
+    public int maxAreaOfIsland(int[][] grid) {
+        int res = 0;
+        if(grid==null||grid.length==0) return 0;
+        for(int i=0;i<grid.length;i++){
+            for(int j=0;j<grid[0].length;j++){
+                if(grid[i][j] == 1){
+                    AtomicInteger tmp = new AtomicInteger();
+                    maxAreaOfIslandDFS(grid, i, j, tmp);
+                    res = Math.max(res, tmp.get());
+                }
+            }
+        }
+        return res;
+    }
+
+    public void maxAreaOfIslandDFS(int[][] grid, int x, int y,  AtomicInteger tmp){
+        if(x<0||x>grid.length-1||y<0||y>grid[0].length-1||grid[x][y]==0){
+            return;
+        }
+        grid[x][y]=0;
+        tmp.incrementAndGet();
+        maxAreaOfIslandDFS(grid, x-1, y, tmp);
+        maxAreaOfIslandDFS(grid, x+1, y, tmp);
+        maxAreaOfIslandDFS(grid, x, y-1, tmp);
+        maxAreaOfIslandDFS(grid, x, y+1, tmp);
+    }
+
+
+    /*
+    Example 1:
+
+    Input: nums is [1, 1, 1, 1, 1], S is 3.
+    Output: 5
+    Explanation:
+
+    -1+1+1+1+1 = 3
+    +1-1+1+1+1 = 3
+    +1+1-1+1+1 = 3
+    +1+1+1-1+1 = 3
+    +1+1+1+1-1 = 3
+
+    There are 5 ways to assign symbols to make the sum of nums be target 3.
+     */
+    public int findTargetSumWays(int[] nums, int S) {
+        AtomicInteger res = new AtomicInteger();
+        findTargetSumWaysdfs(nums, S, nums.length-1, res);
+        return res.get();
+    }
+    public void findTargetSumWaysdfs(int[] nums, int target, int idx, AtomicInteger res) {
+        if(target==0&&idx==-1){
+            res.incrementAndGet();
+            return;
+        }
+        if(idx>=0){
+            findTargetSumWaysdfs(nums, target-nums[idx], idx-1,  res);
+            findTargetSumWaysdfs(nums, target+nums[idx], idx-1,  res);
+        }
+    }
+
+    /*
+                      sum(P) - sum(N) = target
+    sum(P) + sum(N) + sum(P) - sum(N) = target + sum(P) + sum(N)
+                           2 * sum(P) = target + sum(nums)
+    So the original problem has been converted to a subset sum problem as follows:
+    Find a subset P of nums such that sum(P) = (target + sum(nums)) / 2
+     */
+    public int findTargetSumWays2(int[] nums, int S) {
+        if(nums == null || nums.length==0)return 0;
+        int sum = 0;
+        for(int a: nums) sum+=a;
+        if(S> sum || (sum+S)%2==1) return 0;
+        return subsetSum(nums, (S+sum)/2);
+    }
+
+    private int subsetSum(int[] nums, int k) {
+        int[][] dp = new int[nums.length+1][k+1];
+        dp[0][0] = 1;
+        for(int i=1;i<=nums.length;i++){
+            for(int j=0;j<=k;j++){
+                if(j<nums[i-1]){
+                    dp[i][j] = dp[i-1][j];
+                }else {
+                    dp[i][j] = dp[i-1][j] + dp[i-1][j-nums[i-1]];
+                }
+            }
+        }
+        return dp[nums.length][k];
+    }
+
+    /*
+         416. Partition Equal Subset Sum
+         Given a non-empty array containing only positive integers, find if the array can be partitioned into two subsets such that the sum of elements in both subsets is equal.
+
+        Note:
+
+        Each of the array element will not exceed 100.
+        The array size will not exceed 200.
+
+
+        Example 1:
+
+        Input: [1, 5, 11, 5]
+
+        Output: true
+
+        Explanation: The array can be partitioned as [1, 5, 5] and [11].
+     */
+
+    public boolean canPartition(int[] nums) {
+        int sum = 0;
+        for(int n: nums) sum+=n;
+        if(sum%2==1) return false;
+        sum = sum/2;
+        boolean[][] dp = new boolean[nums.length+1][sum+1];
+        dp[0][0] = true;
+        for(int i= 1;i<=nums.length;i++){
+            for(int j=0;j<=sum;j++){
+                if(j<nums[i-1]){
+                    dp[i][j]=dp[i-1][j];
+                }else {
+                    dp[i][j] = dp[i-1][j]||dp[i-1][j-nums[i-1]];
+                }
+            }
+        }
+        return dp[nums.length][sum];
+    }
+
+    /*
+    Example 1:
+
+    Input:nums = [1,1,1], k = 2
+    Output: 2
+     */
+    public int subarraySum(int[] nums, int k) {
+        int res = 0;
+        int tmp = 0;
+        for(int i=0;i<nums.length;i++){
+            tmp = 0;
+            for(int j=i;j<nums.length;j++){
+                tmp += nums[j];
+                if(tmp == k){
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
+    /*
+    使用一个字典保存数组某个位置之前的数组和，然后遍历数组求和，这样当我们求到一个位置的和的时候，向前找sum-k是否在数组中，如果在的话，更新结果为之前的结果+(sum-k出现的次数)。同时，当前这个sum出现的次数就多了一次。
+
+    这个字典的意义是什么呢？其意义就是我们在到达i位置的时候，前i项的和出现的次数的统计。我们想找的是在i位置向前的连续区间中，有多少个位置的和是k。有了这个统计，我们就不用向前一一遍历找sum - k在哪些位置出现了，而是直接得出了前面有多少个区间。所以，在每个位置我们都得到了以这个位置为结尾的并且和等于k的区间的个数，所以总和就是结果
+     */
+    public int subarraySum2(int[] nums, int k) {
+        int res = 0;
+        int tmp = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
+        for(int i=0;i<nums.length;i++){
+            tmp+=nums[i];
+            if(map.get(tmp-k)!=null){
+                res+=map.get(tmp-k);
+            }
+            map.put(tmp, map.getOrDefault(tmp, 0)+1);
+        }
+        return res;
+    }
+
+    /*
+
+    Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.
+    According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”
+    Given the following binary tree:  root = [3,5,1,6,2,0,8,null,null,7,4]
+    Example 1:
+    Input: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1
+    Output: 3
+    Explanation: The LCA of nodes 5 and 1 is 3.
+     */
+
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        TreeNode res = null;
+        Queue<TreeNode> queue = new LinkedList<>();
+        TreeNode head = root;
+        queue.add(head);
+        while (!queue.isEmpty()){
+            TreeNode curr = queue.poll();
+            if(curr.left==null&&curr.right==null) continue;
+            if(lowestCommonAncestorHelper(curr, p, q)){
+                res = curr;
+            }
+            if(curr.left != null) queue.offer(curr.left);
+            if(curr.right != null) queue.offer(curr.right);
+        }
+        return res;
+    }
+
+    public boolean lowestCommonAncestorHelper(TreeNode root, TreeNode p, TreeNode q) {
+        int size = 0;
+        TreeNode head = root;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(head);
+        while (!queue.isEmpty()){
+            TreeNode curr = queue.poll();
+            if(curr == p || curr == q){
+                size++;
+            }
+            if(size==2) return true;
+            if(curr.left != null) queue.offer(curr.left);
+            if(curr.right != null) queue.offer(curr.right);
+        }
+        return false;
+    }
+
+    public TreeNode lowestCommonAncestor2(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null || root == p || root == q)  return root;
+        TreeNode left = lowestCommonAncestor2(root.left, p, q);
+        TreeNode right = lowestCommonAncestor2(root.right, p, q);
+        if(left != null && right != null)   return root;
+        return left != null ? left : right;
+    }
+
+    /*
+    Given a string s and a non-empty string p, find all the start indices of p's anagrams in s.
+    Strings consists of lowercase English letters only and the length of both strings s and p will not be larger than 20,100.
+    The order of output does not matter.
+
+    Example 1:
+    Input:
+    s: "cbaebabacd" p: "abc"
+    Output:
+    [0, 6]
+    Explanation:
+    The substring with start index = 0 is "cba", which is an anagram of "abc".
+    The substring with start index = 6 is "bac", which is an anagram of "abc".
+     */
+
+    public static List<Integer> findAnagrams(String s, String p) {
+        List<Integer> res = new LinkedList<>();
+        HashMap<Character, Integer> map = new HashMap<>();
+        for(Character a: p.toCharArray()){
+            map.put(a, map.getOrDefault(a, 0)+1);
+        }
+        for(int i=0;i<s.toCharArray().length-p.toCharArray().length+1;i++){
+            HashMap<Character, Integer> mapUse = new HashMap<>();
+            boolean flag = true;
+            for(int j=i;j<i+p.toCharArray().length;j++){
+                Character me = s.charAt(j);
+                int to = mapUse.getOrDefault(me, 0);
+                if(map.containsKey(me) && to < map.get(me)){
+                    mapUse.put(me, to+1);
+                }else {
+                    flag=false;
+                    break;
+                }
+            }
+            if(flag) res.add(i);
+        }
+        return res;
+    }
+    //数组里均保持p.toArrayChar.length个字符数量
+    public List<Integer> findAnagrams2(String s, String p) {
+        List<Integer> list = new ArrayList<>();
+        if (s == null || s.length() == 0 || s.length() < p.length()) {
+            return list;
+        }
+        int[] pArr = new int[26];
+        int[] sArr = new int[26];
+        for(int i=0; i<p.length(); i++){
+            pArr[p.charAt(i)-'a']++;
+            sArr[s.charAt(i)-'a']++;
+        }
+        if (Arrays.equals(pArr, sArr)) {
+            list.add(0);
+        }
+        for (int j=p.length(); j<s.length(); j++) {
+            ++sArr[s.charAt(j)-'a'];
+            --sArr[s.charAt(j-p.length())-'a'];
+            if (Arrays.equals(pArr, sArr)) {
+                list.add(j-p.length()+1);
+            }
+        }
+        return list;
+    }
+
+
+    public static List<Integer> findAnagrams3(String s, String p) {
+        List<Integer> list = new ArrayList<>();
+        if (s == null || s.length() == 0 || p == null || p.length() == 0) return list;
+        int[] hash = new int[26]; //character hash
+        for (char c : p.toCharArray()) {
+            hash[c-'a']++;
+        }
+        //two points, initialize count to p's length
+        int left = 0, right = 0, count = p.length();
+        while (right < s.length()) {
+            //move right everytime, if the character exists in p's hash, decrease the count
+            //current hash value >= 1 means the character is existing in p
+            if (hash[s.charAt(right)-'a'] >= 1) {
+                count--;
+            }
+            hash[s.charAt(right)-'a']--;
+            right++;
+            //when the count is down to 0, means we found the right anagram
+            //then add window's left to result list
+            if (count == 0) {
+                list.add(left);
+            }
+            //if we find the window's size equals to p, then we have to move left (narrow the window) to find the new match window
+            //++ to reset the hash because we kicked out the left
+            //only increase the count if the character is in p
+            //the count >= 0 indicate it was original in the hash, cuz it won't go below 0
+            if (right - left == p.length() ) {
+                if (hash[s.charAt(left)-'a'] >= 0) {
+                    count++;
+                }
+                hash[s.charAt(left)-'a']++;
+                left++;
+
+            }
+        }
+        return list;
+    }
+
+    /*
+    Example:
+    Consider the following matrix:
+
+    [
+      [1,   4,  7, 11, 15],
+      [2,   5,  8, 12, 19],
+      [3,   6,  9, 16, 22],
+      [10, 13, 14, 17, 24],
+      [18, 21, 23, 26, 30]
+    ]
+    本质上是个搜索二叉树
+     */
+
+    public static boolean searchMatrix(int[][] matrix, int target) {
+        for(int[] a: matrix){
+            if(binarySearch(a, target)) return true;
+        }
+        return false;
+    }
+    public static boolean binarySearch(int[] array, int target){
+        int left = 0;
+        int right = array.length-1;
+        while (left<=right){
+            int mid = left+(right-left)/2;
+            if(array[mid]==target){
+                return true;
+            }else if(array[mid]>target){
+                right = mid-1;
+            }else {
+                left = mid+1;
+            }
+        }
+        return false;
+    }
+
+    public boolean searchMatrix2(int[][] matrix, int target) {
+        if(matrix == null || matrix.length < 1 || matrix[0].length <1) {
+            return false;
+        }
+        int col = matrix[0].length-1;
+        int row = 0;
+        while(col >= 0 && row <= matrix.length-1) {
+            if(target == matrix[row][col]) {
+                return true;
+            } else if(target < matrix[row][col]) {
+                col--;
+            } else if(target > matrix[row][col]) {
+                row++;
+            }
+        }
+        return false;
+    }
+
+
+    /*
+    207. Course Schedule
+    Example 1:
+    Input: numCourses = 2, prerequisites = [[1,0]]
+    Output: true
+    Explanation: There are a total of 2 courses to take.
+                 To take course 1 you should have finished course 0. So it is possible.
+     */
+    //bfs
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        // 建立邻接表
+        LinkedList<Integer>[]  array = new LinkedList[numCourses];
+        for(int i=0;i<numCourses;i++){
+            array[i] = new LinkedList<>();
+        }
+        // 初始化邻接表数据
+        int[] degree = new int[numCourses];
+        for(int i=0;i<prerequisites.length;i++){
+            int first = prerequisites[i][0];
+            int second = prerequisites[i][1];
+            degree[first]++;
+            array[second].add(first);
+        }
+        //入队列所有入度为0的节点，从他们开始遍历
+        int count = 0;
+        Queue<Integer> queue = new LinkedList<>();
+        for(int i=0;i<numCourses;i++){
+            if(degree[i]==0){
+                queue.offer(i);
+                count++;
+            }
+        }
+        //bfs遍历其所有出度节点
+        while (!queue.isEmpty()){
+            int a = queue.poll();
+            for(int i=0;i<array[a].size();i++){
+                int x = array[a].get(i);
+                degree[x]--;
+                if(degree[x]==0){  //经过路径剪断，如果入度为0则加入队列
+                    queue.offer(x);
+                    count++;       //没有环的图，经过剪断路径，所有节点都会变成入度为0的节点。
+                }
+            }
+        }
+        if(count != numCourses){
+            return false;
+        }
+        return true;
+    }
+
+    // dfs
+    public boolean canFinish2(int numCourses, int[][] prerequisites) {
+        // 建立邻接表
+        LinkedList<Integer>[]  array = new LinkedList[numCourses];
+        for(int i=0;i<numCourses;i++){
+            array[i] = new LinkedList<>();
+        }
+        // 初始化邻接表数据
+        int[] degree = new int[numCourses];
+        for(int i=0;i<prerequisites.length;i++){
+            int first = prerequisites[i][0];
+            int second = prerequisites[i][1];
+            degree[first]++;
+            array[second].add(first);
+        }
+        //dfs遍历邻接表
+        boolean[] visited = new boolean[numCourses];
+        boolean[] dp = new boolean[numCourses];
+        for(int i=0;i<numCourses;i++){
+            if(!dfs(visited, dp, array, i)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean dfs(boolean[] visited, boolean[] dp, LinkedList<Integer>[] list, int i){
+        if(visited[i]){
+            return dp[i];
+        }else {
+            visited[i]=true;
+        }
+        for(int j=0;j<list[i].size();j++){
+            if(!dfs(visited, dp, list, list[i].get(j))){
+                return false;
+            }
+        }
+        dp[i] = true;
+        return true;
+    }
+
+    /*
+       Example:
+       Input: [10,9,2,5,3,7,101,18]
+       Output: 4
+       Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4.
+    */
+    public int lengthOfLIS(int[] nums) {
+        if(nums == null||nums.length==0) return 0;
+        int[] dp = new int[nums.length];
+        dp[0] = 1;
+        int res = 1;
+        for(int i=1;i<nums.length;i++){
+            int max = 0;
+            for(int j=0;j<i;j++){
+                if(nums[i]>nums[j]){
+                    max = Math.max(max, dp[j]);
+                }
+            }
+            dp[i] = max +1;
+            res = Math.max(res, dp[i]);
+        }
+        return res;
+    }
+
+    public int lengthOfLIS2(int[] nums) {
+        int[] tails = new int[nums.length];
+        int size = 0;
+        for (int x : nums) {
+            int i = 0, j = size;
+            while (i != j) {
+                int m = (i + j) / 2;
+                if (tails[m] < x)
+                    i = m + 1;
+                else
+                    j = m;
+            }
+            tails[i] = x;
+            if (i == size) ++size;
+        }
+        return size;
+    }
+
+
+    /*
+        Example 1:
+
+        Input: s = "leetcode", wordDict = ["leet", "code"]
+        Output: true
+        Explanation: Return true because "leetcode" can be segmented as "leet code".
+     */
+    public boolean wordBreak1(String s, List<String> wordDict) {
+        HashMap<Integer, Boolean> map = new HashMap<>();
+        return wordBreakHelper(s, 0, wordDict, map);
+    }
+
+    public boolean wordBreakHelper(String s, int idx, List<String> wordDict, HashMap<Integer, Boolean> map){
+        if(map.get(idx) != null) return map.get(idx);
+        if(wordDict.contains(s.substring(idx))){
+            return true;
+        }
+        boolean res = false;
+        for(int i=idx; i<s.toCharArray().length;i++){
+            String str = s.substring(idx, i+1);
+            if(wordDict.contains(str)){
+                res = res || wordBreakHelper(s, i+1, wordDict, map);
+            }
+        }
+        map.put(idx, res);
+        return res;
+    }
+
+    public boolean wordBreak2(String s, List<String> wordDict) {
+        boolean[] dp = new boolean[s.toCharArray().length];
+        dp[0] = wordDict.contains(s.substring(0,1));
+        for(int i=1;i<dp.length;i++){
+            for(int j=0;j<=i;j++){
+                if(wordDict.contains(s.substring(j, i+1)) && (j==0 || dp[j-1])){
+                    dp[i]=true;
+                    break;
+                }
+            }
+        }
+        return dp[dp.length-1];
+    }
+
+
+    /*
+        Example 1:
+        Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
+        Output: [[1,6],[8,10],[15,18]]
+        Explanation: Since intervals [1,3] and [2,6] overlaps, merge them into [1,6].
+     */
+    public int[][] merge(int[][] intervals) {
+        int x = intervals.length;
+        int count = x;
+        for(int i=0;i<x-1;i++){
+            for(int j=i+1;j<x;j++){
+                boolean flag = false;
+                int f_f = intervals[i][0];
+                int f_s = intervals[i][1];
+                int s_f = intervals[j][0];
+                int s_s = intervals[j][1];
+                if(f_f>=s_f && f_f <=s_s || s_f>=f_f && s_f <=f_s){
+                    s_f = Math.min(f_f, s_f);
+                    s_s = Math.max(f_s, s_s);
+                    intervals[i][0] = Integer.MIN_VALUE;
+                    intervals[i][1] = Integer.MIN_VALUE;
+                    intervals[j][0] = s_f;
+                    intervals[j][1] = s_s;
+                    flag = true;
+                }
+                if(flag) {
+                    count--;
+                    break;
+                }
+            }
+        }
+        int i=0;
+        int[][] res = new int[count][2];
+        for(int[] a: intervals){
+            if(a[0]>Integer.MIN_VALUE){
+                res[i][0] = a[0];
+                res[i][1] = a[1];
+                i++;
+            }
+        }
+        return res;
+    }
+
+    public int[][] merge2(int[][] intervals) {
+        Collections.sort(Arrays.asList(intervals), new IntervalComparator());
+        LinkedList<int[]> merged = new LinkedList<>();
+        for (int[] interval : intervals) {
+            if (merged.isEmpty() || merged.getLast()[1] < interval[0]) {
+                merged.add(interval);
+            } else {
+                merged.getLast()[1] = Math.max(merged.getLast()[1], interval[1]);
+            }
+        }
+        return merged.toArray(new int[merged.size()][]);
+    }
+    private class IntervalComparator implements Comparator<int[]> {
+        @Override
+        public int compare(int[] a, int[] b) {
+            return a[0] < b[0] ? -1 : a[0] == b[0] ? 0 : 1;
+        }
+    }
+    /*
+        Example:
+        Input:
+        1 0 1 0 0
+        1 0 1 1 1
+        1 1 1 1 1
+        1 0 0 1 0
+        Output: 4
+     */
+    public static int maximalSquare(char[][] matrix) {
+        if(matrix.length ==0 || matrix[0].length == 0) return 0;
+        int res = 0;
+        int m = matrix.length;
+        int n = matrix[0].length;
+        Queue<int[]> queue = new LinkedList<>();
+        for(int i=0;i<m;i++){
+            for(int j =0;j<n;j++){
+                if(matrix[i][j]=='0'){
+                    continue;
+                }
+                int max = 1;
+                queue.offer(new int[]{i, j});
+                boolean flag = true;
+                while (!queue.isEmpty()){
+                    int size = queue.size();
+                    for(int w=0;w<size;w++){
+                        int[] tmp = queue.poll();
+                        int x = tmp[0];
+                        int y = tmp[1];
+                        if(x+1<m && y+1 <n && matrix[x][y] == '1' && matrix[x+1][y] == '1' && matrix[x+1][y+1] == '1' && matrix[x][y+1] == '1'){
+                            queue.offer(new int[]{x+1, y});
+                            queue.offer(new int[]{x+1, y+1});
+                            queue.offer(new int[]{x, y+1});
+                        }else {
+                            flag = false;
+                            queue.clear();
+                            break;
+                        }
+                    }
+                    if(flag){
+                        max++;
+                    }
+                }
+                res = Math.max(res, max*max);
+            }
+        }
+        return res;
+    }
+
+    public static int maximalSquare2(char[][] matrix) {
+        if(matrix.length ==0 || matrix[0].length == 0) return 0;
+        int res = 0;
+        int[][] dp = new int[matrix.length][matrix[0].length];
+        for(int i=0;i<matrix.length;i++){
+            for(int j = 0;j<matrix[0].length;j++){
+                if(i==0||j==0){
+                    dp[i][j] = matrix[i][j]-'0';
+                }else if(matrix[i][j] == '0'){
+                    dp[i][j] = 0;
+                }else {
+                    dp[i][j] = Math.min(Math.min(dp[i-1][j], dp[i][j-1]), dp[i-1][j-1]) + 1;
+                }
+                res = Math.max(res, dp[i][j]);
+            }
+        }
+        return res*res;
+    }
+
+    class Node2 {
+        int val;
+        Node2 next;
+        Node2 random;
+
+        public Node2(int val) {
+            this.val = val;
+            this.next = null;
+            this.random = null;
+        }
+    }
+
+   /*
+   Copy List with Random Pointer
+    */
+    public Node2 copyRandomList(Node2 head) {
+        if(head == null) return null;
+        Node2 res = new Node2(0);
+        Node2 rescurr = res;
+        Map<Node2, Integer> map = new HashMap<>();
+        Map<Integer, Node2> map2 = new HashMap<>();
+        Node2 curr = head;
+        Node2 next;
+        int i=1;
+        while (curr!=null){
+            next = curr.next;
+            Node2 node2 = new Node2(curr.val);
+            rescurr.next = node2;
+            Node2 random = curr.random;
+            if(random != null){
+                int j=1;
+                Node2 curr2 = head;
+                while (curr2!=null){
+                    if(curr2 == random){
+                        map.put(node2, j);
+                        break;
+                    }
+                    curr2=curr2.next;
+                    j++;
+                }
+            }
+            rescurr = rescurr.next;
+            curr = next;
+            map2.put(i, node2);
+            i++;
+        }
+        curr = res.next;
+        while (curr!=null){
+            curr.random = map2.get(map.get(curr));
+            curr = curr.next;
+        }
+        return res.next;
+    }
+
+    public Node2 copyRandomList2(Node2 head) {
+        if (head == null) {
+            return null;
+        }
+        Node2 p = head;
+        Node2 next = null;
+        // 先完成copy
+        while(p!=null){
+            next = p.next;
+            Node2 node = new Node2(p.val);
+            node.next = next;
+            p.next = node;
+            p = next;
+        }
+        p = head;
+        Node2 q = p.next;
+        // 复制random
+        while(p!=null){
+            if(p.random!=null){
+                q.random = p.random.next;
+            }
+            p = p.next.next;
+            // q移动两步指针则需要先进行判断
+            if(p!=null){
+                q = q.next.next;
+            }
+        }
+        Node2 newHead = head.next;
+        Node2 pHead = head;
+        Node2 qHead = newHead;
+        // 分离两个链表，这里特别注意不能改动原先链表状态。
+        while(pHead!=null ){
+            pHead.next = qHead.next;
+            if(qHead.next!=null){
+                qHead.next = qHead.next.next;
+            }
+            pHead = pHead.next;
+            if(pHead!=null){
+                qHead = qHead.next;
+            }
+        }
+        return newHead;
+    }
+
+
+    /*
+        Find First and Last Position of Element in Sorted Array
+        Example 1:
+        Input: nums = [5,7,7,8,8,10], target = 8
+        Output: [3,4]
+     */
+    public int[] searchRange(int[] nums, int target) {
+        if(nums.length==0 || target<nums[0] || target>nums[nums.length-1]) return new int[]{-1, -1};
+        int[] res = new int[2];
+        int low = 0;
+        int high = nums.length-1;
+        int idx = -1;
+        while (low<=high){
+            int mid = low+(high-low)/2;
+            if(target == nums[mid]){
+                idx = mid;
+                break;
+            }else if(target>nums[mid]){
+                low = mid+1;
+            }else {
+                high = mid-1;
+            }
+        }
+        if(idx<0){
+            res[0] = -1;
+            res[1] = -1;
+        }else {
+            int i = idx;
+            int j = idx;
+            int left = idx;
+            int right = idx;
+            while (left>=0 || right<nums.length){
+                if(left>=0&&nums[left]==target){
+                    i = left;
+                    left--;
+                }else {
+                    left = -1;
+                }
+                if(right<nums.length&&nums[right]==target){
+                    j = right;
+                    right++;
+                }else {
+                    right = nums.length;
+                }
+            }
+            res[0] = i;
+            res[1] = j;
+        }
+        return res;
+    }
+
+    public int[] searchRange2(int[] nums, int target) {
+        if(nums.length==0 || target<nums[0] || target>nums[nums.length-1]) return new int[]{-1, -1};
+        int[] res = new int[2];
+        int low = 0;
+        int high = nums.length;
+        int left = binarySerachLeft(nums, target);
+        if(left == 0 && left == nums.length){
+            return new int[]{-1, -1};
+        }
+        int right = binarySerachRight(nums, target);
+        return new int[]{left, right};
+    }
+
+    public int binarySerachLeft(int[] nums, int target){
+        int low = 0;
+        int high = nums.length;
+        while (low<high){
+            int mid = low+(high-low)/2;
+            if(nums[mid] == target){
+                high = mid;
+            }else if(nums[mid] > target) {
+                high = mid;
+            }else if(nums[mid] < target){
+                low = mid+1;
+            }
+        }
+        return low;
+    }
+
+    public int binarySerachRight(int[] nums, int target){
+        int low = 0;
+        int high = nums.length;
+        while (low<high){
+            int mid = low+(high-low)/2;
+            if(nums[mid] == target){
+                low = mid+1;
+            }else if(nums[mid] < target) {
+                low = mid+1;
+            }else if(nums[mid] > target){
+                high = mid;
+            }
+        }
+        return low-1;
+    }
+
+
+    /*
+        Word Search
+        Example:
+        board =
+        [
+          ['A','B','C','E'],
+          ['S','F','C','S'],
+          ['A','D','E','E']
+        ]
+        Given word = "ABCCED", return true.
+        Given word = "SEE", return true.
+        Given word = "ABCB", return false.
+        dfs 回溯法
+     */
+
+    public boolean exist(char[][] board, String word) {
+        if(board.length == 0 || board[0].length ==0 || word ==null || word == "") return false;
+        for(int i=0;i<board.length;i++){
+            for(int j=0;j<board[0].length;j++){
+                boolean[][] visit = new boolean[board.length][board[0].length];
+                if(existDfs(board, word, 0, i, j, visit)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean existDfs(char[][] board, String word, int idx, int x, int y, boolean[][] visit){
+        if(idx == word.length()){
+            return true;
+        }
+        if(x<0||y<0||x>=board.length||y>=board[0].length){
+            return false;
+        }
+        if(visit[x][y]){
+            return false;
+        }
+        if(board[x][y] != word.charAt(idx)){
+            return false;
+        }
+        visit[x][y] = true;
+        boolean res =   existDfs(board, word, idx+1, x-1, y, visit)||
+                         existDfs(board, word, idx+1, x+1, y, visit)||
+                         existDfs(board, word, idx+1, x, y-1, visit)||
+                        existDfs(board, word, idx+1, x, y+1, visit);
+        visit[x][y] =false;
+        return res;
+    }
+
+    /*
+        Example 1:
+        Input: coins = [1, 2, 5], amount = 11
+        Output: 3
+        Explanation: 11 = 5 + 5 + 1
+     */
+
+    public static int coinChange(int[] coins, int amount) {
+        return coinChangeDfs(coins, 0, amount, new LinkedList<>());
+    }
+
+    public static int coinChangeDfs(int[] coins, int idx, int target, LinkedList<Integer> tmp){
+        if(target == 0){
+            return tmp.size();
+        }
+        if(target < 0){
+            return -1;
+        }
+        int a = Integer.MAX_VALUE;
+        for(int i=idx;i<coins.length;i++){
+            tmp.add(coins[i]);
+            int res = coinChangeDfs(coins, idx, target-coins[i], tmp);
+            if(res>=0){
+                a = Math.min(a, res);
+            }
+            tmp.removeLast();
+        }
+        if(a == Integer.MAX_VALUE) {
+            return -1;
+        }
+        return a;
+    }
+
+    public static int coinChange2(int[] coins, int amount) {
+        int[] dp = new int[amount];
+        Arrays.fill(dp, 0);
+        return coinChangeDfs2(coins, 0, amount, dp);
+    }
+
+    public static int coinChangeDfs2(int[] coins, int idx, int target, int[] dp){
+        if(target == 0){
+            return 0;
+        }
+        if(target < 0){
+            return -1;
+        }
+        if(dp[target-1] !=0) return dp[target-1];
+        int min = Integer.MAX_VALUE;
+        for(int i=idx;i<coins.length;i++){
+            int res = coinChangeDfs2(coins, idx, target-coins[i], dp);
+            if(res>=0){
+                min = Math.min(min, res+1);
+            }
+        }
+        dp[target-1] = (min == Integer.MAX_VALUE ? -1: min);
+        return dp[target-1];
+    }
+
+    public static int coinChange3(int[] coins, int amount) {
+        int[] dp = new int[amount+1];
+        Arrays.fill(dp, amount + 1);
+        dp[0] = 0;
+        for(int i=1;i<amount+1; i++){
+            for(int j=0;j<coins.length;j++){
+                if(coins[j]<=i){
+                    dp[i] = Math.min(dp[i], dp[i-coins[j]]+1);
+                }
+            }
+        }
+        return dp[amount]>amount ? -1: dp[amount];
+    }
+
+
+
+
+    /*
+        19. Remove Nth Node From End of List
+        Example:
+        Given linked list: 1->2->3->4->5, and n = 2.
+        After removing the second node from the end, the linked list becomes 1->2->3->5.
+     */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        int i=0;
+        Map<Integer, ListNode> map = new HashMap<>();
+        ListNode curr = head;
+        while (curr!=null){
+            i++;
+            map.put(i, curr);
+            curr = curr.next;
+        }
+        int idx = i-n+1;
+        if(idx>1){
+            ListNode pre = map.get(idx-1);
+            curr = map.get(idx);
+            pre.next = curr.next;
+            curr.next = null;
+        }else {
+            curr = head;
+            head = head.next;
+            curr.next = null;
+        }
+        return head;
+    }
+
+    public ListNode removeNthFromEnd2(ListNode head, int n) {
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode fast = dummy;
+        ListNode slow = dummy;
+        while (n>0 && fast!=null){
+            fast=fast.next;
+            n--;
+        }
+        while (fast !=null && fast.next != null){
+            slow = slow.next;
+            fast = fast.next;
+        }
+        ListNode next = slow.next;
+        slow.next = next.next;
+        next.next = null;
+        return dummy.next;
+    }
+
+
+    /*
+    55. Jump Game
+    Example 1:
+    Input: nums = [2,3,1,1,4]
+    Output: true
+    Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
+     */
+    public static boolean canJump(int[] nums) {
+        boolean[] dp = new boolean[nums.length];
+        Arrays.fill(dp, false);
+        dp[0]=true;
+        for(int i=0;i<nums.length;i++){
+            for(int j=0;j<=nums[i];j++){
+                if(dp[i]){
+                    if(i+j >= nums.length-1){
+                        return true;
+                    }else if(i+j < nums.length-1){
+                        dp[i+j] = true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    //贪婪算法，计算最远到达点是否到达终点
+    public static boolean canJump2(int[] nums) {
+        int reach = 0;
+        for(int i=0;i<nums.length;i++){
+            if(i>reach || reach>=nums.length-1){break;}
+            reach = Math.max(reach, i+nums[i]);
+        }
+        return reach>=nums.length-1;
+    }
+
+
+    /*
+        Example 1:
+        Input: nums = [4,5,6,7,0,1,2], target = 0
+        Output: 4
+     */
+    public int search(int[] nums, int target) {
+        int low = 0; int high = nums.length-1;
+        while (low<=high){
+            int mid = low+(high-low)/2;
+            if(nums[mid] == target) return mid;
+            if(nums[mid]<nums[high]){
+                if(target>nums[mid]&&target<=nums[high]) {
+                    low=mid+1;
+                }else {
+                    high=mid-1;
+                }
+            }else {
+                if(target>=nums[low]&&target<nums[mid]){
+                    high=mid-1;
+                }else {
+                    low=mid+1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    /*
+    Example 1:
+
+    Input: [2,3,-2,4]
+    Output: 6
+    Explanation: [2,3] has the largest product 6.
+     */
+    public int maxProduct(int[] nums) {
+        if(nums.length == 1) return nums[0];
+        int max = Integer.MIN_VALUE;
+        for(int i=0;i<nums.length;i++){
+            int a = nums[i];
+            int b = nums[i];
+            for(int j = i+1;j<nums.length;j++){
+                b = b*nums[j];
+                max = Math.max(max, b);
+            }
+            max = Math.max(max, a);
+        }
+        return max;
+    }
+
+    public int maxProduct2(int[] nums) {
+        if(nums.length == 1) return nums[0];
+        int[] max = new int[nums.length]; //保存前面最大值
+        int[] min = new int[nums.length]; //保存前面最小值
+        int res = nums[0];
+        max[0] = nums[0];
+        min[0] = nums[0];
+        for(int i=1;i<nums.length;i++){
+            max[i] = Math.max(Math.max(max[i-1]*nums[i], min[i-1]*nums[i]), nums[i]);
+            min[i] = Math.min(Math.min(max[i-1]*nums[i], min[i-1]*nums[i]), nums[i]);
+            res = Math.max(res, max[i]);
+        }
+        return res;
+    }
+
+    public int maxProduct3(int[] nums) {  //因为只用到i和i-1，所以只需要两个常数即可
+        if(nums.length == 1) return nums[0];
+        int res = nums[0];
+        int max = nums[0];
+        int min = nums[0];
+        for(int i=1;i<nums.length;i++){
+            int tmax = max;
+            int tmin = min;
+            max = Math.max(Math.max(tmax*nums[i], tmin*nums[i]), nums[i]);
+            min = Math.min(Math.min(tmax*nums[i], tmin*nums[i]), nums[i]);
+            res = Math.max(res, max);
+        }
+        return res;
+    }
+
+    /*
+        Example 2:
+
+        Input: s = "bbbbb"
+        Output: 1
+        Explanation: The answer is "b", with the length of 1.
+     */
+
+    public int lengthOfLongestSubstring4(String s) {
+        int res = 0;
+        if(s==null||s.length()==0) return res;
+        int i=0,j=0;
+        Map<Character, Integer> map = new HashMap<>();
+        int max = 0;
+        while (i<s.length() && j<s.length()){
+            Character c = s.charAt(j);
+            if(!map.containsKey(c)){
+                j++;
+                max++;
+                map.put(c, 1);
+                res = Math.max(max, res);
+            }else {
+                max = 0;
+                map.clear();
+                i++;
+                j=i;
+            }
+        }
+        return res;
+    }
+
+
+    /*
+        98. Validate Binary Search Tree
+     */
+    public boolean isValidBST1(TreeNode root) {
+        return isValidBSTHelper(root, null, null);
+    }
+    public boolean isValidBSTHelper(TreeNode root, Integer low, Integer high) {
+        if(root == null) return true;
+        int val = root.val;
+        if(low!=null && val<=low) return false;
+        if(high!=null && val>=high) return false;
+        if(!isValidBSTHelper(root.left, low, val)) return false;
+        if(!isValidBSTHelper(root.right, val, high)) return false;
+        return true;
+    }
+    public boolean isValidBST2(TreeNode root) {
+        if(root == null) return true;
+        double inorder = - Double.MAX_VALUE;
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode curr = root;
+        while (!stack.isEmpty()||curr!=null){
+            while (curr!=null){
+                stack.push(curr);
+                curr = curr.left;
+            }
+            curr = stack.pop();
+            if(curr.val<=inorder) return false;
+            inorder = curr.val;
+            curr = curr.right;
+        }
+        return true;
+    }
+
+
+    public class Codec {
+        // Encodes a tree to a single string.
+        public String serialize(TreeNode root) {
+            if(root==null) return "[]";
+            StringBuilder res = new StringBuilder();
+            res.append("[");
+            Queue<TreeNode> queue = new LinkedList<>();
+            queue.offer(root);
+            while (!queue.isEmpty()){
+                int size = queue.size();
+                for(int i=0;i<size;i++){
+                    TreeNode curr = queue.poll();
+                    if(curr!=null){
+                        res.append(curr.val).append(",");
+                        queue.offer(curr.left);
+                        queue.offer(curr.right);
+                    }else {
+                        res.append("null").append(",");
+                    }
+                }
+            }
+            String a = res.toString();
+            return a.substring(0, a.length()-1) + "]";
+        }
+
+        // Decodes your encoded data to tree.
+        public TreeNode deserialize(String data) {
+            if(data == null || data.length()==0) return null;
+            data = data.substring(1, data.length()-1);
+            if(data == null || data.length()==0) return null;
+            Queue<TreeNode> parent = new LinkedList<>();
+            Queue<TreeNode> son = new LinkedList<>();
+            String[] str = data.split(",");
+            for(String s: str){
+                if(!s.equals("null")){
+                    son.offer(new TreeNode(Integer.parseInt(s)));
+                }else {
+                    son.offer(null);
+                }
+            }
+            TreeNode root = son.poll();
+            parent.offer(root);
+            while (!parent.isEmpty()){
+                TreeNode curr = parent.poll();
+                if(curr!=null){
+                    TreeNode left  = son.poll();
+                    TreeNode right = son.poll();
+                    curr.left = left;
+                    curr.right = right;
+                    if(left!=null){
+                        parent.offer(left);
+                    }
+                    if(right!=null){
+                        parent.offer(right);
+                    }
+                }
+            }
+            return root;
+        }
+    }
+
+    /*
+        Longest Consecutive Sequence
+        Given an unsorted array of integers, find the length of the longest consecutive elements sequence.
+        Your algorithm should run in O(n) complexity.
+        Example:
+        Input: [100, 4, 200, 1, 3, 2]
+        Output: 4
+        Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4.
+     */
+    public int longestConsecutive(int[] nums) {
+        if(nums==null||nums.length==0) return 0;
+        kuaisu(nums);
+        int res = 1;
+        int count = 1;
+        int prev = nums[0];
+        for(int i=1;i<nums.length;i++){
+            if(nums[i] == prev) continue;
+            if(nums[i] == prev+1){
+                count++;
+                prev++;
+                res = Math.max(res, count);
+            }else {
+                count=1;
+                prev=nums[i];
+            }
+        }
+        return res;
+    }
+
+    public void kuaisu(int[] array){
+        kuaisuHelper(array, 0, array.length-1);
+    }
+    public void kuaisuHelper(int[] array, int low, int high){
+        if(low>=high) return;
+        int aow = kuaisuHelper2(array, low, high);
+        kuaisuHelper(array, low, aow);
+        kuaisuHelper(array, aow+1, high);
+    }
+    public int kuaisuHelper2(int[] array, int low, int high){
+        int aow = array[low];
+        while (low<high){
+            while (low<high&&array[high]>=aow) high--;
+            array[low]=array[high];
+            while (low<high&&array[low]<=aow) low++;
+            array[high]=array[low];
+        }
+        array[low]=aow;
+        return low;
+    }
+
+    public int longestConsecutive2(int[] nums) {
+        if(nums==null||nums.length==0) return 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int meta: nums){
+            map.put(meta, 1);
+        }
+        int res = 1;
+        for(int i=0;i<nums.length;i++){  //很关键，可以去除很多重复计算
+            if(!map.containsKey(nums[i]-1)){
+                int count = 1;
+                int prev = nums[i];
+                while (map.containsKey(prev+1)){
+                    count++;
+                    prev++;
+                }
+                res = Math.max(res, count);
+            }
+        }
+        return res;
+    }
+
+    /*
+       Largest Rectangle in Histogram
+    */
+    public int largestRectangleArea(int[] heights) {
+        int res = 0;
+        if(heights==null||heights.length==0) return res;
+        for(int i=0;i<heights.length;i++){
+            int min = heights[i];
+            for(int j=i;j<heights.length;j++){
+                if(min>heights[j]){
+                    min=heights[j];
+                }
+                res=Math.max(res, (j-i+1)*min);
+            }
+        }
+        return res;
+    }
+
+    //利用峰值计算
+    public int largestRectangleArea2(int[] heights) {
+        int res = 0;
+        if(heights==null||heights.length==0) return res;
+        for(int i=0;i<heights.length;i++){
+            if(i+1<heights.length&&heights[i]<=heights[i+1]) continue;
+            int min = heights[i];
+            for(int j=i;j>=0;j--){
+                if(min>heights[j]){
+                    min=heights[j];
+                }
+                res=Math.max(res, (i-j+1)*min);
+            }
+        }
+        return res;
+    }
+
+    public static int largestRectangleArea3(int[] height) {
+        Stack<Integer> stack = new Stack<>();
+        int maxArea = 0;
+        int[] h = Arrays.copyOf(height, height.length + 1);
+        int i = 0;
+        while(i < h.length){
+            if(stack.isEmpty() || h[stack.peek()] <= h[i]){
+                stack.push(i++);
+            }else {
+                int t = stack.pop();
+                maxArea = Math.max(maxArea, h[t] * (stack.isEmpty() ? i : i - stack.peek() - 1));
+            }
+        }
+        return maxArea;
+    }
+
+    /*
+        Maximal Rectangle
+        Given a 2D binary matrix filled with 0's and 1's, find the largest rectangle containing only 1's and return its area.
+        Example:
+        Input:
+        [
+          ["1","0","1","0","0"],
+          ["1","0","1","1","1"],
+          ["1","1","1","1","1"],
+          ["1","0","0","1","0"]
+        ]
+        Output: 6
+     */
+    public int maximalRectangle(char[][] matrix) {
+        int res = 0;
+        if(matrix==null||matrix.length==0) return res;
+        int x = matrix.length;
+        int y = matrix[0].length;
+        int[] height = new int[y];
+        for(int i=0;i<x;i++){
+            for(int j=0;j<y;j++){
+                height[j] = matrix[i][j]=='0'?0:(height[j]+1);
+            }
+            res = Math.max(res, largestRectangleArea(height));
+        }
+        return res;
+    }
+
+    public int maximalRectangle2(char[][] matrix) {
+        int res = 0;
+        if(matrix==null||matrix.length==0) return res;
+        int x = matrix.length;
+        int y = matrix[0].length;
+        int[] height = new int[y];
+        for(int i=0;i<x;i++){
+            for(int j=0;j<y;j++){
+                height[j] = matrix[i][j]=='0'?0:(height[j]+1);
+            }
+            res = Math.max(res, largestRectangleArea2(height));
+        }
+        return res;
+    }
+
+    /*
+        Word Search II
+        Example:
+        Input:
+        board = [
+          ['o','a','a','n'],
+          ['e','t','a','e'],
+          ['i','h','k','r'],
+          ['i','f','l','v']
+        ]
+        words = ["oath","pea","eat","rain"]
+        Output: ["eat","oath"]
+     */
+    public List<String> findWords(char[][] board, String[] words) {
+        int x = board.length;
+        int y = board[0].length;
+        List<String> res = new LinkedList<>();
+        for(String word: words){
+            boolean find = false;
+            for(int i=0;i<x;i++){
+                for(int j=0;j<y;j++){
+                    boolean[][] visit = new boolean[x][y];
+                    if(findWordsDfs(i, j, board, 0, word, visit)){
+                        res.add(word);
+                        find=true;
+                        break;
+                    }
+                }
+                if(find) break;
+            }
+        }
+        return res;
+    }
+
+    public boolean findWordsDfs(int x, int y, char[][] board, int idx, String word, boolean[][] visit){
+        if(idx == word.length()) return true;
+        if(x<0 || x>=board.length || y<0 || y>=board[0].length) return false;
+        if(visit[x][y]) return false;
+        if(board[x][y] != word.charAt(idx)) return false;
+        visit[x][y]=true;
+        boolean res =  findWordsDfs(x-1, y, board, idx+1, word, visit)
+                || findWordsDfs(x+1, y, board, idx+1, word, visit)
+                || findWordsDfs(x, y-1, board, idx+1, word, visit)
+                || findWordsDfs(x, y+1, board, idx+1, word, visit);
+        visit[x][y]=false;
+        return res;
+    }
+
+    /*
+        Minimum Window Substring
+        Example:
+        Input: S = "ADOBECODEBANC", T = "ABC"
+        Output: "BANC"
+     */
+    public String minWindow(String s, String t) {
+        return null;
+    }
+
+    /*
+        Example 1:
+        Input: [1,2,3]
+
+               1
+              / \
+             2   3
+        Output: 6
+     */
+    public int maxPathSum(TreeNode root) {
+        Queue<TreeNode> queue =  new LinkedList<>();
+        queue.offer(root);
+        int res  = Integer.MIN_VALUE;
+        while (!queue.isEmpty()){
+            TreeNode curr = queue.poll();
+            int left  = maxPathSumHelper(curr.left, curr.val);
+            int right = maxPathSumHelper(curr.right, curr.val);
+            int val = left+right-curr.val;
+            res = Math.max(res, Math.max(Math.max(left, right), val));
+            if(curr.left!=null) queue.offer(curr.left);
+            if(curr.right!=null) queue.offer(curr.right);
+        }
+        return res;
+    }
+
+    public int maxPathSumHelper(TreeNode root, int res) {
+        if(root == null) return res;
+        int left  = maxPathSumHelper(root.left,  res+root.val);
+        int right = maxPathSumHelper(root.right, res+root.val);
+        return Math.max(Math.max(left, right), Math.max(res, res+root.val));
+    }
+
+    public int maxPathSum2(TreeNode root) {
+        maxPathSumHelper2(root);
+        return maxPathSum2Res;
+    }
+    int maxPathSum2Res = Integer.MIN_VALUE;
+    public int maxPathSumHelper2(TreeNode root) {
+        if(root == null) return 0;
+        int left  = Math.max(maxPathSumHelper2(root.left), 0);
+        int right = Math.max(maxPathSumHelper2(root.right), 0);
+        maxPathSum2Res = Math.max(maxPathSum2Res, left+right+root.val);
+        return Math.max(left, right)+root.val;
+    }
+
+    /*
+        First Missing Positive
+        Example 1:
+        Input: [1,2,0]
+        Output: 3
+        Example 2:
+        Input: [3,4,-1,1]
+        Output: 2
+        Example 3:
+        Input: [7,8,9,11,12]
+        Output: 1
+     */
+    public int firstMissingPositive(int[] nums) {
+        for(int i=0;i<nums.length;i++){
+            while (nums[i]>0&&nums[i]<=nums.length&&nums[i]!= nums[nums[i]-1]){
+                int tmp = nums[i];
+                nums[i]=nums[nums[i]-1];
+                nums[tmp-1]=tmp;
+            }
+        }
+        for(int i=0;i<nums.length;i++){
+            if(i+1 != nums[i]) return i+1;
+        }
+        return nums.length+1;
+    }
+
+    /*
+        Jump Game II
+        Example:
+        Input: [2,3,1,1,4]
+        Output: 2
+        Explanation: The minimum number of jumps to reach the last index is 2.
+            Jump 1 step from index 0 to 1, then 3 steps to the last index.
+     */
+    public int jump(int[] nums) {
+        int[] dp = new int[nums.length];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0]=0;
+        for(int i=0;i<nums.length;i++){
+            for(int j=0;j<=nums[i];j++){
+                if(dp[i]<Integer.MAX_VALUE){
+                    if(i+j <= nums.length-1){
+                        dp[i+j]=Math.min(dp[i+j], dp[i]+1);
+                    }
+                }
+            }
+        }
+        return dp[nums.length-1];
+    }
+
+    public int jump2(int[] nums) {
+        if(nums.length==0) return 0;
+        int[] dp = new int[nums.length];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0]=0;
+        for(int i=0;i<nums.length;i++){
+            for(int j=0;j<=nums[i];j++){
+                if(dp[i]<Integer.MAX_VALUE){
+                    if(i+j < nums.length-1){
+                        dp[i+j]=Math.min(dp[i+j], dp[i]+1);
+                    }else {
+                        return dp[i]+1;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    //https://www.cnblogs.com/lichen782/p/leetcode_Jump_Game_II.html
+    public int jump(int A[], int n) {
+        int ret = 0;
+        int last = 0;
+        int curr = 0;
+        for (int i = 0; i < n; ++i) {
+            if (i > last) {
+                last = curr;
+                ++ret;
+            }
+            curr = Math.max(curr, i+A[i]);
+        }
+
+        return ret;
+    }
+
 }
 
