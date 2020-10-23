@@ -84,9 +84,27 @@ public class Solution {
 //                {'1','1','0','0','0'},
 //                {'0','0','0','0','0'}};
 //        char[][] w = {{'1'}};
-        int[] a = {2,1,5,6,2,3};
-        System.out.println(largestRectangleArea3(a));
+        int[] a = {3,2,4};
+//        System.out.println(permute2(a));
+        System.out.println(isMatch("aa", "a*"));
+//        LRUCache lRUCache = new LRUCache(2);
+//        lRUCache.put(1, 1);
+//        lRUCache.put(2, 2);
+//        lRUCache.get(1);    // return 1
+//        lRUCache.put(3, 3); // evicts key 2
+//        lRUCache.get(2);    // returns -1 (not found)
+//        lRUCache.put(4, 4); // evicts key 1
+//        lRUCache.get(1);    // return -1 (not found)
+//        lRUCache.get(3);    // return 3
+//        lRUCache.get(4);    // return 4
+//        MedianFinder2 a = new MedianFinder2();
+//        a.addNum(1);
+//        a.addNum(2);
+//        System.out.println(a.findMedian());
+//        a.addNum(3);
+//        a.findMedian() ;
     }
+
 
     public boolean wordPattern(String pattern, String str) {
         HashMap<String,String> h=new HashMap<String,String>();
@@ -1959,6 +1977,35 @@ public class Solution {
         return prev;
     }
 
+    public boolean isPalindrome2(ListNode head) {
+        if(head==null||head.next == null) return true;
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast.next!=null&&fast.next.next!=null){
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        slow = isPalindromeReverse(slow.next);
+        while (head!=null&&slow!=null){
+            if(head.val != slow.val) return false;
+            head = head.next;
+            slow = slow.next;
+        }
+        return true;
+    }
+
+    public ListNode isPalindromeReverse(ListNode node){
+        ListNode prev = null;
+        ListNode next = null;
+        while (node!=null){
+            next = node.next;
+            node.next = prev;
+            prev = node;
+            node = next;
+        }
+        return prev;
+    }
+
     /*
         Example 1:
         Input: s = "anagram", t = "nagaram"
@@ -2266,14 +2313,12 @@ public class Solution {
     public List<Integer> findDisappearedNumbers(int[] nums) {
         for (int i = 0; i < nums.length; i++) {
             int newIndex = Math.abs(nums[i]) - 1;
-
             if (nums[newIndex] > 0) {
                 nums[newIndex] *= -1;
             }
         }
         List<Integer> result = new LinkedList<Integer>();
         for (int i = 1; i <= nums.length; i++) {
-
             if (nums[i - 1] > 0) {
                 result.add(i);
             }
@@ -2310,7 +2355,7 @@ public class Solution {
                     hashMap.put(node, dist);
                 }
                 max = Math.max(max, dist);
-                if(node.left != null) queue.add(node.left);
+                if(node.left != null)  queue.add(node.left);
                 if(node.right != null) queue.add(node.right);
             }
         }
@@ -2323,12 +2368,6 @@ public class Solution {
         int right = helper(root.right);
         int curr = left + right;
         return Math.max(curr, Math.max(diameterOfBinaryTree2(root.left), diameterOfBinaryTree2(root.right)));
-    }
-
-    int max = 0;
-    public int diameterOfBinaryTree3(TreeNode root) {
-        helper2(root);
-        return max;
     }
 
     public int helper(TreeNode root) {
@@ -2344,6 +2383,12 @@ public class Solution {
             hashMap1.put(root.right, right);
         }
         return 1 + Math.max(left, right);
+    }
+
+    int max = 0;
+    public int diameterOfBinaryTree3(TreeNode root) {
+        helper2(root);
+        return max;
     }
 
     public int helper2(TreeNode root) {
@@ -2499,18 +2544,19 @@ public class Solution {
     }
 
     public List<Integer> inorderTraversal2(TreeNode root) {
-        TreeNode node = root;
+        TreeNode curr = root;
         List<Integer> list = new LinkedList<>();
         if(root == null) return list;
         Stack<TreeNode> stack = new Stack<>();
-        while (!stack.isEmpty() || node != null){
-            if(node != null){
-                stack.push(node);
-                node = node.left;
-            }else {
-                TreeNode a = stack.pop();
-                list.add(a.val);
-                node = a.right;
+        while (!stack.isEmpty() || curr != null){
+            while (curr!=null){
+                stack.push(curr);
+                curr=curr.left;
+            }
+            TreeNode node = stack.pop();
+            list.add(node.val);
+            if(node.right !=null){
+                curr = node.right;
             }
         }
         return list;
@@ -2538,8 +2584,21 @@ public class Solution {
         List<Integer> list = new LinkedList<>();
         if(root == null) return list;
         Stack<TreeNode> stack = new Stack<>();
+        Stack<TreeNode> stack2 = new Stack<>();
         stack.push(root);
-
+        while (!stack.isEmpty()){
+            TreeNode curr = stack.pop();
+            stack2.push(curr);
+            if(curr.left != null){
+                stack.push(curr.left);
+            }
+            if(curr.right != null){
+                stack.push(curr.right);
+            }
+        }
+        while (!stack2.isEmpty()){
+            list.add(stack2.pop().val);
+        }
         return list;
     }
 
@@ -2584,23 +2643,23 @@ public class Solution {
         a[j] = temp;
     }
 
-    public List<List<Integer>> permute2(int[] nums) {
-        List<List<Integer>> list = new ArrayList<>();
+    public static List<List<Integer>> permute2(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
         Arrays.sort(nums);
-        backtrackPermute2(list, new ArrayList<Integer>(), nums, 0);
-        return list;
+        backtrackPermute2(res, new ArrayList<>(), nums);
+        return res;
     }
 
-    private void backtrackPermute2(List<List<Integer>> list , List<Integer> tempList, int [] nums, int start){
+    private static void backtrackPermute2(List<List<Integer>> list , List<Integer> tempList, int [] nums){
         if(tempList.size() == nums.length){
             list.add(new ArrayList<>(tempList));
-        }else {
-            for(int i = 0; i < nums.length; i++){
-                if(tempList.contains(nums[i])) continue; // element already exists, skip
-                tempList.add(nums[i]);
-                backtrackPermute2(list, tempList, nums, i + 1);
-                tempList.remove(tempList.size() - 1);
-            }
+            return;
+        }
+        for(int i = 0; i < nums.length; i++){
+            if(tempList.contains(nums[i])) continue; // element already exists, skip
+            tempList.add(nums[i]);
+            backtrackPermute2(list, tempList, nums);
+            tempList.remove(tempList.size() - 1);
         }
     }
 
@@ -2705,7 +2764,7 @@ public class Solution {
     public static List<List<Integer>> subsets(int[] nums) {
         List<List<Integer>> list = new ArrayList<>();
         Arrays.sort(nums);
-        backtrack(list, new ArrayList<Integer>(), nums, 0);
+        backtrack(list, new ArrayList<>(), nums, 0);
         return list;
     }
 
@@ -5868,8 +5927,40 @@ rotate the input matrix in-place such that it becomes:
         Input: S = "ADOBECODEBANC", T = "ABC"
         Output: "BANC"
      */
-    public String minWindow(String s, String t) {
-        return null;
+    public static String minWindow(String s, String t) {
+        HashMap<Character, Integer> map = new HashMap<>();
+        for(char a: t.toCharArray()){
+            map.put(a, map.getOrDefault(a, 0)+1);
+        }
+        String res = "";
+        int left = 0;
+        int cnt = 0;
+        int length = Integer.MAX_VALUE;
+        for(int i=0;i<s.length();i++){
+            char a = s.charAt(i);
+            if(map.containsKey(a)){
+                map.put(a, map.get(a)-1);
+                if(map.get(a)>=0){
+                    cnt++;
+                }
+                while (cnt == t.length()){
+                    if(length>i-left+1){
+                        length = i -left +1;
+                        res = s.substring(left, left+length);
+                    }
+                    char l = s.charAt(left);
+                    if(map.containsKey(l)){
+                        map.put(l, map.get(l)+1);
+                        if(map.get(l ) >0 ){
+                            cnt--;
+                        }
+                    }
+                    left++;
+                }
+            }
+
+        }
+        return res;
     }
 
     /*
@@ -6002,5 +6093,899 @@ rotate the input matrix in-place such that it becomes:
         return ret;
     }
 
-}
+    /*
+        Median of Two Sorted Arrays
+        Example 1:
+        Input: nums1 = [1,3], nums2 = [2]
+        Output: 2.00000
+        Explanation: merged array = [1,2,3] and median is 2.
+     */
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int[] tmp = new int[nums1.length+nums2.length];
+        int k=0,i=0,j=0;
+        int mid = (nums1.length + nums2.length)/2;
+        while (i<=nums1.length-1&&j<=nums2.length-1) tmp[k++]=nums1[i]>nums2[j]?nums2[j++]:nums1[i++];
+        while (i<=nums1.length-1) tmp[k++]=nums1[i++];
+        while (j<=nums2.length-1) tmp[k++]=nums2[j++];
+        return ((nums1.length + nums2.length)%2!=0)?tmp[mid]:((tmp[mid-1]+tmp[mid])/2.0);
+    }
 
+    //解法特别好，利用尾递归地址：https://zhuanlan.zhihu.com/p/55666669  解法三
+    public double findMedianSortedArrays2(int[] nums1, int[] nums2) {
+        int n = nums1.length;
+        int m = nums2.length;
+        int left = (n + m + 1) / 2;
+        int right = (n + m + 2) / 2;
+        //将偶数和奇数的情况合并，如果是奇数，会求两次同样的 k 。
+        return (getKth(nums1, 0, n - 1, nums2, 0, m - 1, left) + getKth(nums1, 0, n - 1, nums2, 0, m - 1, right)) * 0.5;
+    }
+
+    private int getKth(int[] nums1, int start1, int end1, int[] nums2, int start2, int end2, int k) {
+        int len1 = end1 - start1 + 1;
+        int len2 = end2 - start2 + 1;
+        //让 len1 的长度小于 len2，这样就能保证如果有数组空了，一定是 len1
+        if (len1 == 0)   return nums2[start2 + k - 1];
+        if (len1 > len2) return getKth(nums2, start2, end2, nums1, start1, end1, k);
+        if (k == 1) return Math.min(nums1[start1], nums2[start2]);
+        int i = start1 + Math.min(len1, k / 2) - 1;
+        int j = start2 + Math.min(len2, k / 2) - 1;
+        if (nums1[i] > nums2[j]) {
+            return getKth(nums1, start1, end1, nums2, j + 1, end2, k - (j - start2 + 1));
+        } else {
+            return getKth(nums1, i + 1, end1, nums2, start2, end2, k - (i - start1 + 1));
+        }
+    }
+
+    /*
+        Valid Parentheses
+    }
+     */
+    public boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+        char[] array = s.toCharArray();
+        for(char m: array){
+            if(stack.isEmpty() || !pipei(stack.peek(), m)){
+                stack.push(m);
+            }else {
+                stack.pop();
+            }
+        }
+        if(stack.isEmpty()){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean pipei(char a, char b){
+        if((a=='('&&b==')')||(a=='['&&b==']')||(a=='{'&&b=='}')) return true;
+        return false;
+    }
+
+    /*
+        Longest Valid Parentheses
+     */
+    public static int longestValidParentheses(String s) {
+        int res = 0;
+        for(int i=0;i<s.length()-1;i++){
+            for(int j=i+2;j<=s.length();j++){
+                if(longestValidParenthesesHelper(s.substring(i,j))){
+                    res = Math.max(res, s.substring(i,j).length());
+                }
+            }
+        }
+        return res;
+    }
+
+    public static boolean longestValidParenthesesHelper(String s) {
+        Stack<Character> stack = new Stack<>();
+        char[] array = s.toCharArray();
+        for(char m: array){
+            if(stack.isEmpty() || !pipei2(stack.peek(), m)){
+                stack.push(m);
+            }else {
+                stack.pop();
+            }
+        }
+        if(stack.isEmpty()){
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean pipei2(char a, char b){
+        if(a=='('&&b==')') return true;
+        return false;
+    }
+
+    //动态规划
+    public static int longestValidParentheses2(String s) {
+        int res = 0;
+        int[] dp = new int[s.length()];
+        for(int i=1;i<s.length();i++){
+            if(s.charAt(i)==')'){
+                if(s.charAt(i-1)=='('){
+                    dp[i]=(i>=2?dp[i-2]:0)+2;
+                }else if(i-dp[i-1]>0 && s.charAt(i-dp[i-1]-1)=='('){
+                    dp[i]=dp[i-1] + ((i-dp[i-1]>=2)?dp[i-dp[i-1]-2]:0)+2;
+                }
+                res = Math.max(res, dp[i]);
+            }
+        }
+        return res;
+    }
+
+    /*
+        Partition Labels
+     */
+    public List<Integer> partitionLabels(String S) {
+        List<Integer> res = new LinkedList<>();
+        int i=0;int j=S.length(),spit=1;
+        while (i<j){
+            if(partitionLabelsHelper(S, i,spit, j)){
+                res.add(spit-i);
+                i=spit;
+                spit=i+1;
+            }else {
+                spit++;
+            }
+        }
+        return res;
+    }
+
+    public boolean partitionLabelsHelper(String S, int i, int split, int j){
+        String part1= S.substring(i, split);
+        String part2= S.substring(split, j);
+        for(char c: part2.toCharArray()){
+            if(part1.contains(String.valueOf(c))){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public List<Integer> partitionLabels2(String S) {
+        int[] last = new int[26];
+        for (int i = 0; i < S.length(); ++i)
+            last[S.charAt(i) - 'a'] = i;
+        int j = 0, anchor = 0;
+        List<Integer> ans = new ArrayList();
+        for (int i = 0; i < S.length(); ++i) {
+            j = Math.max(j, last[S.charAt(i) - 'a']);
+            if (i == j) {
+                ans.add(i - anchor + 1);
+                anchor = i + 1;
+            }
+        }
+        return ans;
+    }
+
+
+    /*
+        LRUCache
+     */
+    static class LRUCache {
+        private int capacity;
+        private int size;
+        private ListNode2 head;
+        private ListNode2 tail;
+        public LRUCache(int capacity) {
+            this.capacity=capacity;
+        }
+
+        public int get(int key) {
+            int res = -1;
+            ListNode2 curr = head;
+            while (curr!=null){
+                if(curr.key==key){
+                    break;
+                }else {
+                    curr=curr.next;
+                }
+            }
+            if(curr==null){
+                return res;
+            }
+            res = curr.val;
+            if(curr == head){
+                return res;
+            } else if(curr == tail){
+                tail=curr.prev;
+                curr.prev.next=curr.next;
+            }else {
+                curr.prev.next=curr.next;
+                curr.next.prev=curr.prev;
+            }
+            head.prev=curr;
+            curr.next=head;
+            curr.prev=null;
+            head=curr;
+            return res;
+        }
+
+        public void put(int key, int value) {
+            ListNode2 curr = head;
+            while (curr!=null){
+                if(curr.key==key){
+                    break;
+                }else {
+                    curr=curr.next;
+                }
+            }
+            if(curr!=null){
+                if(curr==head){
+                    ListNode2 next = head.next;
+                    if(next!=null){
+                        head.next = null;
+                        next.prev = null;
+                        head = next;
+                    }else {
+                        head = null;
+                        tail = null;
+                    }
+                }else if(curr == tail){
+                    ListNode2 prev = tail.prev;
+                    if(prev!=null){
+                        tail.prev = null;
+                        prev.next = null;
+                        tail = prev;
+                    }else {
+                        head = tail = null;
+                    }
+                }else {
+                    curr.prev.next = curr.next;
+                    curr.next.prev = curr.prev;
+                    curr.next = null;
+                    curr.prev = null;
+                }
+                size--;
+            }
+            ListNode2 newNode = new ListNode2(key, value, null, null);
+            if(head==null || tail==null){
+                head = newNode;
+                tail = newNode;
+                size++;
+                return;
+            }
+            if(size==capacity){
+                ListNode2 prev = tail.prev;
+                if(prev==null){
+                    head=newNode;
+                    tail=newNode;
+                }else {
+                    prev.next = null;
+                    tail.prev=null;
+                    tail=prev;
+                    newNode.next=head;
+                    head.prev=newNode;
+                    head = head.prev;
+                }
+            }else {
+                newNode.next=head;
+                head.prev=newNode;
+                head = head.prev;
+                size++;
+            }
+        }
+
+        class ListNode2 {
+            int key;
+            int val;
+            ListNode2 prev;
+            ListNode2 next;
+            ListNode2(int key, int val, ListNode2 prev, ListNode2 next) { this.key=key; this.val = val; this.prev = prev;this.next = next; }
+        }
+    }
+
+    /*
+        Find Median from Data Stream
+     */
+    static class MedianFinder {
+        private int[] array;
+        private int size;
+        private static final int defaultCap = 16;
+        /** initialize your data structure here. */
+        public MedianFinder() {
+            array = new int[defaultCap];
+            size = 0;
+            Arrays.fill(array, Integer.MAX_VALUE);
+        }
+
+        public void addNum(int num) {
+            if(size<array.length){
+                array[size]=num;
+            }else {
+                int[] newArray = new int[2*size];
+                Arrays.fill(newArray, Integer.MAX_VALUE);
+                int i=0;
+                for(;i<size;i++){
+                    newArray[i]=array[i];
+                }
+                newArray[i]=num;
+                array=newArray;
+            }
+            Arrays.sort(array);
+            size++;
+        }
+
+        public double findMedian() {
+            double res = 0;
+            if(size==1){
+                return array[0];
+            }
+            if(size%2==0){
+                int left  = size/2-1;
+                int right = size/2;
+                res = (array[left]+array[right])/2.0;
+            }else {
+                int mid = size/2;
+                res = array[mid];
+            }
+            return res;
+        }
+    }
+
+    static class MedianFinder2 {
+        private PriorityQueue<Integer> small = new PriorityQueue<>(Collections.reverseOrder());
+        private PriorityQueue<Integer> large = new PriorityQueue<>();
+        private boolean even = true;
+
+        public double findMedian() {
+            if (even)
+                return (small.peek() + large.peek()) / 2.0;
+            else
+                return small.peek();
+        }
+
+        public void addNum(int num) {
+            if (even) {
+                large.offer(num);
+                small.offer(large.poll());
+            } else {
+                small.offer(num);
+                large.offer(small.poll());
+            }
+            even = !even;
+        }
+    }
+
+
+    /*
+        Game of Life
+        通过变换数字来保存原始状态
+     */
+    public void gameOfLife(int[][] board) {
+        int[] offset = new int[]{-1,0,1};
+        int x = board.length;
+        int y = board[0].length;
+        for(int i=0;i<x;i++){
+            for(int j=0;j<y;j++){
+                int liveCnt = 0;
+                for(int a = 0;a<offset.length;a++){
+                    for(int b=0;b<offset.length;b++){
+                        if(offset[a]==0&&offset[b]==0) continue;
+                        int first  = i+offset[a];
+                        int second = j+offset[b];
+                        if(first>=0&&first<x&&second>=0&&second<y&&Math.abs(board[first][second])==1){
+                            liveCnt++;
+                        }
+                    }
+                }
+                if(board[i][j]==1 && (liveCnt<2 || liveCnt >3)){
+                    board[i][j] = -1;
+                }
+                if(board[i][j]==1 && (liveCnt==2 || liveCnt ==3)){
+                    board[i][j] = 1;
+                }
+                if(board[i][j]==0 && liveCnt ==3){
+                    board[i][j] = 2;
+                }
+            }
+        }
+        for(int i=0;i<x;i++){
+            for(int j=0;j<y;j++){
+                if(board[i][j]>0){
+                    board[i][j]=1;
+                }else {
+                    board[i][j]=0;
+                }
+            }
+        }
+    }
+
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> res = new LinkedList();
+        if(root==null) return res;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        boolean level=true;
+        while (!queue.isEmpty()){
+            List<Integer> list = new LinkedList<>();
+            LinkedList<TreeNode> stack = new LinkedList();
+            int size = queue.size();
+            for(int i=0;i<size;i++){
+                TreeNode curr = queue.poll();
+                if(level){
+                    list.add(curr.val);
+                }else {
+                    stack.push(curr);
+                }
+                if(curr.left!=null)  queue.offer(curr.left);
+                if(curr.right!=null) queue.offer(curr.right);
+            }
+            level=!level;
+            int cnt = stack.size();
+            for(int i=0;i<cnt;i++){
+                list.add(stack.pop().val);
+            }
+            res.add(list);
+        }
+        return res;
+    }
+
+    public List<List<Integer>> zigzagLevelOrder2(TreeNode root) {
+        List<List<Integer>> res = new LinkedList();
+        if(root==null) return res;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        boolean level=true;
+        while (!queue.isEmpty()){
+            List<Integer> list = new LinkedList<>();
+            int size = queue.size();
+            for(int i=0;i<size;i++){
+                TreeNode curr = queue.poll();
+                if(level){
+                    list.add(curr.val);
+                }else {
+                    list.add(0, curr.val);
+                }
+                if(curr.left!=null)  queue.offer(curr.left);
+                if(curr.right!=null) queue.offer(curr.right);
+            }
+            level=!level;
+            res.add(list);
+        }
+        return res;
+    }
+
+
+    /*
+        Palindrome Partitioning
+     */
+    public List<List<String>> partition(String s) {
+        List<List<String>> res = new LinkedList<>();
+        partitionDfs(s, 0, new LinkedList<String>(), res);
+        return res;
+    }
+
+    public void partitionDfs(String s, int idx, List<String> tmp, List<List<String>> res){
+        if(idx == s.length()){
+            res.add(new LinkedList<>(tmp));
+            return;
+        }
+        for(int i=idx;i<s.length();i++){
+            if(isPartition(s, idx, i)){
+                tmp.add(s.substring(idx, i+1));
+                partitionDfs(s, i+1, tmp, res);
+                tmp.remove(tmp.size()-1);
+            }
+        }
+    }
+
+    public  boolean isPartition(String s, int low, int high){
+        while (low<=high){
+            if(s.charAt(low)!=s.charAt(high)) return false;
+            low++;
+            high--;
+        }
+        return true;
+    }
+
+    /*
+      Longest Substring with At Least K Repeating Characters
+      暴力算法或者分治法
+     */
+
+    public static int longestSubstring(String s, int k) {
+        if(s == null || s.length() == 0) return 0;
+        int[] cnt = new int[26];
+        for(int i=0;i<s.length();i++){
+            cnt[s.charAt(i)-'a']++;
+        }
+        int split = 0;
+        boolean flag = true;
+        for(int i=0;i<26;i++){
+            if(cnt[i] ==0 ) continue;
+            if(cnt[i]<k) {
+                flag=false;
+                split = i;
+                break;
+            }
+        }
+        if(flag) return s.length();
+        for(int i=0;i<s.length();i++){
+            if(s.charAt(i) == 'a'+split){
+                split = i;
+                break;
+            }
+        }
+        int left  = longestSubstring(s.substring(0, split), k);
+        int right = longestSubstring(s.substring(split+1, s.length()), k);
+        return Math.max(left, right);
+    }
+
+    public int longestSubstring2(String s, int k) {
+        if(s == null || s.length() == 0) return 0;
+        int[] cnt = new int[26];
+        Map<Character, Integer> map = new HashMap<>();
+        for(int i=0;i<s.length();i++){
+            cnt[s.charAt(i)-'a']++;
+            if(map.get(s.charAt(i)) == null){
+                map.put(s.charAt(i), i);
+            }
+        }
+        boolean flag = true;
+        int split = 0;
+        for(int i=0;i<26;i++){
+            if(cnt[i] ==0 ) continue;
+            if(cnt[i]<k) {
+                flag=false;
+                split = map.get((char)('a'+i));
+                break;
+            }
+        }
+        if(flag) return s.length();
+        int left  = longestSubstring(s.substring(0, split), k);
+        int right = longestSubstring(s.substring(split+1, s.length()), k);
+        return Math.max(left, right);
+    }
+
+    /*
+         Largest Number
+         Example 1:
+
+        Input: [10,2]
+        Output: "210"
+     */
+    public String largestNumber(int[] nums) {
+        String res = "";
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                String s1 = String.valueOf(o1);
+                String s2 = String.valueOf(o2);
+                return (s2+s1).compareTo(s1+s2);
+            }
+        });
+        for(int a: nums) priorityQueue.offer(a);
+        if(priorityQueue.peek()==0){
+            return "0";
+        }
+        while (!priorityQueue.isEmpty()){
+            res+=priorityQueue.poll();
+        }
+        return res;
+    }
+
+    public List<Integer> countSmaller(int[] nums) {
+        List<Integer> res = new LinkedList<>();
+        Map<Integer, Integer> map = new HashMap<>(10000);
+        for(int i=nums.length-1;i>=0;i--){
+            int cnt = 0;
+            for(Map.Entry<Integer, Integer> a: map.entrySet()){
+                if(a.getKey()<nums[i]){
+                    cnt += a.getValue();
+                }
+            }
+            res.add(0, cnt);
+            map.put(nums[i], map.getOrDefault(nums[i], 0)+1);
+        }
+        return res;
+    }
+
+    public static List<Integer> countSmaller2(int[] nums) {
+        List<Integer> res = new LinkedList<>();
+        List<Integer> list = new ArrayList<>();
+        for(int i=nums.length-1;i>=0;i--){
+            int low =0;int high = list.size();
+            while (low<high){
+                int mid = low+(high-low)/2;
+                if(nums[i]>list.get(mid)){
+                    low=mid+1;
+                }else {
+                    high=mid;
+                }
+            }
+            list.add(low, nums[i]);
+            res.add(0, low);
+        }
+        return res;
+    }
+
+
+    /*
+    Two Sum
+    Example 1:
+    Input: nums = [3,2,4], target = 6
+    Output: [1,2]
+     */
+    public static int[] twoSum(int[] nums, int target) {
+        int[] res = new int[2];
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int i=0;i<nums.length;i++){
+            map.put(nums[i], i);
+        }
+        for(int i=0;i<nums.length;i++){
+            Integer a = map.get(target-nums[i]);
+            if(a != null && a!= i){
+                res[0]=i;
+                res[1]=a;
+                return res;
+            }
+        }
+        return null;
+    }
+
+    /*
+        Regular Expression Matching
+
+        Example 1:
+        Input:
+        s = "aa"
+        p = "a"
+        Output: false
+        Explanation: "a" does not match the entire string "aa".
+     */
+
+    public static boolean isMatch(String s, String p) {
+        if (p.isEmpty()) return s.isEmpty();
+        if (p.length() == 1) {
+            return (s.length() == 1 && (s.charAt(0) == p.charAt(0) || p.charAt(0) == '.'));
+        }
+        if (p.charAt(1) != '*') {
+            if (s.isEmpty()) return false;
+            return (s.charAt(0) == p.charAt(0) || p.charAt(0) == '.') && isMatch(s.substring(1), p.substring(1));
+        }
+        while (!s.isEmpty() && (s.charAt(0) == p.charAt(0) || p.charAt(0) == '.')) {
+            if (isMatch(s, p.substring(2))) return true;
+            s = s.substring(1);
+        }
+        return isMatch(s, p.substring(2));
+    }
+
+    /*
+        We define dp[i][j] to be true if s[0..i) matches p[0..j) and false otherwise. The state equations will be:
+
+        dp[i][j] = dp[i][j - 2], if p[j - 1] == '*' and the pattern repeats for 0 time;
+        dp[i][j] = dp[i - 1][j] && (s[i - 1] == p[j - 2] || p[j - 2] == '.'), if p[j - 1] == '*' and the pattern repeats for at least 1 time.
+        dp[i][j] = dp[i - 1][j - 1], if p[j - 1] != '*' && (s[i - 1] == p[j - 1] || p[j - 1] == '.');
+     */
+    public static boolean isMatch2(String s, String p) {
+        if(p.isEmpty()) return s.isEmpty();
+        boolean[][] dp = new boolean[s.length()+1][p.length()+1];
+        dp[0][0] = true;
+        for(int i=0;i<=s.length();i++){
+            for(int j=1;j<=p.length();j++){
+               if(j>1&&p.charAt(j-1)=='*'){
+                   dp[i][j] = dp[i][j-2] || (i>0 && (s.charAt(i-1) == p.charAt(j-2) || p.charAt(j-2)=='.') && dp[i-1][j]);
+               }else {
+                   dp[i][j] = i> 0 && (s.charAt(i-1) == p.charAt(j-1) || p.charAt(j-1)=='.') && dp[i-1][j-1];
+               }
+            }
+        }
+        return dp[s.length()][p.length()];
+    }
+
+    /*
+        Example:
+        Input: [1,2,3,0,2]
+        Output: 3
+        Explanation: transactions = [buy, sell, cooldown, buy, sell]
+     */
+    public int maxProfit309(int[] prices) {
+        if(prices == null || prices.length <= 1) return 0;
+        int[] buy = new int[prices.length];
+        int[] sell = new int[prices.length];
+        buy[0] = - prices[0];
+        buy[1] = Math.max(-prices[0], -prices[1]);
+        sell[1] = Math.max(0, prices[1]-prices[0]);
+        for(int i=2;i<prices.length;i++){
+            buy[i] = Math.max(buy[i-1], sell[i-2] - prices[i]);
+            sell[i] = Math.max(sell[i-1], buy[i-1]+prices[i]);
+        }
+        return sell[prices.length-1];
+    }
+
+
+    /*
+        Set Matrix Zeroes
+        Given an m x n matrix. If an element is 0, set its entire row and column to 0. Do it in-place.
+        Follow up:
+        A straight forward solution using O(mn) space is probably a bad idea.
+        A simple improvement uses O(m + n) space, but still not the best solution.
+        Could you devise a constant space solution?
+     */
+    public void setZeroes(int[][] matrix) {
+        boolean h = false;
+        boolean l = false;
+        for(int i=0;i<matrix.length;i++){
+            for(int j=0;j<matrix[0].length;j++){
+                if(matrix[i][j] == 0){
+                    if(i == 0) h = true;
+                    if(j == 0) l = true;
+                    matrix[i][0] = 0;
+                    matrix[0][j] = 0;
+                }
+            }
+        }
+        for(int i=1;i<matrix.length;i++){
+            for(int j=1;j<matrix[0].length;j++){
+                if(matrix[i][0] == 0 || matrix[0][j] == 0){
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        if(h){
+            for(int j=0;j<matrix[0].length;j++){
+                matrix[0][j] = 0;
+            }
+        }
+        if(l){
+            for(int i=0;i<matrix.length;i++){
+                matrix[i][0] = 0;
+            }
+        }
+    }
+
+    //134. Gas Station
+    public int canCompleteCircuit(int[] gas, int[] cost) {
+        for(int i=0;i<gas.length;i++){
+            if(gas[i]<cost[i])continue;
+            int gasSum  = 0;
+            int costSum = 0;
+            boolean flag = true;
+            for(int j=0;j<gas.length;j++){
+                int curr = (i+j)%gas.length;
+                gasSum  += gas[curr];
+                costSum += cost[curr];
+                if(gasSum<costSum){
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag) return i;
+        }
+        return -1;
+    }
+
+    public int canCompleteCircuit2(int[] gas, int[] cost) {
+        int total = 0, sum = 0, start = 0;
+        for(int i=0;i<gas.length;i++){
+            total += gas[i]-cost[i]; //用于判断全局是否能跑完
+            sum   += gas[i]-cost[i];
+            if(sum<0){
+                start = i+1;
+                sum = 0;
+            }
+        }
+        return total<0 ? -1 : start;
+    }
+
+    //329. Longest Increasing Path in a Matrix
+    Map<String, Integer> map = new HashMap<>();
+    public int longestIncreasingPath(int[][] matrix) {
+        if(matrix.length == 0) return 0;
+        int res = 0;
+        int x = matrix.length;
+        int y = matrix[0].length;
+        for(int i=0;i<x;i++){
+            for(int j=0;j<y;j++){
+                boolean[][] visit = new boolean[x][y];
+                int curr = longestIncreasingPathDFS(matrix,visit, i, j);
+                res = Math.max(res, curr);
+            }
+        }
+        return res;
+    }
+
+    public int longestIncreasingPathDFS(int[][] matrix, boolean[][] visit,  int x, int y) {
+        if(x<0||y<0||x>=matrix.length||y>=matrix[0].length) return 0;
+        if(visit[x][y]) return 0;
+        Integer tmp = map.get(x+","+y);
+        if(tmp != null) return tmp;
+        int max = 1;
+        visit[x][y] = true;
+        if(x-1>=0 && matrix[x-1][y] > matrix[x][y]){
+            max = Math.max(max, longestIncreasingPathDFS(matrix, visit, x-1, y)+1);
+        }
+        if(x+1<matrix.length && matrix[x+1][y] > matrix[x][y]){
+            max = Math.max(max, longestIncreasingPathDFS(matrix, visit, x+1, y)+1);
+        }
+        if(y-1>=0 && matrix[x][y-1] > matrix[x][y]){
+            max = Math.max(max, longestIncreasingPathDFS(matrix, visit, x, y-1)+1);
+        }
+        if(y+1<matrix[0].length && matrix[x][y+1] > matrix[x][y]){
+            max = Math.max(max, longestIncreasingPathDFS(matrix, visit, x, y+1)+1);
+        }
+        visit[x][y] = false;
+        map.put(x+","+y, max);
+        return max;
+    }
+
+   //可以不用visit，因为根据递增条件，是不会重复计算节点的
+    public int longestIncreasingPath2(int[][] matrix) {
+        if(matrix.length == 0) return 0;
+        int res = 0;
+        int x = matrix.length;
+        int y = matrix[0].length;
+        int[][] cache = new int[x][y];
+        for(int i=0;i<x;i++){
+            for(int j=0;j<y;j++){
+                int curr = longestIncreasingPathDFS2(matrix,cache, i, j);
+                res = Math.max(res, curr);
+            }
+        }
+        return res;
+    }
+
+    public int longestIncreasingPathDFS2(int[][] matrix, int[][] cache,  int x, int y) {
+        if(cache[x][y] != 0) return cache[x][y];
+        int max = 1;
+        if(x-1>=0 && matrix[x-1][y] > matrix[x][y]){
+            max = Math.max(max, longestIncreasingPathDFS2(matrix, cache, x-1, y)+1);
+        }
+        if(x+1<matrix.length && matrix[x+1][y] > matrix[x][y]){
+            max = Math.max(max, longestIncreasingPathDFS2(matrix, cache, x+1, y)+1);
+        }
+        if(y-1>=0 && matrix[x][y-1] > matrix[x][y]){
+            max = Math.max(max, longestIncreasingPathDFS2(matrix, cache, x, y-1)+1);
+        }
+        if(y+1<matrix[0].length && matrix[x][y+1] > matrix[x][y]){
+            max = Math.max(max, longestIncreasingPathDFS2(matrix, cache, x, y+1)+1);
+        }
+        cache[x][y] = max;
+        return max;
+    }
+
+    //Spiral Matrix 使用一层一层计算
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> res = new LinkedList<>();
+        if(matrix == null || matrix.length == 0 || matrix[0].length == 0){
+            return res;
+        }
+        int i =0;
+        int x = matrix.length;
+        int y = matrix[0].length;
+        while (x-2*i>=1 && y -2*i>=1){
+            spiralOrderHelper(matrix, res, i);
+            i++;
+        }
+        return res;
+    }
+    public void spiralOrderHelper(int[][] matrix, List<Integer> list, int aow) {
+        int a = matrix.length-2*aow;
+        int b = matrix[0].length-2*aow;
+        if(a == 1){
+            for(int j=aow;j<matrix[0].length-aow;j++){
+                list.add(matrix[aow][j]);
+            }
+            return;
+        }else if(b==1){
+            for(int i=aow;i<matrix.length-aow;i++){
+                list.add(matrix[i][matrix[0].length-1-aow]);
+            }
+            return;
+        }
+        for(int j=aow;j<matrix[0].length-aow-1;j++){
+            list.add(matrix[aow][j]);
+        }
+        for(int i=aow;i<matrix.length-aow-1;i++){
+            list.add(matrix[i][matrix[0].length-1-aow]);
+        }
+        for(int j=matrix[0].length-aow-1;j>aow;j--){
+            list.add(matrix[matrix.length-1-aow][j]);
+        }
+        for(int i=matrix.length-1-aow;i>aow;i--){
+            list.add(matrix[i][aow]);
+        }
+    }
+}
