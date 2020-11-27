@@ -1,7 +1,12 @@
 package util.leetcode;
 
+import org.apache.commons.lang3.time.FastDateFormat;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  * Created by songpanfei on 2020-05-26.
@@ -105,7 +110,7 @@ public class BSTree<T extends Comparable<T>> {
     }
 
 
-    //前序遍历
+    //前序遍历  中左右
     public void qian(Node root){
         if(root == null) return;
         Node curr = root;
@@ -119,7 +124,7 @@ public class BSTree<T extends Comparable<T>> {
         }
     }
 
-    //中序遍历
+    //中序遍历  左中右
     public void zhong(Node root){
         if(root == null) return;
         Node curr = root;
@@ -212,14 +217,48 @@ public class BSTree<T extends Comparable<T>> {
 
     public static final void main(String args[]){
         BSTree tree = new BSTree();
-        System.out.println(tree.insert(1));
-        System.out.println(tree.insert(5));
-        System.out.println(tree.insert(4));
-        System.out.println(tree.insert(2));
-        System.out.println(tree.insert(6));
-        System.out.println(tree.insert(3));
-        System.out.println(tree.search(5).data);
-        System.out.println(tree.del(5));
-        System.out.println(tree.search(5));
+//        System.out.println(tree.insert(1));
+//        System.out.println(tree.insert(5));
+//        System.out.println(tree.insert(4));
+//        System.out.println(tree.insert(2));
+//        System.out.println(tree.insert(6));
+//        System.out.println(tree.insert(3));
+//        System.out.println(tree.search(5).data);
+//        System.out.println(tree.del(5));
+//        System.out.println(tree.search(5));
+//        SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyyMMdd");
+//        System.out.println(FastDateFormat.getInstance("yyyyMMdd").format(new Date(1603036799999l)));
+//        System.out.println(FastDateFormat.getInstance("yyyyMMdd").format(new Date(1603036800000l)));
+//        System.out.println(simpleDateFormat2.format(new Date(1603036799999l)));
+//        System.out.println(simpleDateFormat2.format(new Date(1603036800000l)));
+//
+//        ThreadDemo04 t4 = new ThreadDemo04();
+//        t4.start();
+//        t4.interrupt();
+//        flag = false;
+
+        for(int i=1;i<157611/4;i++){
+            for(int j=1;j<157611/4;j++){
+                if(i*4+j*4.5==157611){
+                    System.out.println(i+" "+j);
+                    break;
+                }
+            }
+        }
     }
+    public static volatile boolean flag = true;
+    public static class ThreadDemo04 extends Thread {
+        @Override
+        public void run() {
+            while (flag) {
+            }
+            System.out.println(Thread.interrupted());
+            System.out.println(Thread.interrupted());
+            LockSupport.park();
+            System.out.println("本打印出现在第一个park()之后");
+            LockSupport.park();
+            System.out.println("本打印出现在第二个park()之后");
+        }
+    }
+
 }
