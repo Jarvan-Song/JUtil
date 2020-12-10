@@ -1,20 +1,34 @@
 package util.leetcode;
 
+import java.util.Base64;
+
 /**
  * Created by songpanfei on 2020-08-05.
  * 字典树
  */
 public class Trie {
+
+    public static void main(String[] args)throws Exception{
+        Trie trie = new Trie();
+        trie.insert("test");
+        trie.insert("word");
+        System.out.println(trie.search("test"));
+        System.out.println(trie.search("tes"));
+        System.out.println(trie.startsWith("tes"));
+
+        System.out.print(new String(Base64.getEncoder().encode("admin".getBytes()), "utf8"));
+    }
+
     class TrieNode {
         public char val;
         public boolean isWord;
         public TrieNode[] children = new TrieNode[26];
-        public TrieNode() {}
+        TrieNode() {}
         TrieNode(char c){
-            TrieNode node = new TrieNode();
-            node.val = c;
+            this.val = c;
         }
     }
+
     TrieNode root;
     public Trie() {
         root = new TrieNode();

@@ -1270,5 +1270,6 @@ public class HtmlUtil2 {
 		for(String a: res){
 			System.out.println(a);
 		}
+		System.out.println(cleanText("最小图片上传尺寸为&apos;"));
 	}
 }

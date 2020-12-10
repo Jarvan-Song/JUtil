@@ -1,3 +1,6 @@
+import com.sun.org.apache.xpath.internal.operations.String;
+
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
