@@ -89,7 +89,7 @@ public class BSTree<T extends Comparable<T>> {
             //将父节点的右节点设置为 child
             x.parent.right=child;
         }
-        //数量增加1
+        //数量减1
         size.decrementAndGet();
         return true;
     }
