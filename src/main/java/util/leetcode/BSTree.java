@@ -1,12 +1,7 @@
 package util.leetcode;
 
-import org.apache.commons.lang3.time.FastDateFormat;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.LockSupport;
 
 /**
  * Created by songpanfei on 2020-05-26.
@@ -15,6 +10,97 @@ public class BSTree<T extends Comparable<T>> {
 
     private Node<T> root;
     private AtomicInteger size = new AtomicInteger(0);
+
+
+    public boolean insert(T data){
+        return insert(root, data);
+    }
+
+    public boolean insert(Node<T> root, T data){
+        if(root == null){
+            this.root = new Node(data);
+            size.incrementAndGet();
+            return true;
+        }
+        Node<T> node = new Node<>(data);
+        Node<T> x = root;
+        Node<T> xp = null;
+        while (x != null){
+            xp = x;
+            int cmp = data.compareTo(x.data);
+            if(cmp<0){
+                x = x.getLeft();
+            }else if(cmp>0){
+                x = x.getRight();
+            }else {
+                return false;
+            }
+        }
+        node.parent = xp;
+        int cmp = data.compareTo(xp.data);
+        if(cmp<0){
+            xp.left = node;
+        }else {
+            xp.right = node;
+        }
+        size.incrementAndGet();
+        return true;
+    }
+
+    public boolean del( T data){
+        return del(root, data);
+    }
+
+    public boolean del(Node<T> root,  T data){
+        if(root == null) return false;
+        Node<T> x = search(data);
+        if(x==null) return false;
+        Node<T> child = null;
+        if(x.left!=null&&x.right!=null){
+            //获取后继结点
+            Node<T> successor = min(x.right);
+            //当前后继节点值交换
+            T tmp = x.data;
+            x.data = successor.data;
+            successor.data = tmp;
+            //把要删除的当前节点设置为后继结点
+            x = successor;
+        }
+        //经过前一步处理，下面只有前两种情况，只能是一个节点或者没有节点
+        //不管是否有子节点，都获取子节点
+        if(x.left!=null){
+            child = x.left;
+        }
+        if(x.right!=null){
+            child = x.right;
+        }
+        //如果 child != null，就说明是有一个节点的情况
+        if(child!=null){
+            child.parent = x.parent;
+        }
+        //如果当前节点没有父节点（后继情况到这儿时一定有父节点）
+        //说明要删除的就是根节点
+        if(x.parent == null){
+            this.root = child;
+        }else if(x==x.parent.left){
+            //将父节点的左节点设置为 child
+            x.parent.left = child;
+        }else if(x==x.parent.right){
+            //将父节点的右节点设置为 child
+            x.parent.right=child;
+        }
+        //数量增加1
+        size.decrementAndGet();
+        return true;
+    }
+
+    //获取后继节点，即比它大的最小节点
+    public Node<T> min(Node<T> node){
+        while (node.left != null){
+            node = node.left;
+        }
+        return node;
+    }
 
     public Node search(T data){
         return search(root, data);
@@ -36,82 +122,9 @@ public class BSTree<T extends Comparable<T>> {
         return null;
     }
 
-    public boolean insert(T data){
-        return insert(root, data);
-    }
-
-    public boolean insert(Node<T> root, T data){
-        if(root == null){
-            this.root = new Node(data);
-            size.incrementAndGet();
-            return true;
-        }
-        Node<T> node = new Node<>(data);
-        Node<T> p = root;
-        Node<T> parent = null;
-        while (p != null){
-            parent = p;
-            int cmp = data.compareTo(p.data);
-            if(cmp<0){
-                p = p.getLeft();
-            }else if(cmp>0){
-                p = p.getRight();
-            }else {
-                return false;
-            }
-        }
-        node.parent = parent;
-        int cmp = data.compareTo(parent.data);
-        if(cmp<0){
-            parent.left = node;
-            size.incrementAndGet();
-        }else {
-            parent.right = node;
-            size.incrementAndGet();
-        }
-        return true;
-    }
-
-    public boolean del(T data){
-        return del(root, data);
-    }
-
-    public boolean del(Node<T> root, T data){
-        if(root == null) return false;
-        Node<T> s = search(root, data);
-        if(s == null) return false;
-        Node<T> parent = s.parent;
-        if(s.left == null && s.right == null){
-            if(parent.left == s) parent.left = null;
-            if(parent.right == s) parent.right = null;
-            return true;
-        }else if(s.left == null && s.right != null){
-            if(parent.left == s) parent.left = s.right;
-            if(parent.right == s) parent.right = s.right;
-        }else if(s.left != null &&s.right == null){
-            if(parent.left == s) parent.left = s.left;
-            if(parent.right == s) parent.right = s.left;
-        }else {
-            Node<T> min = getSucceed(s.right);
-            T tmp = min.data;
-            min.data = s.data;
-            s.data = tmp;
-            del(root, min.data);
-        }
-        return true;
-    }
-
-    public Node getSucceed(Node<T> node){
-        Node<T> p = node;
-        while (p.left != null){
-            p = p.left;
-        }
-        return p;
-    }
-
 
     //前序遍历  中左右
-    public void qian(Node root){
+    public void preOrder(Node root){
         if(root == null) return;
         Node curr = root;
         Stack<Node> stack = new Stack<>();
@@ -125,7 +138,7 @@ public class BSTree<T extends Comparable<T>> {
     }
 
     //中序遍历  左中右
-    public void zhong(Node root){
+    public void inOrder(Node root){
         if(root == null) return;
         Node curr = root;
         Stack<Node> stack = new Stack<>();
@@ -143,7 +156,7 @@ public class BSTree<T extends Comparable<T>> {
     }
 
     //后序遍历  左右中 == 中右左入栈然后出栈
-    public void hou(Node root){
+    public void postOrder(Node root){
         if(root == null) return;
         Stack<Node> stack1 = new Stack<>();
         Stack<Node> stack2 = new Stack<>();
@@ -160,25 +173,19 @@ public class BSTree<T extends Comparable<T>> {
         }
     }
 
-
-
-
-
     class Node<T extends Comparable<T>>{
         T data;
         Node left;
         Node right;
         Node parent;
 
-        public Node(T data){
-            this.data = data;
-        }
         public Node(){}
-        public Node(T data, Node left, Node right, Node parent){
+        public Node(T data){this.data = data;}
+        public Node(T data, Node parent, Node left, Node right){
             this.data = data;
-            this.left = left;
-            this.right = right;
             this.parent = parent;
+            this.left  = left;
+            this.right = right;
         }
         public T getData() {
             return data;
@@ -212,53 +219,34 @@ public class BSTree<T extends Comparable<T>> {
             this.parent = parent;
         }
 
-
+        @Override
+        public String toString() {
+            return "Node{" +
+                    "data=" + data +
+                    '}';
+        }
     }
 
     public static final void main(String args[]){
         BSTree tree = new BSTree();
-//        System.out.println(tree.insert(1));
-//        System.out.println(tree.insert(5));
-//        System.out.println(tree.insert(4));
-//        System.out.println(tree.insert(2));
-//        System.out.println(tree.insert(6));
+        System.out.println(tree.insert(2));
+        System.out.println(tree.insert(1));
 //        System.out.println(tree.insert(3));
-//        System.out.println(tree.search(5).data);
-//        System.out.println(tree.del(5));
-//        System.out.println(tree.search(5));
-//        SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyyMMdd");
-//        System.out.println(FastDateFormat.getInstance("yyyyMMdd").format(new Date(1603036799999l)));
-//        System.out.println(FastDateFormat.getInstance("yyyyMMdd").format(new Date(1603036800000l)));
-//        System.out.println(simpleDateFormat2.format(new Date(1603036799999l)));
-//        System.out.println(simpleDateFormat2.format(new Date(1603036800000l)));
+//        System.out.println(tree.insert(4));
+//        System.out.println(tree.insert(5));
+//        System.out.println(tree.insert(6));
+//        System.out.println(tree.insert(7));
+//        System.out.println(tree.insert(8));
+//        System.out.println(tree.insert(9));
+//        System.out.println(tree.insert(10));
+        System.out.println(tree.search(2).data);
+        System.out.println(tree.del(2));
+        System.out.println(tree.search(2));
 //
 //        ThreadDemo04 t4 = new ThreadDemo04();
 //        t4.start();
 //        t4.interrupt();
 //        flag = false;
 
-        for(int i=1;i<157611/4;i++){
-            for(int j=1;j<157611/4;j++){
-                if(i*4+j*4.5==157611){
-                    System.out.println(i+" "+j);
-                    break;
-                }
-            }
-        }
     }
-    public static volatile boolean flag = true;
-    public static class ThreadDemo04 extends Thread {
-        @Override
-        public void run() {
-            while (flag) {
-            }
-            System.out.println(Thread.interrupted());
-            System.out.println(Thread.interrupted());
-            LockSupport.park();
-            System.out.println("本打印出现在第一个park()之后");
-            LockSupport.park();
-            System.out.println("本打印出现在第二个park()之后");
-        }
-    }
-
 }

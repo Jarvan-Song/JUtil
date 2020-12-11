@@ -18,14 +18,23 @@ public class RedBlackTree<T extends Comparable<T>, D> {
 
     public static void main(String[] args){
         RedBlackTree<Integer, String> rb = new RedBlackTree<>();
-        rb.insertTest(4, "4");
-        rb.insertTest(2, "2");
-        rb.insertTest(1, "1");
-        rb.insertTest(5, "5");
-        rb.insertTest(3, "3");
+        rb.insert(1, "4");
+        rb.insert(2, "2");
+        rb.insert(3, "1");
+        rb.insert(4, "5");
+        rb.insert(5, "5");
+        rb.insert(6, "5");
+        rb.insert(8, "5");
+        rb.insert(3, "3");
+        rb.insert(9, "3");
+        rb.insert(10, "3");
+        rb.insert(11, "3");
+        rb.insert(12, "3");
+        rb.insert(13, "3");
+        rb.insert(14, "3");
+        rb.insert(15, "3");
         System.out.println(rb.getRBTest(3).data);
-        rb.delete(2);
-        System.out.println(rb.getRBTest(3).data);
+        rb.delete(10);
     }
 
     private RBNode<T, D> root;//根节点
