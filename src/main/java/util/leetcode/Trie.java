@@ -1,6 +1,9 @@
 package util.leetcode;
 
 import java.util.Base64;
+import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 /**
  * Created by songpanfei on 2020-08-05.
@@ -16,8 +19,34 @@ public class Trie {
         System.out.println(trie.search("tes"));
         System.out.println(trie.startsWith("tes"));
 
-        System.out.print(new String(Base64.getEncoder().encode("admin".getBytes()), "utf8"));
+        //测试CompletableFuture
+        CompletableFuture<Integer> future = CompletableFuture.supplyAsync(Trie::getMoreData);
+        Future<Integer> f = future.whenComplete((v, e) -> {
+            System.out.println(v);
+            System.out.println("0000000000"+ e);
+        });
+        System.out.println(f.get());
+//        System.in.read();
     }
+
+
+    private static Random rand = new Random();
+    private static long t = System.currentTimeMillis();
+    static int getMoreData() {
+        System.out.println("begin to start compute");
+//        try {
+//            Thread.sleep(10000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+        System.out.println("end to start compute. passed " + (System.currentTimeMillis() - t)/1000 + " seconds");
+        if((System.currentTimeMillis()/1000)%2 ==0 ){
+            throw new RuntimeException("test");
+        }
+        return rand.nextInt(1000);
+    }
+
+
 
     class TrieNode {
         public char val;
