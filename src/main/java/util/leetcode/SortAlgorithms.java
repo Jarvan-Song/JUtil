@@ -18,7 +18,7 @@ public class SortAlgorithms {
 
         int[] a2 = new int[]{1,3,4,5,6,9,11,13};
         SortAlgorithms dst = new SortAlgorithms();
-        String[] methods = new String[]{"maopao", "xuanze", "charu", "kuaisu","kuaisufei", "guibing", "guibingFei", "count", "bucket","xier","heap"};
+        String[] methods = new String[]{"maopao", "xuanze", "charu", "kuaisu","kuaisufei", "guibing", "guibingFei", "count", "bucket","xier","heap","radixSort"};
         String suffix = "202206";
         boolean flag = true;
         for(String meta : methods){
@@ -288,7 +288,7 @@ public class SortAlgorithms {
         for (int i = 0; i < N; i++) {
             List<List<Integer>> radix = new ArrayList<>();
             for (int k = 0; k < 10; k++) {
-                radix.add(new ArrayList<Integer>());
+                radix.add(new ArrayList<>());
             }
             for (int element : arr) {
                 int idx = (element / (int) Math.pow(10, i)) % 10;
@@ -303,6 +303,8 @@ public class SortAlgorithms {
         }
         return arr;
     }
+
+
 
     public static void xier(int[] arr){
         int temp;
@@ -616,6 +618,34 @@ public class SortAlgorithms {
             list1.sort(null);
             for(int a: list1){
                 array[idx++] = a;
+            }
+        }
+    }
+
+    public static void radixSort202206(int[] arr) {
+        int max = Integer.MIN_VALUE;
+        for(int i:arr){
+            max = Math.max(max, i);
+        }
+        int N = 1;
+        while (max/10 !=0){
+            max = max/10;
+            N++;
+        }
+        for(int i=0;i<N;i++){
+            List<List<Integer>> list = new LinkedList<>();
+            for(int j=0;j<10;j++){
+                list.add(new LinkedList<>());
+            }
+            for(int j: arr){
+                int idx = (j/(int)Math.pow(10,i))%10;
+                list.get(idx).add(j);
+            }
+            int idx =0;
+            for(List<Integer> k: list){
+                for(Integer w: k){
+                    arr[idx++] = w;
+                }
             }
         }
     }
