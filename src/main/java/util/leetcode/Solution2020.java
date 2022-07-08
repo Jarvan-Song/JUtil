@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by songpanfei on 2019-09-19.
  */
-public class Solution {
+public class Solution2020 {
 
     public static void main(String[] args) {
 //        System.out.println(reverse2(-2147483648));
