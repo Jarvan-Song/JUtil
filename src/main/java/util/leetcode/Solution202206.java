@@ -221,15 +221,15 @@ public class Solution202206 {
         for(int i=1;i<s.length();i++){
             for(int j=0;j<i;j++){
                 if(s.charAt(i) != s.charAt(j)){
-                    dp[i][j] = false;
+                    dp[j][i] = false;
                 }else {
-                    if(j-i < 3){
-                        dp[i][j] = true;
+                    if(i-j < 3){
+                        dp[j][i] = true;
                     }else {
-                        dp[i][j] = dp[j+1][i-1];
+                        dp[j][i] = dp[j+1][i-1];
                     }
                 }
-                if(dp[i][j] && (i-j+1)>max){
+                if(dp[j][i] && (i-j+1)>max){
                     max = i-j+1;
                     begin = j;
                 }
@@ -237,4 +237,5 @@ public class Solution202206 {
         }
         return s.substring(begin, begin+max);
     }
+
 }
