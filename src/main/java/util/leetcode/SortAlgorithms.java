@@ -10,9 +10,8 @@ import java.util.*;
 public class SortAlgorithms {
     public static void main(String[] args){
         int[] w = new int[]{1,11,3,9,5,6,13,4,7,15,2,12,16};
-        guibingFei(w);
-        System.out.println(kuaisuxuanze202207(w,13));
-        System.out.println(heapxuanze202207(w,13));
+        System.out.println(kuaisuxuanze202207(w,6));
+        System.out.println(heapxuanze202207(w,6));
         maopao(w);
         System.out.println(binary202207(w,16));
         int[] a2 = new int[]{1,3,4,5,6,9,11,13};
@@ -676,7 +675,7 @@ public class SortAlgorithms {
     public static int kuaisuxuanze202207(int[] array, int topK){
         int low = 0;
         int high = array.length-1;
-        while (low<high){
+        while (low<=high){
             int aow = kuaisuxuanzehelper202207(array, low, high);
             if(aow == topK-1){
                 return array[aow];
@@ -710,7 +709,7 @@ public class SortAlgorithms {
         for(int i=topK;i<array.length;i++){
             if(tmp[0]>=array[i])continue;
             tmp[0] = array[i];
-            heapxuanzehelper202207(array, i, topK);
+            heapxuanzehelper202207(tmp, 0, topK);
         }
         return tmp[0];
     }
