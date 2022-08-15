@@ -8,73 +8,74 @@ import java.util.*;
  * Created by songpanfei on 2019-09-23.
  */
 public class SortAlgorithms {
-    public static void main(String[] args){
-        int[] w = new int[]{1,11,3,9,5,6,13,4,7,15,2,12,16};
-        System.out.println(kuaisuxuanze202207(w,6));
-        System.out.println(heapxuanze202207(w,6));
+    public static void main(String[] args) {
+        int[] w = new int[]{1, 11, 3, 9, 5, 6, 13, 4, 7, 15, 2, 12, 16};
+        System.out.println(kuaisuxuanze202208(w, 2));
+        System.out.println(heapxuanze202208(w, 2));
         maopao(w);
-        System.out.println(binary202207(w,16));
-        int[] a2 = new int[]{1,3,4,5,6,9,11,13};
+        System.out.println(binary202208(w, 1));
+        int[] a2 = new int[]{1, 3, 4, 5, 6, 9, 11, 13};
         SortAlgorithms dst = new SortAlgorithms();
-        String[] methods = new String[]{"maopao", "xuanze", "charu", "kuaisu","kuaisufei", "guibing", "guibingFei", "count", "bucket","xier","heap","radixSort"};
-        String suffix = "202207";
+        String[] methods = new String[]{"maopao", "xuanze", "charu", "kuaisu", "kuaisufei", "guibing", "guibingFei",
+                "count", "bucket", "xier", "heap", "radixSort"};
+        String suffix = "202208";
         boolean flag = true;
-        for(String meta : methods){
-            int[] a = new int[]{1,11,3,9,5,6,13,4};
+        for (String meta : methods) {
+            int[] a = new int[]{1, 11, 3, 9, 5, 6, 13, 4};
             try {
                 String methodName = meta + suffix;
                 Method method = SortAlgorithms.class.getMethod(methodName, int[].class);
-                if(meta.equals("count")){
-                    a = (int[])method.invoke(dst, a);
-                }else {
+                if (meta.equals("count")) {
+                    a = (int[]) method.invoke(dst, a);
+                } else {
                     method.invoke(dst, a);
                 }
-                for(int i=0;i<a.length;i++){
-                    if(a[i] != a2[i]){
+                for (int i = 0; i < a.length; i++) {
+                    if (a[i] != a2[i]) {
                         System.out.println(meta + " error");
                         flag = false;
                         break;
                     }
                 }
                 System.out.println(meta + " success");
-            }catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(meta + " " + e);
                 flag = false;
             }
         }
-        if(flag) {
+        if (flag) {
             System.out.println("success");
-        } else{
+        } else {
             System.out.println("error");
         }
     }
 
-    public static void swap(int[] array, int i, int j){
+    public static void swap(int[] array, int i, int j) {
         int tmp = array[i];
         array[i] = array[j];
-        array[j]=tmp;
+        array[j] = tmp;
     }
 
-    public static void maopao(int[] arry){
-        for(int i=arry.length-1;i>0;i--){
+    public static void maopao(int[] arry) {
+        for (int i = arry.length - 1; i > 0; i--) {
             boolean flag = false;
-            for(int j=0;j<i;j++){
-                if(arry[j] > arry[j+1]){
+            for (int j = 0; j < i; j++) {
+                if (arry[j] > arry[j + 1]) {
                     flag = true;
                     int tem = arry[j];
-                    arry[j] = arry[j+1];
-                    arry[j+1] = tem;
+                    arry[j] = arry[j + 1];
+                    arry[j + 1] = tem;
                 }
             }
-            if(!flag)break;
+            if (!flag) break;
         }
     }
 
-    public static void xuanze(int[] arry){
-        for(int i = 0; i<arry.length-1;i++){
+    public static void xuanze(int[] arry) {
+        for (int i = 0; i < arry.length - 1; i++) {
             int min = i;
-            for(int j=i+1;j<arry.length;j++){
-                if(arry[j]<arry[min]){
+            for (int j = i + 1; j < arry.length; j++) {
+                if (arry[j] < arry[min]) {
                     min = j;
                 }
             }
@@ -86,45 +87,45 @@ public class SortAlgorithms {
         }
     }
 
-    public static void charu(int[] arr){
-        for(int i=1;i<arr.length;i++){
+    public static void charu(int[] arr) {
+        for (int i = 1; i < arr.length; i++) {
             int key = i;
             int value = arr[i];
-            while (key >0&&arr[key-1]>value){
-                arr[key] = arr[key-1];
+            while (key > 0 && arr[key - 1] > value) {
+                arr[key] = arr[key - 1];
                 key--;
             }
             arr[key] = value;
         }
     }
 
-    public static void guibing(int[] array){
+    public static void guibing(int[] array) {
         int[] tmp = new int[array.length];
-        guibing(array, tmp, 0, array.length-1);
+        guibing(array, tmp, 0, array.length - 1);
     }
 
-    public static void guibing(int[] array, int[] tmp, int low, int high){
-        if(low >=high) return;
-        int middle = low +(high-low)/2;
+    public static void guibing(int[] array, int[] tmp, int low, int high) {
+        if (low >= high) return;
+        int middle = low + (high - low) / 2;
         guibing(array, tmp, low, middle);
-        guibing(array, tmp,middle+1, high);
+        guibing(array, tmp, middle + 1, high);
         guibingHelper(array, tmp, low, middle, high);
     }
 
-    public static void guibingHelper(int[] array, int[] tmp, int low, int middle, int high){
+    public static void guibingHelper(int[] array, int[] tmp, int low, int middle, int high) {
         int i = low;
         int j = middle + 1;
         int k = 0;
-        while (i<=middle && j<=high){
+        while (i <= middle && j <= high) {
             tmp[k++] = array[i] < array[j] ? array[i++] : array[j++];
         }
-        while (i<=middle){
+        while (i <= middle) {
             tmp[k++] = array[i++];
         }
-        while (j<=high){
+        while (j <= high) {
             tmp[k++] = array[j++];
         }
-        for(int w = 0;w<k;w++){
+        for (int w = 0; w < k; w++) {
             array[low + w] = tmp[w];
         }
     }
@@ -132,9 +133,9 @@ public class SortAlgorithms {
     //使用非递归的方式来实现归并排序
     public static void guibingFei(int[] arr) {
         int width = 1;
-        while(width < arr.length) {
+        while (width < arr.length) {
             guibingFeiHelper(arr, width);
-            width = width*2;
+            width = width * 2;
         }
     }
 
@@ -142,126 +143,126 @@ public class SortAlgorithms {
     public static void guibingFeiHelper(int[] arr, int width) {
         int start = 0;
         //从前往后,将2个长度为k的子序列合并为1个
-        while(start+2*width-1 < arr.length) {
-            guibingFeiHelper2(arr, start, start + width-1, start + 2*width - 1);
-            start = start+2*width;
+        while (start + 2 * width - 1 < arr.length) {
+            guibingFeiHelper2(arr, start, start + width - 1, start + 2 * width - 1);
+            start = start + 2 * width;
         }
         //这段代码保证了，将那些“落单的”长度不足两两merge的部分和前面merge起来，这里的前面指的是不足两两部分的第一部分。
         //这段代码只处理长度大于1，不足两个的部分。小于1个的部分本次不处理，在下一次merge时会处理。
-        if(start+width-1<arr.length){
-            guibingFeiHelper2(arr, start, start+width-1, arr.length-1);
+        if (start + width - 1 < arr.length) {
+            guibingFeiHelper2(arr, start, start + width - 1, arr.length - 1);
         }
     }
 
     public static void guibingFeiHelper2(int[] array, int low, int mid, int high) {
         int[] tmp = new int[high - low + 1];
         int i = low;
-        int j = mid+1;
+        int j = mid + 1;
         int k = 0;
-        while (i<=mid && j<=high){
+        while (i <= mid && j <= high) {
             tmp[k++] = array[i] < array[j] ? array[i++] : array[j++];
         }
-        while (i<=mid){
+        while (i <= mid) {
             tmp[k++] = array[i++];
         }
-        while (j<=high){
+        while (j <= high) {
             tmp[k++] = array[j++];
         }
-        for(int w = 0;w<k;w++){
+        for (int w = 0; w < k; w++) {
             array[low + w] = tmp[w];
         }
     }
 
 
-    public static void kuaisu(int[] array){
-        kuaisu(array, 0, array.length-1);
+    public static void kuaisu(int[] array) {
+        kuaisu(array, 0, array.length - 1);
     }
 
-    public static void kuaisu(int[] array, int low, int high){
-        if(low >= high) return;
+    public static void kuaisu(int[] array, int low, int high) {
+        if (low >= high) return;
         int avr = kuaisuHelper(array, low, high);
         kuaisu(array, low, avr);
         kuaisu(array, avr + 1, high);
     }
 
-    public static int kuaisuHelper(int[] array, int low, int high){
+    public static int kuaisuHelper(int[] array, int low, int high) {
         int p = array[low];
-        while (low < high){
+        while (low < high) {
             while (low < high && array[high] >= p) high--;
             array[low] = array[high];
             while (low < high && array[low] <= p) low++;
-            array[high]  = array[low];
+            array[high] = array[low];
         }
         array[low] = p;
         return low;
     }
 
-    public static void kuaisufei(int[] array){
-        kuaisuFeihelper(array, 0, array.length-1);
+    public static void kuaisufei(int[] array) {
+        kuaisuFeihelper(array, 0, array.length - 1);
     }
 
-    public static void kuaisuFeihelper(int[] array, int low, int high){
+    public static void kuaisuFeihelper(int[] array, int low, int high) {
         Stack<Integer> stack = new Stack<>();
         stack.push(low);
         stack.push(high);
-        while (!stack.isEmpty()){
+        while (!stack.isEmpty()) {
             int r = stack.pop();
             int l = stack.pop();
-            if(l>=r) continue;
+            if (l >= r) continue;
             int aow = kuaisuHelper(array, l, r);
             stack.push(l);
             stack.push(aow);
-            stack.push(aow+1);
+            stack.push(aow + 1);
             stack.push(r);
         }
     }
 
-    public static int[] count(int[] array){
+    public static int[] count(int[] array) {
         int max = Integer.MIN_VALUE;
         int min = Integer.MAX_VALUE;
-        for(int i=0;i<array.length;i++){
+        for (int i = 0; i < array.length; i++) {
             int meta = array[i];
             max = Math.max(max, meta);
             min = Math.min(min, meta);
         }
-        int[] countArray = new int[max-min+1];
+        int[] countArray = new int[max - min + 1];
         Arrays.fill(countArray, 0);
-        for(int i=0;i<array.length;i++){
-            countArray[array[i]-min]++;
+        for (int i = 0; i < array.length; i++) {
+            countArray[array[i] - min]++;
         }
         int sum = 0;
-        for(int i=0;i<countArray.length;i++){
-            sum = sum+countArray[i];
-            countArray[i]=sum;
+        for (int i = 0; i < countArray.length; i++) {
+            sum = sum + countArray[i];
+            countArray[i] = sum;
         }
         int[] res = new int[array.length];
-        for(int i=array.length-1;i>=0;i--){
-            res[countArray[array[i]-min]-1] = array[i];
-            countArray[array[i]-min]--;
+        for (int i = array.length - 1; i >= 0; i--) {
+            res[countArray[array[i] - min] - 1] = array[i];
+            countArray[array[i] - min]--;
         }
         return res;
     }
 
-    public static void bucket(int[] array){
+    public static void bucket(int[] array) {
         int max = Integer.MIN_VALUE;
         int min = Integer.MAX_VALUE;
-        for(int a: array){
+        for (int a : array) {
             max = Math.max(max, a);
             min = Math.min(min, a);
         }
-        int num = (max - min)/array.length + 1;
+        int num = (max - min) / array.length + 1;
         List<List<Integer>> list = new LinkedList<>();
-        for(int i=0;i<num;i++){
+        for (int i = 0; i < num; i++) {
             list.add(new LinkedList<>());
         }
-        for(int a: array){
-            int idx = (a-min)/array.length;
+        for (int a : array) {
+            int idx = (a - min) / array.length;
             list.get(idx).add(a);
         }
         int idx = 0;
-        for(List<Integer> a: list){
+        for (List<Integer> a : list) {
             a.sort(null);
-            for(int b: a){
+            for (int b : a) {
                 array[idx++] = b;
             }
         }
@@ -303,26 +304,25 @@ public class SortAlgorithms {
     }
 
 
-
-    public static void xier(int[] arr){
+    public static void xier(int[] arr) {
         int temp;
-        for (int delta = arr.length/2; delta>=1; delta/=2){                              //对每个增量进行一次排序
-            for (int i=delta; i<arr.length; i++){
-                for (int j=i; j-delta>=0 && arr[j]<arr[j-delta]; j-=delta){ //注意每个地方增量和差值都是delta
-                    temp = arr[j-delta];
-                    arr[j-delta] = arr[j];
+        for (int delta = arr.length / 2; delta >= 1; delta /= 2) {                              //对每个增量进行一次排序
+            for (int i = delta; i < arr.length; i++) {
+                for (int j = i; j - delta >= 0 && arr[j] < arr[j - delta]; j -= delta) { //注意每个地方增量和差值都是delta
+                    temp = arr[j - delta];
+                    arr[j - delta] = arr[j];
                     arr[j] = temp;
                 }
             }//loop i
         }//loop delta
     }
 
-    public static void heap(int[] array){
-        for(int i= array.length/2-1;i>=0;i--){
+    public static void heap(int[] array) {
+        for (int i = array.length / 2 - 1; i >= 0; i--) {
             heapHelper(array, i, array.length);
         }
 
-        for(int i= array.length-1;i>0;i--){
+        for (int i = array.length - 1; i > 0; i--) {
             int tmp = array[0];
             array[0] = array[i];
             array[i] = tmp;
@@ -330,16 +330,16 @@ public class SortAlgorithms {
         }
     }
 
-    public static void heapHelper(int[] array, int i, int len){
+    public static void heapHelper(int[] array, int i, int len) {
         int tmp = array[i];
-        for(int k= 2*i+1;k<len;k=2*i+1){
-            if(k+1<len&&array[k+1]>array[k]){
+        for (int k = 2 * i + 1; k < len; k = 2 * i + 1) {
+            if (k + 1 < len && array[k + 1] > array[k]) {
                 k++;
             }
-            if(array[k]>tmp){
+            if (array[k] > tmp) {
                 array[i] = array[k];
                 i = k;
-            }else {
+            } else {
                 break;
             }
         }
@@ -347,79 +347,79 @@ public class SortAlgorithms {
     }
 
     //二分查找法
-    public static int binarySearch(int[] array, int k){
+    public static int binarySearch(int[] array, int k) {
         int low = 0;
         int high = array.length;
-        while (low<high){
-            int mid = low+(high-low)/2;
-            if(array[mid] == k){
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            if (array[mid] == k) {
                 return mid;
-            }else if(array[mid]>k){
-                high = mid-1;
-            }else if(array[mid]<k){
-                low = mid+1;
+            } else if (array[mid] > k) {
+                high = mid - 1;
+            } else if (array[mid] < k) {
+                low = mid + 1;
             }
         }
         return -1;
     }
 
     //快速查找算法topk
-    public static int kuaiSuTopk(int[] array, int k){
+    public static int kuaiSuTopk(int[] array, int k) {
         int low = 0;
-        int high = array.length-1;
-        k = k-1;
-        while (low<=high){
+        int high = array.length - 1;
+        k = k - 1;
+        while (low <= high) {
             int mid = kuaiSuTopk(array, low, high);
-            if(mid == k) {
+            if (mid == k) {
                 return array[mid];
-            }else if(mid > k) {
-                high = mid-1;
-            }else if(mid < k){
-                low = mid +1;
+            } else if (mid > k) {
+                high = mid - 1;
+            } else if (mid < k) {
+                low = mid + 1;
             }
         }
         return -1;
     }
 
-    public static int kuaiSuTopk(int[] array, int low, int high){
+    public static int kuaiSuTopk(int[] array, int low, int high) {
         int aow = array[low];
-        while (low<high){
-            while (low<high&&array[high]<=aow) high--;
-            array[low]=array[high];
-            while (low<high&&array[low]>=aow) low++;
-            array[high]=array[low];
+        while (low < high) {
+            while (low < high && array[high] <= aow) high--;
+            array[low] = array[high];
+            while (low < high && array[low] >= aow) low++;
+            array[high] = array[low];
         }
-        array[low]=aow;
+        array[low] = aow;
         return low;
     }
 
     //最小堆topk
-    public static int minHeapTopk(int[] array, int k){
+    public static int minHeapTopk(int[] array, int k) {
         int[] tmp = new int[k];
-        for(int i=0;i<k;i++){
+        for (int i = 0; i < k; i++) {
             tmp[i] = array[i];
         }
-        for(int i=k/2;i>=0;i--){
+        for (int i = k / 2; i >= 0; i--) {
             minHeapTopkHelper(tmp, i, k);
         }
-        for(int i=k;i<array.length;i++){
-            if(array[i]<=tmp[0]) continue;
+        for (int i = k; i < array.length; i++) {
+            if (array[i] <= tmp[0]) continue;
             tmp[0] = array[i];
             minHeapTopkHelper(tmp, 0, k);
         }
         return tmp[0];
     }
 
-    public static void minHeapTopkHelper(int[] array, int i, int n){
+    public static void minHeapTopkHelper(int[] array, int i, int n) {
         int tmp = array[i];
-        for(int k=2*i+1;k<n;k=2*i+1){
-            if(k+1<n&&array[k+1]<array[k]){
+        for (int k = 2 * i + 1; k < n; k = 2 * i + 1) {
+            if (k + 1 < n && array[k + 1] < array[k]) {
                 k++;
             }
-            if(array[k]<tmp){
+            if (array[k] < tmp) {
                 array[i] = array[k];
                 i = k;
-            }else {
+            } else {
                 break;
             }
         }
@@ -427,305 +427,331 @@ public class SortAlgorithms {
     }
 
 
-    public static void maopao202207(int[] array){
-        for(int i=array.length-1;i>0;i--){
+    public static void maopao202208(int[] array) {
+        for (int i = array.length - 1; i > 0; i--) {
             boolean flag = false;
-            for(int j=0;j<i;j++){
-                if(array[j]>array[j+1]){
+            for (int j = 0; j < i; j++) {
+                if (array[j] > array[j + 1]) {
                     flag = true;
-                    swap(array, j, j+1);
+                    swap(array, j, j + 1);
                 }
             }
-            if(!flag)break;
+            if (!flag) {
+                break;
+            }
         }
+
     }
-    public static void xuanze202207(int[] array){
-        for(int i=0;i<array.length-1;i++){
+
+    public static void xuanze202208(int[] array) {
+        for (int i = 0; i < array.length - 1; i++) {
             int min = i;
-            for(int j=i+1;j<array.length;j++){
-                if(array[min]>array[j]){
+            for (int j = i + 1; j < array.length; j++) {
+                if (array[min] > array[j]) {
                     min = j;
                 }
             }
-            if(min!=i)swap(array,min,i);
+            if (min != i) {
+                swap(array, min, i);
+            }
         }
     }
-    public static void charu202207(int[] array){
-        for(int i=1;i<array.length;i++){
+
+    public static void charu202208(int[] array) {
+        for (int i = 1; i < array.length; i++) {
             int key = i;
             int val = array[key];
-            while (key>0&&array[key-1]>val){
-                array[key]=array[key-1];
+            while (key > 0 && array[key - 1] > val) {
+                array[key] = array[key - 1];
                 key--;
             }
-            array[key]=val;
+            array[key] = val;
         }
     }
-    public static void kuaisu202207(int[] array){
-        kuaisu202207helper(array, 0, array.length-1);
+
+    public static void kuaisu202208(int[] array) {
+        kuaisu202208helper(array, 0, array.length - 1);
     }
-    public static void kuaisu202207helper(int[] array, int low, int high){
-        if(low>=high)return;
-        int aow = kuaisu202207helper1(array, low, high);
-        kuaisu202207helper(array, low, aow);
-        kuaisu202207helper(array, aow+1, high);
+
+    public static void kuaisu202208helper(int[] array, int low, int high) {
+        if (low >= high) {
+            return;
+        }
+        int aow = kuaisu202208helper1(array, low, high);
+        kuaisu202208helper(array, low, aow);
+        kuaisu202208helper(array, aow + 1, high);
     }
-    public static int kuaisu202207helper1(int[] array, int low, int high){
+
+    public static int kuaisu202208helper1(int[] array, int low, int high) {
         int aow = array[low];
-        while (low<high){
-            while (low<high&&array[high]>=aow) high--;
+        while (low < high) {
+            while (low < high && array[high] >= aow) high--;
             array[low] = array[high];
-            while (low<high&&array[low]<=aow) low++;
+            while (low < high && array[low] <= aow) low++;
             array[high] = array[low];
         }
         array[low] = aow;
         return low;
     }
 
-    public static void kuaisufei202207(int[] array){
-        kuaisufei202207helper(array, 0, array.length-1);
+    public static void kuaisufei202208(int[] array) {
+        kuaisufei202208helper(array, 0, array.length - 1);
     }
-    public static void kuaisufei202207helper(int[] array, int low, int high){
+
+    public static void kuaisufei202208helper(int[] array, int low, int high) {
         Stack<Integer> stack = new Stack<>();
         stack.push(low);
         stack.push(high);
-        while (!stack.isEmpty()){
+        while (!stack.isEmpty()) {
             int r = stack.pop();
             int l = stack.pop();
-            if(l>=r) continue;
-            int aow = kuaisu202207helper1(array, l, r);
+            if (l >= r) continue;
+            int aow = kuaisu202208helper1(array, l, r);
             stack.push(l);
             stack.push(aow);
-            stack.push(aow+1);
+            stack.push(aow + 1);
             stack.push(r);
         }
     }
-    public static void guibing202207(int[] array){
-        guibing202207helper(array, 0, array.length-1);
+
+    public static void guibing202208(int[] array) {
+        guibing202208helper(array, 0, array.length - 1);
     }
-    public static void guibing202207helper(int[] array, int low, int high){
-        if(low>=high) return;
-        int mid = low+(high-low)/2;
-        guibing202207helper(array, low, mid);
-        guibing202207helper(array, mid+1, high);
-        guibing202207helper1(array, low, mid, high);
-    }
-    public static void guibing202207helper1(int[] array, int low, int mid,  int high){
-        int i=low;
-        int j=mid+1;
-        int k = 0;
-        int[] tmp = new int[high-low+1];
-        while (i<=mid&&j<=high){
-            tmp[k++] = array[i]>array[j]?array[j++]:array[i++];
+
+    public static void guibing202208helper(int[] array, int low, int high) {
+        if (low >= high) {
+            return;
         }
-        while (i<=mid){
+        int mid = low + (high - low) / 2;
+        guibing202208helper(array, low, mid);
+        guibing202208helper(array, mid + 1, high);
+        guibing202208helper1(array, low, mid, high);
+    }
+
+    public static void guibing202208helper1(int[] array, int low, int mid, int high) {
+        int i = low;
+        int j = mid + 1;
+        int k = 0;
+        int[] tmp = new int[high - low + 1];
+        while (i <= mid && j <= high) {
+            tmp[k++] = array[i] > array[j] ? array[j++] : array[i++];
+        }
+        while (i <= mid) {
             tmp[k++] = array[i++];
         }
-        while (j<=high){
+        while (j <= high) {
             tmp[k++] = array[j++];
         }
-        for(int w=0;w<k;w++){
-            array[low+w] = tmp[w];
+        for (int w = 0; w < k; w++) {
+            array[low + w] = tmp[w];
         }
     }
 
-    public static void guibingFei202207(int[] array){
+    public static void guibingFei202208(int[] array) {
         int width = 1;
-        while (width <array.length){
-            guibingFei202207Helper(array, width);
-            width = width*2;
+        while (width < array.length) {
+            guibingFei202208Helper(array, width);
+            width = 2 * width;
         }
     }
-    public static void guibingFei202207Helper(int[] array, int width){
+
+    public static void guibingFei202208Helper(int[] array, int width) {
         int start = 0;
-        while (start+2*width-1<array.length){
-            guibing202207helper1(array, start, start+width-1, start+2*width-1);
-            start = start+2*width;
+        while (start + 2 * width - 1 < array.length) {
+            guibing202208helper1(array, start, start + width - 1, start + 2 * width - 1);
+            start = start + 2 * width;
         }
-        if (start+width-1<array.length){
-            guibing202207helper1(array, start, start+width-1, array.length-1);
-        }
-    }
-    public static void heap202207(int[] array){
-        for(int i=array.length/2;i>=0;i--){
-            heap202207helper(array, i, array.length);
-        }
-        for(int i=array.length-1;i>0;i--){
-            swap(array,0, i);
-            heap202207helper(array, 0, i);
+        if (start + width - 1 < array.length) {
+            guibing202208helper1(array, start, start + width - 1, array.length - 1);
         }
     }
-    public static void heap202207helper(int[] array, int i, int n){
+
+    public static void heap202208(int[] array) {
+        for (int i = array.length / 2; i >= 0; i--) {
+            heap202208helper(array, i, array.length);
+        }
+        for (int i = array.length - 1; i > 0; i--) {
+            swap(array, 0, i);
+            heap202208helper(array, 0, i);
+        }
+    }
+
+    public static void heap202208helper(int[] array, int i, int n) {
         int tmp = array[i];
-        for(int k=2*i+1;k<n;k=2*i+1){
-            if(k+1<n && array[k+1]>array[k]){
+        for (int k = 2 * i + 1; k < n; k = 2 * i + 1) {
+            if (k + 1 < n && array[k + 1] > array[k]) {
                 k++;
             }
-            if(array[k] > tmp){
+            if (array[k] > tmp) {
                 array[i] = array[k];
                 i = k;
-            }else break;
+            } else break;
         }
         array[i] = tmp;
     }
 
-    public static int[] count202207(int[] array){
-        int max = Integer.MIN_VALUE;
+    public static int[] count202208(int[] array) {
         int min = Integer.MAX_VALUE;
-        for(int a: array){
-            max = Math.max(a, max);
-            min = Math.min(a, min);
+        int max = Integer.MIN_VALUE;
+        for (int a : array) {
+            min = Math.min(min, a);
+            max = Math.max(max, a);
         }
-        int[] cnt = new int[max-min+1];
-        for(int a: array){
-            cnt[a-min]++;
+        int[] cnt = new int[max - min + 1];
+        for (int a : array) {
+            cnt[a - min]++;
         }
         int sum = 0;
-        for(int i=0;i<cnt.length;i++){
-            sum = sum+cnt[i];
-            cnt[i]=sum;
+        for (int i = 0; i < cnt.length; i++) {
+            sum = sum + cnt[i];
+            cnt[i] = sum;
         }
         int[] sort = new int[array.length];
-        for(int i=array.length-1;i>=0;i--){
-            sort[cnt[array[i]-min]-1] = array[i];
-            cnt[array[i]-min]--;
+        for (int i = array.length - 1; i >= 0; i--) {
+            sort[cnt[array[i] - min] - 1] = array[i];
+            cnt[array[i] - min]--;
         }
         return sort;
     }
 
-    public static void bucket202207(int[] array){
-        int max = Integer.MIN_VALUE;
+    public static void bucket202208(int[] array) {
         int min = Integer.MAX_VALUE;
-        for(int a: array){
-            max = Math.max(a, max);
-            min = Math.min(a, min);
-        }
-        int num = (max-min)/array.length+1;
-        List<List<Integer>> list = new LinkedList<>();
-        for(int i=0;i<num;i++){
-            list.add(new LinkedList<>());
-        }
-        for(int a: array){
-            int idx = (a-min)/array.length;
-            list.get(idx).add(a);
-        }
-        int idx =0;
-        for(List<Integer> list1: list){
-            list1.sort(null);
-            for(int a: list1){
-                array[idx++]=a;
-            }
-        }
-    }
-
-    public static void radixSort202207(int[] arr) {
         int max = Integer.MIN_VALUE;
-        for(int a: arr){
+        for (int a : array) {
+            min = Math.min(min, a);
             max = Math.max(max, a);
         }
-        int num = 1;
-        while (max / 10 != 0){
-            max = max/10;
-            num++;
+        int num = (max - min) / array.length + 1;
+        List<List<Integer>> list = new LinkedList<>();
+        for (int i = 0; i < num; i++) {
+            list.add(new LinkedList<>());
         }
-        for(int i=0;i<num;i++){
+        for (int a : array) {
+            int idx = (a - min) / array.length;
+            list.get(idx).add(a);
+        }
+        int idx = 0;
+        for (List<Integer> list1 : list) {
+            list1.sort(null);
+            for (int w : list1) {
+                array[idx++] = w;
+            }
+        }
+    }
+
+    public static void radixSort202208(int[] array) {
+        int max = Integer.MIN_VALUE;
+        for (int a : array) {
+            max = Math.max(a, max);
+        }
+        int N = 1;
+        while (max / 10 != 0) {
+            max = max / 10;
+            N++;
+        }
+        for (int i = 0; i < N; i++) {
             List<List<Integer>> list = new LinkedList<>();
-            for(int j=0;j<10;j++){
+            for (int j = 0; j < 10; j++) {
                 list.add(new LinkedList<>());
             }
-            for(int a: arr){
-                int idx = (a/(int)Math.pow(10,i))%10;
-                list.get(idx).add(a);
+            for (int a : array) {
+                int w = (a / (int) (Math.pow(10, i))) % 10;
+                list.get(w).add(a);
             }
             int idx = 0;
-            for(List<Integer> list1: list){
-                for(int a: list1){
-                    arr[idx++] = a;
+            for (List<Integer> list1 : list) {
+                for (int b : list1) {
+                    array[idx++] = b;
                 }
             }
         }
     }
 
-    public static void xier202207(int[] array){
-        for(int delt = array.length/2;delt>=1;delt=delt/2){
-            for(int i=delt;i<array.length;i++){
-                for(int j=i;j-delt>=0&&array[j-delt]>array[j];j=j-delt){
-                    swap(array, j, j-delt);
+    public static void xier202208(int[] array) {
+        for (int delt = array.length / 2; delt >= 1; delt = delt / 2) {
+            for (int i = delt; i < array.length; i++) {
+                for (int j = i; j - delt >= 0 && array[j - delt] >= array[j]; j = j - delt) {
+                    swap(array, j, j - delt);
                 }
             }
         }
     }
 
-    public static int binary202207(int[] array, int k){
+    public static int binary202208(int[] array, int k) {
         int low = 0;
-        int high = array.length-1;
-        while (low<=high){
-            int mid = low+(high-low)/2;
-            if(array[mid] == k){
+        int high = array.length - 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (array[mid] == k) {
                 return mid;
-            }else if(array[mid] > k){
-                high = mid-1;
-            }else {
-                low = mid+1;
+            } else if (array[mid] > k) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
             }
         }
         return -1;
     }
 
-    public static int kuaisuxuanze202207(int[] array, int topK){
+    public static int kuaisuxuanze202208(int[] array, int topK) {
         int low = 0;
-        int high = array.length-1;
-        while (low<=high){
-            int aow = kuaisuxuanzehelper202207(array, low, high);
-            if(aow == topK-1){
+        int high = array.length - 1;
+        while (low <= high) {
+            int aow = kuaisuxuanzehelper202208(array, low, high);
+            if (aow == topK - 1) {
                 return array[aow];
-            }else if(aow < topK-1){
-                low = aow+1;
-            }else {
-                high = aow-1;
+            } else if (aow > topK - 1) {
+                high = aow - 1;
+            } else {
+                low = aow + 1;
             }
         }
         return -1;
     }
-    public static int kuaisuxuanzehelper202207(int[] array, int low, int high){
+
+    public static int kuaisuxuanzehelper202208(int[] array, int low, int high) {
         int aow = array[low];
-        while (low<high){
-            while (low<high&&array[high]<=aow) high--;
+        while (low < high) {
+            while (low < high && array[high] <= aow) high--;
             array[low] = array[high];
-            while (low<high&&array[low]>=aow) low++;
+            while (low < high && array[low] >= aow) low++;
             array[high] = array[low];
         }
         array[low] = aow;
         return low;
     }
-    public static int heapxuanze202207(int[] array, int topK){
+
+    public static int heapxuanze202208(int[] array, int topK) {
         int[] tmp = new int[topK];
-        for(int i=0;i<topK;i++){
+        for (int i = 0; i < topK; i++) {
             tmp[i] = array[i];
         }
-        for(int i=topK/2;i>=0;i--){
-            heapxuanzehelper202207(tmp, i, topK);
+        for (int i = topK / 2; i >= 0; i--) {
+            heapxuanzehelper202208(tmp, i, topK);
         }
-        for(int i=topK;i<array.length;i++){
-            if(tmp[0]>=array[i])continue;
+        for (int i = topK; i < array.length; i++) {
+            if (array[i] <= tmp[0]) {
+                continue;
+            }
             tmp[0] = array[i];
-            heapxuanzehelper202207(tmp, 0, topK);
+            heapxuanzehelper202208(tmp, 0, topK);
         }
         return tmp[0];
     }
-    public static void heapxuanzehelper202207(int[] array, int i, int n){
+
+    public static void heapxuanzehelper202208(int[] array, int i, int n) {
         int tmp = array[i];
-        for(int k=2*i+1;k<n;k=2*i+1){
-            if(k+1<n && array[k+1]<array[k]){
+        for (int k = 2 * i + 1; k < n; k = 2 * i + 1) {
+            if (k + 1 < n && array[k + 1] < array[k]) {
                 k++;
             }
-            if(array[k] < tmp){
+            if (array[k] < tmp) {
                 array[i] = array[k];
                 i = k;
-            }else break;
+            } else {
+                break;
+            }
         }
         array[i] = tmp;
     }
-
-
 }
