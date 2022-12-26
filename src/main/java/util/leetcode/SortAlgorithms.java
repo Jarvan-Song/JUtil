@@ -10,10 +10,10 @@ import java.util.*;
 public class SortAlgorithms {
     public static void main(String[] args) {
         int[] w = new int[]{1, 11, 3, 9, 5, 6, 13, 4, 7, 15, 2, 12, 16};  //共13位
-        System.out.println(kuaisuxuanze202212(w, 13));
-        System.out.println(heapxuanze202212(w, 13));
+        System.out.println(kuaisuxuanze202212(w, 2));
+        System.out.println(heapxuanze202212(w, 2));
         maopao(w);
-        System.out.println(binary202212(w, 16));
+        System.out.println(binary202212(w, 15));
         int[] a2 = new int[]{1, 3, 4, 5, 6, 9, 11, 13};
         SortAlgorithms dst = new SortAlgorithms();
         String[] methods = new String[]{"maopao", "xuanze", "charu", "kuaisu", "kuaisufei", "guibing", "guibingFei",
@@ -440,7 +440,7 @@ public class SortAlgorithms {
         for (int i = 0; i < array.length - 1; i++) {
             int min = i;
             for (int j = i + 1; j < array.length; j++) {
-                if (array[j] > array[min]) {
+                if (array[j] < array[min]) {
                     min = j;
                 }
             }
@@ -454,8 +454,8 @@ public class SortAlgorithms {
         for (int i = 1; i < array.length; i++) {
             int key = i;
             int val = array[key];
-            while (key > 9 && array[key - 1] > val) {
-                array[key - 1] = array[key];
+            while (key > 0 && array[key - 1] > val) {
+                array[key] = array[key - 1];
                 key--;
             }
             array[key] = val;
@@ -523,7 +523,7 @@ public class SortAlgorithms {
         int j = mid + 1;
         int k = 0;
         while (i <= mid && j <= high) {
-            tmp[k++] = array[i] > array[j] ? array[j++] : array[i]++;
+            tmp[k++] = array[i] > array[j] ? array[j++] : array[i++];
         }
         while (i <= mid) {
             tmp[k++] = array[i++];
@@ -538,7 +538,7 @@ public class SortAlgorithms {
 
     public static void guibingFei202212(int[] array) {
         int width = 1;
-        while (width < array.length / 2) {
+        while (width < array.length) {
             guibingFei202212Helper(array, width);
             width = 2 * width;
         }
@@ -604,34 +604,142 @@ public class SortAlgorithms {
     }
 
     public static void bucket202212(int[] array) {
-
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for (int a : array) {
+            min = Math.min(min, a);
+            max = Math.max(max, a);
+        }
+        int num = (max - min) / array.length + 1;
+        List<List<Integer>> list = new LinkedList<>();
+        for (int a = 0; a < num; a++) {
+            list.add(new LinkedList<>());
+        }
+        for (int a : array) {
+            int idx = (a - min) / array.length;
+            list.get(idx).add(a);
+        }
+        int idx = 0;
+        for (List<Integer> list1 : list) {
+            list1.sort(null);
+            for (int b : list1) {
+                array[idx++] = b;
+            }
+        }
     }
 
     public static void radixSort202212(int[] array) {
-
+        int N = 1;
+        int max = Integer.MIN_VALUE;
+        for (int a : array) {
+            max = Math.max(max, a);
+        }
+        while (max / 10 != 0) {
+            N++;
+            max = max / 10;
+        }
+        for (int i = 0; i <= N; i++) {
+            List<List<Integer>> list = new LinkedList<>();
+            for (int j = 0; j < 10; j++) {
+                list.add(new LinkedList<>());
+            }
+            for (int a : array) {
+                int idx = (int) (a / (Math.pow(10, i)) % 10);
+                list.get(idx).add(a);
+            }
+            int idx = 0;
+            for (List<Integer> list1 : list) {
+                for (int a : list1) {
+                    array[idx++] = a;
+                }
+            }
+        }
     }
 
     public static void xier202212(int[] array) {
-
+        for (int delt = array.length / 2; delt >= 1; delt = delt / 2) {
+            for (int x = delt; x < array.length; x++) {
+                for (int y = x; y - delt >= 0 && array[y - delt] > array[y]; y = y - delt) {
+                    swap(array, y, y - delt);
+                }
+            }
+        }
     }
 
     public static int binary202212(int[] array, int k) {
-
+        int low = 0;
+        int high = array.length - 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (array[mid] == k) {
+                return mid;
+            } else if (array[mid] > k) {
+                high = mid - 1;
+            } else {
+                low = low + 1;
+            }
+        }
+        return -1;
     }
 
     public static int kuaisuxuanze202212(int[] array, int topK) {
-
+        int low = 0;
+        int high = array.length - 1;
+        while (low <= high) {
+            int aow = kuaisuxuanzehelper202212(array, low, high);
+            if (aow == topK - 1) {
+                return array[aow];
+            } else if (aow < topK - 1) {
+                low = aow + 1;
+            } else {
+                high = aow - 1;
+            }
+        }
+        return -1;
     }
 
     public static int kuaisuxuanzehelper202212(int[] array, int low, int high) {
-
+        int aow = array[low];
+        while (low < high) {
+            while (low < high && array[high] <= aow) high--;
+            array[low] = array[high];
+            while (low < high && array[low] >= aow) low++;
+            array[high] = array[low];
+        }
+        array[low] = aow;
+        return low;
     }
 
     public static int heapxuanze202212(int[] array, int topK) {
+        int[] tmp = new int[topK];
+        for (int i = 0; i < topK; i++) {
+            tmp[i] = array[i];
+        }
+        for (int i = topK / 2; i >= 0; i--) {
+            heapxuanzehelper202212(tmp, i, topK);
+        }
 
+        for (int i = topK; i < array.length; i++) {
+            if (array[i] <= tmp[0]) {
+                continue;
+            }
+            tmp[0] = array[i];
+            heapxuanzehelper202212(tmp, 0, topK);
+        }
+        return tmp[0];
     }
 
     public static void heapxuanzehelper202212(int[] array, int i, int n) {
-
+        int tmp = array[i];
+        for (int k = 2 * i + 1; k < n; k = 2 * i + 1) {
+            if (k + 1 < n && array[k + 1] < array[k]) {
+                k++;
+            }
+            if (array[k] < tmp) {
+                array[i] = array[k];
+                i = k;
+            } else break;
+        }
+        array[i] = tmp;
     }
 }
