@@ -166,7 +166,7 @@ public final class IpUtil {
         b[3] = (int) (ip & 0xff);
         String x;
         Integer p;
-        p = new Integer(0);
+        p = Integer.valueOf(0);
         x = p.toString(b[0]) + "." + p.toString(b[1]) + "." + p.toString(b[2])
                 + "." + p.toString(b[3]);
 
