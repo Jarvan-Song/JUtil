@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class GPT {
     public static void main(String[] args) {
-        OpenAiService service = new OpenAiService("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",
+        OpenAiService service = new OpenAiService("",
                 Duration.ofSeconds(100));
 //        List<ChatMessage> messages = new LinkedList<>();
 //        ChatMessage message = new ChatMessage();
