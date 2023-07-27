@@ -7,14 +7,18 @@ import org.bytedeco.javacv.Java2DFrameConverter;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FrameExtractor {
     public static void main(String[] args) {
-        getVideoPic(new File("test.mp4"), "");
+        getVideoPic(new File("f57b4ca9b013cc1646bd117bd4ae927f.mp4"), "");
     }
 
+    /**
+     * getVideoPic
+     *
+     * @param video
+     * @param picPath
+     */
     public static void getVideoPic(File video, String picPath) {
         //1.根据一个视频文件，创建一个按照视频中每一帧进行抓取图片的抓取对象
         FFmpegFrameGrabber ff = new FFmpegFrameGrabber(video);
@@ -29,22 +33,23 @@ public class FrameExtractor {
             int length = ff.getLengthInFrames();
             //3.读取视频中每一帧图片
             Frame frame = null;
-            for (int i = 1; i < length; i++) {
-                frame = ff.grabFrame();
-                if (frame.image == null) {
-                    continue;
+            int frameCounter = 0;
+            //将获取的帧，存储为图片
+            Java2DFrameConverter converter = new Java2DFrameConverter();//创建一个帧-->图片的转换器
+            while ((frame = ff.grabImage()) != null) {
+                BufferedImage image = converter.getBufferedImage(frame);
+                if (image != null) {
+                    String img = "D:\\github\\JUtil\\video\\" + picPath + frameCounter + ".png";
+                    File picFile = new File(img);
+                    ImageIO.write(image, "png", picFile);
+                    frameCounter++;
                 }
-                //将获取的帧，存储为图片
-                Java2DFrameConverter converter = new Java2DFrameConverter();//创建一个帧-->图片的转换器
-                BufferedImage image = converter.getBufferedImage(frame);//转换
-                String img = "D:\\github\\JUtil\\video\\" + picPath + i + ".png";
-                File picFile = new File(img);
-                //将图片保存到目标文件中
-                ImageIO.write(image, "png", picFile);
             }
             ff.stop();
+            System.out.println("length=" + length);
+            System.out.println("frameCounter=" + frameCounter);
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e);
         }
     }
 }
