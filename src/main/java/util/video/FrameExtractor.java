@@ -10,7 +10,7 @@ import java.io.File;
 
 public class FrameExtractor {
     public static void main(String[] args) {
-        getVideoPic(new File("f57b4ca9b013cc1646bd117bd4ae927f.mp4"), "");
+        getVideoPic(new File("b3ad2d0c64bf552c3ebd061289d534.mp4"), "");
     }
 
     /**
@@ -39,7 +39,7 @@ public class FrameExtractor {
             while ((frame = ff.grabImage()) != null) {
                 BufferedImage image = converter.getBufferedImage(frame);
                 if (image != null) {
-                    String img = "D:\\github\\JUtil\\video\\" + picPath + frameCounter + ".png";
+                    String img = "D:\\github\\JUtil\\video2\\" + picPath + frameCounter + ".png";
                     File picFile = new File(img);
                     ImageIO.write(image, "png", picFile);
                     frameCounter++;
