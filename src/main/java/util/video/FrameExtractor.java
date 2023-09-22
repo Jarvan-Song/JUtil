@@ -39,7 +39,7 @@ public class FrameExtractor {
             while ((frame = ff.grabImage()) != null) {
                 BufferedImage image = converter.getBufferedImage(frame);
                 if (image != null) {
-                    String img = "D:\\github\\JUtil\\video2\\" + picPath + frameCounter + ".png";
+                    String img = "D:\\github\\JUtil\\video\\" + picPath + frameCounter + ".png";
                     File picFile = new File(img);
                     ImageIO.write(image, "png", picFile);
                     frameCounter++;
